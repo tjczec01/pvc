@@ -381,38 +381,6 @@ def DI(Ys,Dijs):
         return flist
                     
 
-def passargmp(Jac,kd,EA,eav,kdv,cons):
-    Rval = sp.symbols('Rval')
-    Twall = sp.symbols('Twall')
-    k_0v = [*kdv]
-    EAv = [*eav]
-    allargs = k_0v
-    con1 = consf[0]
-    con2 = consf[1]
-    con3 = consf[2]
-    for i in eav:
-        allargs.append(i)
-    Eas = []
-    kv = []
-    for i,ii in enumerate(EA):
-        Eas.append(sp.symbols('{}'.format(EA[i])))
-    for j,jj in enumerate(kd):
-        kv.append(sp.symbols('{}'.format(kd[j])))
-    kdict = {kd[k] : k_0v[k] for k in range(len(kd))}
-    eadict = {Eas[l] : mpf(EAv[l]*1000) for l in range(len(EA))}
-    rvald = {Rval: mpf(8.314), Twall: mpf(Twallv), con1 : cons[0], con2 : cons[1], con3 : cons[2]}
-    dall = {}
-    for i in (kdict,eadict,rvald):
-        dall.update(kdict)
-        dall.update(eadict)
-        dall.update(rvald)
-    Jaca = Jac.subs(dall)
-    Jacd = sp.matrix2numpy(Jaca)
-    Jace = sp.Matrix(Jacd)
-    Jacf2 = Jace.xreplace({Rval: mpf(Rvalc)}) #
-    Jf3 = sp.matrix2numpy(Jacf2)
-    J4 = sp.Matrix(Jf3)
-    return J4
 
 
 
@@ -678,66 +646,66 @@ def raD(Ea,k_0,T,Rval,C):
 
 
 
-def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T0, T1 = C 
+def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3, Twalls):
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C 
 
-       return [-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T0)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T0)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T0)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T0)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T0)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T0)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T0)) - C_EDC*K_1*np.exp(-Ea_1/(R*T0)),
-              -C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T0)) + C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T0)) + C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T0)),
-              C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T0)) + C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T0)) + C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T0)) + 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)) + C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T0)) + C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T0)) + C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T0)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T0)) + C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T0)) + C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T0)),
-              2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)),
-              C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T0)),
-              C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T0)) - C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T0)) + C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T0)) + C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T0)) + C_R6*K_24*np.exp(-Ea_24/(R*T0)),
-              -C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T0)) + C_R7*K_25*np.exp(-Ea_25/(R*T0)),
-              C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T0)),
-              2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T0)),
-              -2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) - 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)) - C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T0)) + C_R5*K_23*np.exp(-Ea_23/(R*T0)),
-              -C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T0)) + C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T0)),
-              -C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T0)) + C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T0)) + C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T0)),
-              -C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T0)) - C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T0)) + C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T0)) + C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T0)),
-              -C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T0)) - C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T0)) - C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T0)) + 2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) - 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)) - C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T0)) + C_CCl4*K_2*np.exp(-Ea_2/(R*T0)) - C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T0)) - C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T0)) - C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T0)) - C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T0)) + C_EDC*K_1*np.exp(-Ea_1/(R*T0)) - C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T0)) - C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T0)) - C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T0)) - C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T0)) - C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T0)) - C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T0)) + C_R3*K_22*np.exp(-Ea_22/(R*T0)) + C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T0)) + C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T0)) + C_R5*K_23*np.exp(-Ea_23/(R*T0)) + C_R6*K_24*np.exp(-Ea_24/(R*T0)) + C_R7*K_25*np.exp(-Ea_25/(R*T0)),
-              C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T0)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T0)) + C_EDC*K_1*np.exp(-Ea_1/(R*T0)) - C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T0)) - C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T0)),
-              C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T0)) + C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T0)) + C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T0)) + C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T0)) + C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T0)) + C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T0)) - C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T0)) + C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T0)) - C_R3*K_22*np.exp(-Ea_22/(R*T0)),
-              C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T0)) - C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T0)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T0)) + C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T0)) - C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T0)),
-              -2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) + C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T0)) - C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T0)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T0)) + C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T0)) + C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T0)) - C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T0)) - C_R5*K_23*np.exp(-Ea_23/(R*T0)),
-              C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T0)) + C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T0)) - C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T0)) + C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T0)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T0)) - C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T0)) - C_R6*K_24*np.exp(-Ea_24/(R*T0)),
-              C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T0)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T0)) + C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T0)) - C_R7*K_25*np.exp(-Ea_25/(R*T0)),
-              -C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T0)) + C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T0)) + C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T0)) + C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T0)) + C_CCl4*K_2*np.exp(-Ea_2/(R*T0)) + C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T0)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T0)) - C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T0)),
-              C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T0)) - C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T0)) - C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T0)) - C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T0)) - C_CCl4*K_2*np.exp(-Ea_2/(R*T0)) + C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T0)),
-              -C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T0)) + C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T0)),
-              C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T0)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T0)) - C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T0)) - C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T0)) - C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T0)) - C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T0)) + C_R3*K_22*np.exp(-Ea_22/(R*T0)) - C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T0)) - C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T0)),
+       return [-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)) - C_EDC*K_1*np.exp(-Ea_1/(R*T)),
+              -C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) + C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)),
+              C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T)) + C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T)) + C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T)) + 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) + C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T)) + C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) + C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)),
+              2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)),
+              C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T)),
+              C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T)) - C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T)) + C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T)) + C_R6*K_24*np.exp(-Ea_24/(R*T)),
+              -C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T)) + C_R7*K_25*np.exp(-Ea_25/(R*T)),
+              C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T)),
+              2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T)),
+              -2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T)) - 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) - C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T)) + C_R5*K_23*np.exp(-Ea_23/(R*T)),
+              -C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T)) + C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)),
+              -C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T)) + C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T)) + C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)),
+              -C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T)) - C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T)) + C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T)) + C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)),
+              -C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T)) - C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T)) - C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T)) + 2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T)) - 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) - C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T)) + C_CCl4*K_2*np.exp(-Ea_2/(R*T)) - C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T)) - C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T)) - C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) - C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) + C_EDC*K_1*np.exp(-Ea_1/(R*T)) - C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T)) - C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T)) - C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T)) + C_R3*K_22*np.exp(-Ea_22/(R*T)) + C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T)) + C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T)) + C_R5*K_23*np.exp(-Ea_23/(R*T)) + C_R6*K_24*np.exp(-Ea_24/(R*T)) + C_R7*K_25*np.exp(-Ea_25/(R*T)),
+              C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) + C_EDC*K_1*np.exp(-Ea_1/(R*T)) - C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)),
+              C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) + C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) + C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) + C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) + C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) + C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T)) - C_R3*K_22*np.exp(-Ea_22/(R*T)),
+              C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T)) - C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) + C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T)),
+              -2*C_C2H2**2*C_R5*K_30*np.exp(-Ea_30/(R*T)) + C_C2H2*C_R1*K_23*np.exp(-Ea_23/(R*T)) - C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) + C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)) + C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)) - C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T)) - C_R5*K_23*np.exp(-Ea_23/(R*T)),
+              C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T)) + C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T)) - C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T)) + C_Di*C_R1*K_24*np.exp(-Ea_24/(R*T)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T)) - C_R6*K_24*np.exp(-Ea_24/(R*T)),
+              C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) + C_R1*C_Tri*K_25*np.exp(-Ea_25/(R*T)) - C_R7*K_25*np.exp(-Ea_25/(R*T)),
+              -C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T)) + C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T)) + C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T)) + C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T)) + C_CCl4*K_2*np.exp(-Ea_2/(R*T)) + C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)) - C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T)),
+              C_C1112*C_R8*K_28*np.exp(-Ea_28/(R*T)) - C_CCl4*C_R4*K_26*np.exp(-Ea_26/(R*T)) - C_CCl4*C_R5*K_27*np.exp(-Ea_27/(R*T)) - C_CCl4*C_R6*K_28*np.exp(-Ea_28/(R*T)) - C_CCl4*K_2*np.exp(-Ea_2/(R*T)) + C_R6*C_R8*K_29*np.exp(-Ea_29/(R*T)),
+              -C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T)) + C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)),
+              C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T)) - C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)) + C_R3*K_22*np.exp(-Ea_22/(R*T)) - C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T)) - C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T)),
               T1,
-              Constant_1*T1 - Constant_2*(-T0 + Twalls) - Constant_3*(-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T0)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T0)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T0)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T0)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T0)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T0)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T0)) - C_EDC*K_1*np.exp(-Ea_1/(R*T0)))]
+              Constant_1*T1 - Constant_2*(-T + Twalls) - Constant_3*(-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)) - C_EDC*K_1*np.exp(-Ea_1/(R*T)))]
                                                  
 
-def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T0, T1 = C 
+def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3, Twalls):
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C 
        
-       JacN = [[-C_R1*K_3*np.exp(-Ea_3/(R*T0)) - C_R2*K_4*np.exp(-Ea_4/(R*T0)) - C_R4*K_5*np.exp(-Ea_5/(R*T0)) - C_R5*K_6*np.exp(-Ea_6/(R*T0)) - C_R6*K_7*np.exp(-Ea_7/(R*T0)) - C_R7*K_8*np.exp(-Ea_8/(R*T0)) - C_R8*K_9*np.exp(-Ea_9/(R*T0)) - K_1*np.exp(-Ea_1/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EDC*K_3*np.exp(-Ea_3/(R*T0)), -C_EDC*K_4*np.exp(-Ea_4/(R*T0)), 0, -C_EDC*K_5*np.exp(-Ea_5/(R*T0)), -C_EDC*K_6*np.exp(-Ea_6/(R*T0)), -C_EDC*K_7*np.exp(-Ea_7/(R*T0)), -C_EDC*K_8*np.exp(-Ea_8/(R*T0)), -C_EDC*K_9*np.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0],
-              [C_R2*K_4*np.exp(-Ea_4/(R*T0)), -C_R1*K_12*np.exp(-Ea_12/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EC*K_12*np.exp(-Ea_12/(R*T0)), C_EDC*K_4*np.exp(-Ea_4/(R*T0)) + C_VCM*K_19*np.exp(-Ea_19/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_19*np.exp(-Ea_19/(R*T0)), 0, 0],
-              [C_R1*K_3*np.exp(-Ea_3/(R*T0)), C_R1*K_12*np.exp(-Ea_12/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)), C_R1*K_13*np.exp(-Ea_13/(R*T0)), C_R1*K_14*np.exp(-Ea_14/(R*T0)), C_R1*K_15*np.exp(-Ea_15/(R*T0)), C_C11*K_13*np.exp(-Ea_13/(R*T0)) + C_C1112*K_15*np.exp(-Ea_15/(R*T0)) + C_C112*K_14*np.exp(-Ea_14/(R*T0)) + 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T0)) + C_CHCl3*K_16*np.exp(-Ea_16/(R*T0)) + C_EC*K_12*np.exp(-Ea_12/(R*T0)) + C_EDC*K_3*np.exp(-Ea_3/(R*T0)) + C_R2*K_10*np.exp(-Ea_10/(R*T0)) + C_R3*K_11*np.exp(-Ea_11/(R*T0)) + C_VCM*K_18*np.exp(-Ea_18/(R*T0)), C_R1*K_10*np.exp(-Ea_10/(R*T0)), C_R1*K_11*np.exp(-Ea_11/(R*T0)), 0, 0, 0, 0, 0, 0, C_R1*K_16*np.exp(-Ea_16/(R*T0)), C_R1*K_18*np.exp(-Ea_18/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)), 0, 0, 0, 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_21*np.exp(-Ea_21/(R*T0)), 0, 0, 0, 0, 0, C_R5*K_21*np.exp(-Ea_21/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, -C_R1*K_24*np.exp(-Ea_24/(R*T0)), 0, 0, 0, 0, 0, 0, 0, -C_Di*K_24*np.exp(-Ea_24/(R*T0)) + C_R3*K_11*np.exp(-Ea_11/(R*T0)), 0, C_R1*K_11*np.exp(-Ea_11/(R*T0)), 0, C_CCl4*K_27*np.exp(-Ea_27/(R*T0)), C_R8*K_29*np.exp(-Ea_29/(R*T0)) + K_24*np.exp(-Ea_24/(R*T0)), 0, C_R6*K_29*np.exp(-Ea_29/(R*T0)), C_R5*K_27*np.exp(-Ea_27/(R*T0)), 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, -C_R1*K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, 0, -C_Tri*K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_20*np.exp(-Ea_20/(R*T0)), 0, 0, 0, 0, 0, 0, C_R4*K_20*np.exp(-Ea_20/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, -4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) - 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)) - C_R1*K_23*np.exp(-Ea_23/(R*T0)), 0, 0, 0, -4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T0)) - C_C2H2*K_23*np.exp(-Ea_23/(R*T0)), 0, 0, 0, -2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T0)) + K_23*np.exp(-Ea_23/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0],
-              [C_R4*K_5*np.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_13*np.exp(-Ea_13/(R*T0)), 0, 0, -C_C11*K_13*np.exp(-Ea_13/(R*T0)), 0, 0, C_EDC*K_5*np.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [C_R6*K_7*np.exp(-Ea_7/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_14*np.exp(-Ea_14/(R*T0)), 0, -C_C112*K_14*np.exp(-Ea_14/(R*T0)), 0, 0, C_CCl4*K_26*np.exp(-Ea_26/(R*T0)), 0, C_EDC*K_7*np.exp(-Ea_7/(R*T0)), 0, 0, C_R4*K_26*np.exp(-Ea_26/(R*T0)), 0, 0, 0, 0],
-              [C_R7*K_8*np.exp(-Ea_8/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_15*np.exp(-Ea_15/(R*T0)) - C_R8*K_28*np.exp(-Ea_28/(R*T0)), -C_C1112*K_15*np.exp(-Ea_15/(R*T0)), 0, 0, 0, 0, C_CCl4*K_28*np.exp(-Ea_28/(R*T0)), C_EDC*K_8*np.exp(-Ea_8/(R*T0)), -C_C1112*K_28*np.exp(-Ea_28/(R*T0)), C_R6*K_28*np.exp(-Ea_28/(R*T0)), 0, 0, 0, 0],
-              [-C_R1*K_3*np.exp(-Ea_3/(R*T0)) + K_1*np.exp(-Ea_1/(R*T0)), -C_R1*K_12*np.exp(-Ea_12/(R*T0)), 0, 0, 0, -C_R1*K_24*np.exp(-Ea_24/(R*T0)), -C_R1*K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) - 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T0)) - C_R1*K_23*np.exp(-Ea_23/(R*T0)), -C_R1*K_13*np.exp(-Ea_13/(R*T0)), -C_R1*K_14*np.exp(-Ea_14/(R*T0)), -C_R1*K_15*np.exp(-Ea_15/(R*T0)), -C_C11*K_13*np.exp(-Ea_13/(R*T0)) - C_C1112*K_15*np.exp(-Ea_15/(R*T0)) - C_C112*K_14*np.exp(-Ea_14/(R*T0)) - 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T0)) - C_C2H2*K_23*np.exp(-Ea_23/(R*T0)) - C_CHCl3*K_16*np.exp(-Ea_16/(R*T0)) - C_Di*K_24*np.exp(-Ea_24/(R*T0)) - C_EC*K_12*np.exp(-Ea_12/(R*T0)) - C_EDC*K_3*np.exp(-Ea_3/(R*T0)) - C_R2*K_10*np.exp(-Ea_10/(R*T0)) - C_R3*K_11*np.exp(-Ea_11/(R*T0)) - C_Tri*K_25*np.exp(-Ea_25/(R*T0)) - C_VCM*K_17*np.exp(-Ea_17/(R*T0)) - C_VCM*K_18*np.exp(-Ea_18/(R*T0)) - C_VCM*K_22*np.exp(-Ea_22/(R*T0)), -C_R1*K_10*np.exp(-Ea_10/(R*T0)), -C_R1*K_11*np.exp(-Ea_11/(R*T0)) + K_22*np.exp(-Ea_22/(R*T0)), C_VCM*K_20*np.exp(-Ea_20/(R*T0)), 2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T0)) + C_VCM*K_21*np.exp(-Ea_21/(R*T0)) + K_23*np.exp(-Ea_23/(R*T0)), K_24*np.exp(-Ea_24/(R*T0)), K_25*np.exp(-Ea_25/(R*T0)), 0, K_2*np.exp(-Ea_2/(R*T0)), -C_R1*K_16*np.exp(-Ea_16/(R*T0)), -C_R1*K_17*np.exp(-Ea_17/(R*T0)) - C_R1*K_18*np.exp(-Ea_18/(R*T0)) - C_R1*K_22*np.exp(-Ea_22/(R*T0)) + C_R4*K_20*np.exp(-Ea_20/(R*T0)) + C_R5*K_21*np.exp(-Ea_21/(R*T0)), 0, 0],
-              [-C_R2*K_4*np.exp(-Ea_4/(R*T0)) + K_1*np.exp(-Ea_1/(R*T0)), C_R1*K_12*np.exp(-Ea_12/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EC*K_12*np.exp(-Ea_12/(R*T0)) - C_R2*K_10*np.exp(-Ea_10/(R*T0)), -C_EDC*K_4*np.exp(-Ea_4/(R*T0)) - C_R1*K_10*np.exp(-Ea_10/(R*T0)) - C_VCM*K_19*np.exp(-Ea_19/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, -C_R2*K_19*np.exp(-Ea_19/(R*T0)), 0, 0],
-              [C_R1*K_3*np.exp(-Ea_3/(R*T0)) + C_R2*K_4*np.exp(-Ea_4/(R*T0)) + C_R4*K_5*np.exp(-Ea_5/(R*T0)) + C_R5*K_6*np.exp(-Ea_6/(R*T0)) + C_R6*K_7*np.exp(-Ea_7/(R*T0)) + C_R7*K_8*np.exp(-Ea_8/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*K_3*np.exp(-Ea_3/(R*T0)) - C_R3*K_11*np.exp(-Ea_11/(R*T0)) + C_VCM*K_22*np.exp(-Ea_22/(R*T0)), C_EDC*K_4*np.exp(-Ea_4/(R*T0)), -C_R1*K_11*np.exp(-Ea_11/(R*T0)) - K_22*np.exp(-Ea_22/(R*T0)), C_EDC*K_5*np.exp(-Ea_5/(R*T0)), C_EDC*K_6*np.exp(-Ea_6/(R*T0)), C_EDC*K_7*np.exp(-Ea_7/(R*T0)), C_EDC*K_8*np.exp(-Ea_8/(R*T0)), 0, 0, 0, C_R1*K_22*np.exp(-Ea_22/(R*T0)), 0, 0],
-              [-C_R4*K_5*np.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R1*K_13*np.exp(-Ea_13/(R*T0)), 0, 0, C_C11*K_13*np.exp(-Ea_13/(R*T0)) + C_VCM*K_17*np.exp(-Ea_17/(R*T0)), 0, 0, -C_CCl4*K_26*np.exp(-Ea_26/(R*T0)) - C_EDC*K_5*np.exp(-Ea_5/(R*T0)) - C_VCM*K_20*np.exp(-Ea_20/(R*T0)), 0, 0, 0, 0, -C_R4*K_26*np.exp(-Ea_26/(R*T0)), 0, C_R1*K_17*np.exp(-Ea_17/(R*T0)) - C_R4*K_20*np.exp(-Ea_20/(R*T0)), 0, 0],
-              [-C_R5*K_6*np.exp(-Ea_6/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, -4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T0)) + C_R1*K_23*np.exp(-Ea_23/(R*T0)), 0, 0, 0, C_C2H2*K_23*np.exp(-Ea_23/(R*T0)) + C_VCM*K_18*np.exp(-Ea_18/(R*T0)), C_VCM*K_19*np.exp(-Ea_19/(R*T0)), 0, 0, -2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T0)) - C_CCl4*K_27*np.exp(-Ea_27/(R*T0)) - C_EDC*K_6*np.exp(-Ea_6/(R*T0)) - C_VCM*K_21*np.exp(-Ea_21/(R*T0)) - K_23*np.exp(-Ea_23/(R*T0)), 0, 0, 0, -C_R5*K_27*np.exp(-Ea_27/(R*T0)), 0, C_R1*K_18*np.exp(-Ea_18/(R*T0)) + C_R2*K_19*np.exp(-Ea_19/(R*T0)) - C_R5*K_21*np.exp(-Ea_21/(R*T0)), 0, 0],
-              [-C_R6*K_7*np.exp(-Ea_7/(R*T0)), 0, 0, 0, 0, C_R1*K_24*np.exp(-Ea_24/(R*T0)), 0, 0, 0, 0, 0, C_R1*K_14*np.exp(-Ea_14/(R*T0)), C_R8*K_28*np.exp(-Ea_28/(R*T0)), C_C112*K_14*np.exp(-Ea_14/(R*T0)) + C_Di*K_24*np.exp(-Ea_24/(R*T0)), 0, 0, 0, 0, -C_CCl4*K_28*np.exp(-Ea_28/(R*T0)) - C_EDC*K_7*np.exp(-Ea_7/(R*T0)) - C_R8*K_29*np.exp(-Ea_29/(R*T0)) - K_24*np.exp(-Ea_24/(R*T0)), 0, C_C1112*K_28*np.exp(-Ea_28/(R*T0)) - C_R6*K_29*np.exp(-Ea_29/(R*T0)), -C_R6*K_28*np.exp(-Ea_28/(R*T0)), 0, 0, 0, 0],
-              [-C_R7*K_8*np.exp(-Ea_8/(R*T0)), 0, 0, 0, 0, 0, C_R1*K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, C_R1*K_15*np.exp(-Ea_15/(R*T0)), C_C1112*K_15*np.exp(-Ea_15/(R*T0)) + C_Tri*K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, -C_EDC*K_8*np.exp(-Ea_8/(R*T0)) - K_25*np.exp(-Ea_25/(R*T0)), 0, 0, 0, 0, 0, 0],
-              [-C_R8*K_9*np.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R8*K_28*np.exp(-Ea_28/(R*T0)), C_CHCl3*K_16*np.exp(-Ea_16/(R*T0)), 0, 0, C_CCl4*K_26*np.exp(-Ea_26/(R*T0)), C_CCl4*K_27*np.exp(-Ea_27/(R*T0)), C_CCl4*K_28*np.exp(-Ea_28/(R*T0)) - C_R8*K_29*np.exp(-Ea_29/(R*T0)), 0, -C_C1112*K_28*np.exp(-Ea_28/(R*T0)) - C_EDC*K_9*np.exp(-Ea_9/(R*T0)) - C_R6*K_29*np.exp(-Ea_29/(R*T0)), C_R4*K_26*np.exp(-Ea_26/(R*T0)) + C_R5*K_27*np.exp(-Ea_27/(R*T0)) + C_R6*K_28*np.exp(-Ea_28/(R*T0)) + K_2*np.exp(-Ea_2/(R*T0)), C_R1*K_16*np.exp(-Ea_16/(R*T0)), 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R8*K_28*np.exp(-Ea_28/(R*T0)), 0, 0, 0, -C_CCl4*K_26*np.exp(-Ea_26/(R*T0)), -C_CCl4*K_27*np.exp(-Ea_27/(R*T0)), -C_CCl4*K_28*np.exp(-Ea_28/(R*T0)) + C_R8*K_29*np.exp(-Ea_29/(R*T0)), 0, C_C1112*K_28*np.exp(-Ea_28/(R*T0)) + C_R6*K_29*np.exp(-Ea_29/(R*T0)), -C_R4*K_26*np.exp(-Ea_26/(R*T0)) - C_R5*K_27*np.exp(-Ea_27/(R*T0)) - C_R6*K_28*np.exp(-Ea_28/(R*T0)) - K_2*np.exp(-Ea_2/(R*T0)), 0, 0, 0, 0],
-              [C_R8*K_9*np.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_CHCl3*K_16*np.exp(-Ea_16/(R*T0)), 0, 0, 0, 0, 0, 0, C_EDC*K_9*np.exp(-Ea_9/(R*T0)), 0, -C_R1*K_16*np.exp(-Ea_16/(R*T0)), 0, 0, 0],
-              [C_R5*K_6*np.exp(-Ea_6/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_10*np.exp(-Ea_10/(R*T0)) - C_VCM*K_17*np.exp(-Ea_17/(R*T0)) - C_VCM*K_18*np.exp(-Ea_18/(R*T0)) - C_VCM*K_22*np.exp(-Ea_22/(R*T0)), C_R1*K_10*np.exp(-Ea_10/(R*T0)) - C_VCM*K_19*np.exp(-Ea_19/(R*T0)), K_22*np.exp(-Ea_22/(R*T0)), -C_VCM*K_20*np.exp(-Ea_20/(R*T0)), C_EDC*K_6*np.exp(-Ea_6/(R*T0)) - C_VCM*K_21*np.exp(-Ea_21/(R*T0)), 0, 0, 0, 0, 0, -C_R1*K_17*np.exp(-Ea_17/(R*T0)) - C_R1*K_18*np.exp(-Ea_18/(R*T0)) - C_R1*K_22*np.exp(-Ea_22/(R*T0)) - C_R2*K_19*np.exp(-Ea_19/(R*T0)) - C_R4*K_20*np.exp(-Ea_20/(R*T0)) - C_R5*K_21*np.exp(-Ea_21/(R*T0)), 0, 0],
+       JacN = [[-C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_R8*K_9*np.exp(-Ea_9/(R*T)) - K_1*np.exp(-Ea_1/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EDC*K_3*np.exp(-Ea_3/(R*T)), -C_EDC*K_4*np.exp(-Ea_4/(R*T)), 0, -C_EDC*K_5*np.exp(-Ea_5/(R*T)), -C_EDC*K_6*np.exp(-Ea_6/(R*T)), -C_EDC*K_7*np.exp(-Ea_7/(R*T)), -C_EDC*K_8*np.exp(-Ea_8/(R*T)), -C_EDC*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0],
+              [C_R2*K_4*np.exp(-Ea_4/(R*T)), -C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EC*K_12*np.exp(-Ea_12/(R*T)), C_EDC*K_4*np.exp(-Ea_4/(R*T)) + C_VCM*K_19*np.exp(-Ea_19/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_19*np.exp(-Ea_19/(R*T)), 0, 0],
+              [C_R1*K_3*np.exp(-Ea_3/(R*T)), C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)), C_R1*K_13*np.exp(-Ea_13/(R*T)), C_R1*K_14*np.exp(-Ea_14/(R*T)), C_R1*K_15*np.exp(-Ea_15/(R*T)), C_C11*K_13*np.exp(-Ea_13/(R*T)) + C_C1112*K_15*np.exp(-Ea_15/(R*T)) + C_C112*K_14*np.exp(-Ea_14/(R*T)) + 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T)) + C_CHCl3*K_16*np.exp(-Ea_16/(R*T)) + C_EC*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*K_3*np.exp(-Ea_3/(R*T)) + C_R2*K_10*np.exp(-Ea_10/(R*T)) + C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_VCM*K_18*np.exp(-Ea_18/(R*T)), C_R1*K_10*np.exp(-Ea_10/(R*T)), C_R1*K_11*np.exp(-Ea_11/(R*T)), 0, 0, 0, 0, 0, 0, C_R1*K_16*np.exp(-Ea_16/(R*T)), C_R1*K_18*np.exp(-Ea_18/(R*T)), 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)), 0, 0, 0, 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_21*np.exp(-Ea_21/(R*T)), 0, 0, 0, 0, 0, C_R5*K_21*np.exp(-Ea_21/(R*T)), 0, 0],
+              [0, 0, 0, 0, 0, -C_R1*K_24*np.exp(-Ea_24/(R*T)), 0, 0, 0, 0, 0, 0, 0, -C_Di*K_24*np.exp(-Ea_24/(R*T)) + C_R3*K_11*np.exp(-Ea_11/(R*T)), 0, C_R1*K_11*np.exp(-Ea_11/(R*T)), 0, C_CCl4*K_27*np.exp(-Ea_27/(R*T)), C_R8*K_29*np.exp(-Ea_29/(R*T)) + K_24*np.exp(-Ea_24/(R*T)), 0, C_R6*K_29*np.exp(-Ea_29/(R*T)), C_R5*K_27*np.exp(-Ea_27/(R*T)), 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, -C_R1*K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, 0, -C_Tri*K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_20*np.exp(-Ea_20/(R*T)), 0, 0, 0, 0, 0, 0, C_R4*K_20*np.exp(-Ea_20/(R*T)), 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T)), 0, 0, 0, 0, 0, 0, 0, 2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, -4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T)) - 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) - C_R1*K_23*np.exp(-Ea_23/(R*T)), 0, 0, 0, -4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T)) - C_C2H2*K_23*np.exp(-Ea_23/(R*T)), 0, 0, 0, -2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T)) + K_23*np.exp(-Ea_23/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0],
+              [C_R4*K_5*np.exp(-Ea_5/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_13*np.exp(-Ea_13/(R*T)), 0, 0, -C_C11*K_13*np.exp(-Ea_13/(R*T)), 0, 0, C_EDC*K_5*np.exp(-Ea_5/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [C_R6*K_7*np.exp(-Ea_7/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_14*np.exp(-Ea_14/(R*T)), 0, -C_C112*K_14*np.exp(-Ea_14/(R*T)), 0, 0, C_CCl4*K_26*np.exp(-Ea_26/(R*T)), 0, C_EDC*K_7*np.exp(-Ea_7/(R*T)), 0, 0, C_R4*K_26*np.exp(-Ea_26/(R*T)), 0, 0, 0, 0],
+              [C_R7*K_8*np.exp(-Ea_8/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_15*np.exp(-Ea_15/(R*T)) - C_R8*K_28*np.exp(-Ea_28/(R*T)), -C_C1112*K_15*np.exp(-Ea_15/(R*T)), 0, 0, 0, 0, C_CCl4*K_28*np.exp(-Ea_28/(R*T)), C_EDC*K_8*np.exp(-Ea_8/(R*T)), -C_C1112*K_28*np.exp(-Ea_28/(R*T)), C_R6*K_28*np.exp(-Ea_28/(R*T)), 0, 0, 0, 0],
+              [-C_R1*K_3*np.exp(-Ea_3/(R*T)) + K_1*np.exp(-Ea_1/(R*T)), -C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, -C_R1*K_24*np.exp(-Ea_24/(R*T)), -C_R1*K_25*np.exp(-Ea_25/(R*T)), 0, 0, 4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T)) - 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) - C_R1*K_23*np.exp(-Ea_23/(R*T)), -C_R1*K_13*np.exp(-Ea_13/(R*T)), -C_R1*K_14*np.exp(-Ea_14/(R*T)), -C_R1*K_15*np.exp(-Ea_15/(R*T)), -C_C11*K_13*np.exp(-Ea_13/(R*T)) - C_C1112*K_15*np.exp(-Ea_15/(R*T)) - C_C112*K_14*np.exp(-Ea_14/(R*T)) - 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T)) - C_C2H2*K_23*np.exp(-Ea_23/(R*T)) - C_CHCl3*K_16*np.exp(-Ea_16/(R*T)) - C_Di*K_24*np.exp(-Ea_24/(R*T)) - C_EC*K_12*np.exp(-Ea_12/(R*T)) - C_EDC*K_3*np.exp(-Ea_3/(R*T)) - C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_R3*K_11*np.exp(-Ea_11/(R*T)) - C_Tri*K_25*np.exp(-Ea_25/(R*T)) - C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_VCM*K_22*np.exp(-Ea_22/(R*T)), -C_R1*K_10*np.exp(-Ea_10/(R*T)), -C_R1*K_11*np.exp(-Ea_11/(R*T)) + K_22*np.exp(-Ea_22/(R*T)), C_VCM*K_20*np.exp(-Ea_20/(R*T)), 2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T)) + C_VCM*K_21*np.exp(-Ea_21/(R*T)) + K_23*np.exp(-Ea_23/(R*T)), K_24*np.exp(-Ea_24/(R*T)), K_25*np.exp(-Ea_25/(R*T)), 0, K_2*np.exp(-Ea_2/(R*T)), -C_R1*K_16*np.exp(-Ea_16/(R*T)), -C_R1*K_17*np.exp(-Ea_17/(R*T)) - C_R1*K_18*np.exp(-Ea_18/(R*T)) - C_R1*K_22*np.exp(-Ea_22/(R*T)) + C_R4*K_20*np.exp(-Ea_20/(R*T)) + C_R5*K_21*np.exp(-Ea_21/(R*T)), 0, 0],
+              [-C_R2*K_4*np.exp(-Ea_4/(R*T)) + K_1*np.exp(-Ea_1/(R*T)), C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EC*K_12*np.exp(-Ea_12/(R*T)) - C_R2*K_10*np.exp(-Ea_10/(R*T)), -C_EDC*K_4*np.exp(-Ea_4/(R*T)) - C_R1*K_10*np.exp(-Ea_10/(R*T)) - C_VCM*K_19*np.exp(-Ea_19/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, -C_R2*K_19*np.exp(-Ea_19/(R*T)), 0, 0],
+              [C_R1*K_3*np.exp(-Ea_3/(R*T)) + C_R2*K_4*np.exp(-Ea_4/(R*T)) + C_R4*K_5*np.exp(-Ea_5/(R*T)) + C_R5*K_6*np.exp(-Ea_6/(R*T)) + C_R6*K_7*np.exp(-Ea_7/(R*T)) + C_R7*K_8*np.exp(-Ea_8/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*K_3*np.exp(-Ea_3/(R*T)) - C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_VCM*K_22*np.exp(-Ea_22/(R*T)), C_EDC*K_4*np.exp(-Ea_4/(R*T)), -C_R1*K_11*np.exp(-Ea_11/(R*T)) - K_22*np.exp(-Ea_22/(R*T)), C_EDC*K_5*np.exp(-Ea_5/(R*T)), C_EDC*K_6*np.exp(-Ea_6/(R*T)), C_EDC*K_7*np.exp(-Ea_7/(R*T)), C_EDC*K_8*np.exp(-Ea_8/(R*T)), 0, 0, 0, C_R1*K_22*np.exp(-Ea_22/(R*T)), 0, 0],
+              [-C_R4*K_5*np.exp(-Ea_5/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R1*K_13*np.exp(-Ea_13/(R*T)), 0, 0, C_C11*K_13*np.exp(-Ea_13/(R*T)) + C_VCM*K_17*np.exp(-Ea_17/(R*T)), 0, 0, -C_CCl4*K_26*np.exp(-Ea_26/(R*T)) - C_EDC*K_5*np.exp(-Ea_5/(R*T)) - C_VCM*K_20*np.exp(-Ea_20/(R*T)), 0, 0, 0, 0, -C_R4*K_26*np.exp(-Ea_26/(R*T)), 0, C_R1*K_17*np.exp(-Ea_17/(R*T)) - C_R4*K_20*np.exp(-Ea_20/(R*T)), 0, 0],
+              [-C_R5*K_6*np.exp(-Ea_6/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, -4*C_C2H2*C_R5*K_30*np.exp(-Ea_30/(R*T)) + C_R1*K_23*np.exp(-Ea_23/(R*T)), 0, 0, 0, C_C2H2*K_23*np.exp(-Ea_23/(R*T)) + C_VCM*K_18*np.exp(-Ea_18/(R*T)), C_VCM*K_19*np.exp(-Ea_19/(R*T)), 0, 0, -2*C_C2H2**2*K_30*np.exp(-Ea_30/(R*T)) - C_CCl4*K_27*np.exp(-Ea_27/(R*T)) - C_EDC*K_6*np.exp(-Ea_6/(R*T)) - C_VCM*K_21*np.exp(-Ea_21/(R*T)) - K_23*np.exp(-Ea_23/(R*T)), 0, 0, 0, -C_R5*K_27*np.exp(-Ea_27/(R*T)), 0, C_R1*K_18*np.exp(-Ea_18/(R*T)) + C_R2*K_19*np.exp(-Ea_19/(R*T)) - C_R5*K_21*np.exp(-Ea_21/(R*T)), 0, 0],
+              [-C_R6*K_7*np.exp(-Ea_7/(R*T)), 0, 0, 0, 0, C_R1*K_24*np.exp(-Ea_24/(R*T)), 0, 0, 0, 0, 0, C_R1*K_14*np.exp(-Ea_14/(R*T)), C_R8*K_28*np.exp(-Ea_28/(R*T)), C_C112*K_14*np.exp(-Ea_14/(R*T)) + C_Di*K_24*np.exp(-Ea_24/(R*T)), 0, 0, 0, 0, -C_CCl4*K_28*np.exp(-Ea_28/(R*T)) - C_EDC*K_7*np.exp(-Ea_7/(R*T)) - C_R8*K_29*np.exp(-Ea_29/(R*T)) - K_24*np.exp(-Ea_24/(R*T)), 0, C_C1112*K_28*np.exp(-Ea_28/(R*T)) - C_R6*K_29*np.exp(-Ea_29/(R*T)), -C_R6*K_28*np.exp(-Ea_28/(R*T)), 0, 0, 0, 0],
+              [-C_R7*K_8*np.exp(-Ea_8/(R*T)), 0, 0, 0, 0, 0, C_R1*K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, C_R1*K_15*np.exp(-Ea_15/(R*T)), C_C1112*K_15*np.exp(-Ea_15/(R*T)) + C_Tri*K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, -C_EDC*K_8*np.exp(-Ea_8/(R*T)) - K_25*np.exp(-Ea_25/(R*T)), 0, 0, 0, 0, 0, 0],
+              [-C_R8*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R8*K_28*np.exp(-Ea_28/(R*T)), C_CHCl3*K_16*np.exp(-Ea_16/(R*T)), 0, 0, C_CCl4*K_26*np.exp(-Ea_26/(R*T)), C_CCl4*K_27*np.exp(-Ea_27/(R*T)), C_CCl4*K_28*np.exp(-Ea_28/(R*T)) - C_R8*K_29*np.exp(-Ea_29/(R*T)), 0, -C_C1112*K_28*np.exp(-Ea_28/(R*T)) - C_EDC*K_9*np.exp(-Ea_9/(R*T)) - C_R6*K_29*np.exp(-Ea_29/(R*T)), C_R4*K_26*np.exp(-Ea_26/(R*T)) + C_R5*K_27*np.exp(-Ea_27/(R*T)) + C_R6*K_28*np.exp(-Ea_28/(R*T)) + K_2*np.exp(-Ea_2/(R*T)), C_R1*K_16*np.exp(-Ea_16/(R*T)), 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R8*K_28*np.exp(-Ea_28/(R*T)), 0, 0, 0, -C_CCl4*K_26*np.exp(-Ea_26/(R*T)), -C_CCl4*K_27*np.exp(-Ea_27/(R*T)), -C_CCl4*K_28*np.exp(-Ea_28/(R*T)) + C_R8*K_29*np.exp(-Ea_29/(R*T)), 0, C_C1112*K_28*np.exp(-Ea_28/(R*T)) + C_R6*K_29*np.exp(-Ea_29/(R*T)), -C_R4*K_26*np.exp(-Ea_26/(R*T)) - C_R5*K_27*np.exp(-Ea_27/(R*T)) - C_R6*K_28*np.exp(-Ea_28/(R*T)) - K_2*np.exp(-Ea_2/(R*T)), 0, 0, 0, 0],
+              [C_R8*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_CHCl3*K_16*np.exp(-Ea_16/(R*T)), 0, 0, 0, 0, 0, 0, C_EDC*K_9*np.exp(-Ea_9/(R*T)), 0, -C_R1*K_16*np.exp(-Ea_16/(R*T)), 0, 0, 0],
+              [C_R5*K_6*np.exp(-Ea_6/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_VCM*K_22*np.exp(-Ea_22/(R*T)), C_R1*K_10*np.exp(-Ea_10/(R*T)) - C_VCM*K_19*np.exp(-Ea_19/(R*T)), K_22*np.exp(-Ea_22/(R*T)), -C_VCM*K_20*np.exp(-Ea_20/(R*T)), C_EDC*K_6*np.exp(-Ea_6/(R*T)) - C_VCM*K_21*np.exp(-Ea_21/(R*T)), 0, 0, 0, 0, 0, -C_R1*K_17*np.exp(-Ea_17/(R*T)) - C_R1*K_18*np.exp(-Ea_18/(R*T)) - C_R1*K_22*np.exp(-Ea_22/(R*T)) - C_R2*K_19*np.exp(-Ea_19/(R*T)) - C_R4*K_20*np.exp(-Ea_20/(R*T)) - C_R5*K_21*np.exp(-Ea_21/(R*T)), 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-              [-Constant_3*(-C_R1*K_3*np.exp(-Ea_3/(R*T0)) - C_R2*K_4*np.exp(-Ea_4/(R*T0)) - C_R4*K_5*np.exp(-Ea_5/(R*T0)) - C_R5*K_6*np.exp(-Ea_6/(R*T0)) - C_R6*K_7*np.exp(-Ea_7/(R*T0)) - C_R7*K_8*np.exp(-Ea_8/(R*T0)) - C_R8*K_9*np.exp(-Ea_9/(R*T0)) - K_1*np.exp(-Ea_1/(R*T0))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*K_3*np.exp(-Ea_3/(R*T0)), C_EDC*Constant_3*K_4*np.exp(-Ea_4/(R*T0)), 0, C_EDC*Constant_3*K_5*np.exp(-Ea_5/(R*T0)), C_EDC*Constant_3*K_6*np.exp(-Ea_6/(R*T0)), C_EDC*Constant_3*K_7*np.exp(-Ea_7/(R*T0)), C_EDC*Constant_3*K_8*np.exp(-Ea_8/(R*T0)), C_EDC*Constant_3*K_9*np.exp(-Ea_9/(R*T0)), 0, 0, 0, Constant_2, Constant_1]]
+              [-Constant_3*(-C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_R8*K_9*np.exp(-Ea_9/(R*T)) - K_1*np.exp(-Ea_1/(R*T))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*K_3*np.exp(-Ea_3/(R*T)), C_EDC*Constant_3*K_4*np.exp(-Ea_4/(R*T)), 0, C_EDC*Constant_3*K_5*np.exp(-Ea_5/(R*T)), C_EDC*Constant_3*K_6*np.exp(-Ea_6/(R*T)), C_EDC*Constant_3*K_7*np.exp(-Ea_7/(R*T)), C_EDC*Constant_3*K_8*np.exp(-Ea_8/(R*T)), C_EDC*Constant_3*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, Constant_2, Constant_1]]
                                                  
        return JacN
 
@@ -863,7 +831,7 @@ mwedc = 98.95 # g/mol
 mwedckg = 98.95/1E3 # kg/mol
 delhm = 71000 #[J/mol]
 Temperature = float(input('Enter starting temperature [°C] --> ')) #[°C]
-Temp_K = CtoK(Temperature) #[K]
+Temp_K = 273.15 + Temperature #[K]
 Twall_c = Temperature #[°C]
 Twalls = Twall_c + 273.15
 Pbar = 12.0 #[bar]
@@ -880,8 +848,11 @@ ri = di/2.0 #Inner radius [m]
 cross_area = math.pi*(ri**2)
 Ac = math.pi*(ri**2)
 u_z = volume_flow/cross_area #[m/s]
+initedcb = (PascalP/(Temp_K*8.314))
 CCl4_p = float(0.0002)
 EDC_p = 1-CCl4_p
+EDC0 = EDC_p*initedcb
+CCL40 = CCl4_p*initedcb
 begmix = tc.Mixture(IDs=['107-06-2','56-23-5'], zs=[EDC_p,CCl4_p],T=Temp_K, P=PascalP)
 edcmw = begmix.MW
 Rvalc = begmix.R_specific
@@ -949,65 +920,65 @@ vintflowf = vintflow/segment_second
 tn = np.linspace(0,L,desired_time)
 
 #Concentrations
-EDC = [Decimal(initedc)]
-EC = [Decimal(0.0)]
-HCl = [Decimal(0.0)] 
-Coke = [Decimal(0.0)] #Coke is written as simply C in the paper
-CP = [Decimal(0.0)]
-Di = [Decimal(0.0)]
-Tri = [Decimal(0.0)]
-C4H6Cl2 = [Decimal(0.0)]
-C6H6 = [Decimal(0.0)]
-C2H2 = [Decimal(0.0)]
-C11 = [Decimal(0.0)]
-C112 = [Decimal(0.0)]
-C1112 = [Decimal(0.0)]
-R1 = [Decimal(0.0)]
-R2 = [Decimal(0.0)]
-R3 = [Decimal(0.0)]
-R4 = [Decimal(0.0)]
-R5 = [Decimal(0.0)]
-R6 = [Decimal(0.0)]
-R7 = [Decimal(0.0)]
-R8 = [Decimal(0.0)]
-CCl4 = [Decimal(initccl4)]
-CHCl3 = [Decimal(0.0)]
-VCM = [Decimal(0.0)]
-T0 = [Decimal(Temp_K)]
-T1 = [Decimal(0.0)]
-Ctotal = Decimal(EDC[-1]) + Decimal(EC[-1]) + Decimal(HCl[-1]) + Decimal( Coke[-1]) + Decimal( CP[-1]) + Decimal( Di[-1]) + Decimal( Tri[-1]) + Decimal( C4H6Cl2[-1]) + Decimal( C6H6[-1]) + Decimal( C2H2[-1]) + Decimal( C11[-1]) + Decimal( C112[-1])  + Decimal( C1112[-1]) + Decimal( R1[-1]) + Decimal( R2[-1]) + Decimal( R3[-1]) + Decimal( R4[-1]) + Decimal( R5[-1]) + Decimal( R6[-1]) +  Decimal( R7[-1]) + Decimal( R8[-1]) + Decimal( CCl4[-1]) + Decimal( CHCl3[-1]) + Decimal( VCM[-1])
+EDC = [float(EDC0)]
+EC = [float(0.0)]
+HCl = [float(0.0)] 
+Coke = [float(0.0)] #Coke is written as simply C in the paper
+CP = [float(0.0)]
+Di = [float(0.0)]
+Tri = [float(0.0)]
+C4H6Cl2 = [float(0.0)]
+C6H6 = [float(0.0)]
+C2H2 = [float(0.0)]
+C11 = [float(0.0)]
+C112 = [float(0.0)]
+C1112 = [float(0.0)]
+R1 = [float(0.0)]
+R2 = [float(0.0)]
+R3 = [float(0.0)]
+R4 = [float(0.0)]
+R5 = [float(0.0)]
+R6 = [float(0.0)]
+R7 = [float(0.0)]
+R8 = [float(0.0)]
+CCl4 = [float(CCL40)]
+CHCl3 = [float(0.0)]
+VCM = [float(0.0)]
+T0 = [float(Temp_K)]
+T1 = [float(0.0)]
+Ctotal = float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float( Coke[-1]) + float( CP[-1]) + float( Di[-1]) + float( Tri[-1]) + float( C4H6Cl2[-1]) + float( C6H6[-1]) + float( C2H2[-1]) + float( C11[-1]) + float( C112[-1])  + float( C1112[-1]) + float( R1[-1]) + float( R2[-1]) + float( R3[-1]) + float( R4[-1]) + float( R5[-1]) + float( R6[-1]) +  float( R7[-1]) + float( R8[-1]) + float( CCl4[-1]) + float( CHCl3[-1]) + float( VCM[-1])
 J_eval = [0]
 J_evalt = [0]
-EDCj = [Decimal(initedc)]
-ECj = [Decimal(0.0)]
-HClj = [Decimal(0.0)] 
-Cokej = [Decimal(0.0)] #Coke is written as simply C in the paper
-CPj = [Decimal(0.0)]
-Dij = [Decimal(0.0)]
-Trij = [Decimal(0.0)]
-C4H6Cl2j = [Decimal(0.0)]
-C6H6j = [Decimal(0.0)]
-C2H2j = [Decimal(0.0)]
-C11j = [Decimal(0.0)]
-C112j = [Decimal(0.0)]
-C1112j = [Decimal(0.0)]
-R1j = [Decimal(0.0)]
-R2j = [Decimal(0.0)]
-R3j = [Decimal(0.0)]
-R4j = [Decimal(0.0)]
-R5j = [Decimal(0.0)]
-R6j = [Decimal(0.0)]
-R7j = [Decimal(0.0)]
-R8j = [Decimal(0.0)]
-CCl4j = [Decimal(initccl4)]
-CHCl3j = [Decimal(0.0)]
-VCMj = [Decimal(0.0)]
-T0j = [Decimal(Temp_K)]
-T1j = [Decimal(0.0)]
-Ctotalj = Decimal(EDCj[-1]) + Decimal(ECj[-1]) + Decimal(HClj[-1]) + Decimal( Cokej[-1]) + Decimal( CPj[-1]) + Decimal( Dij[-1]) + Decimal( Trij[-1]) + Decimal( C4H6Cl2j[-1]) + Decimal( C6H6j[-1]) + Decimal( C2H2j[-1]) + Decimal( C11j[-1]) + Decimal( C112j[-1])  + Decimal( C1112j[-1]) + Decimal( R1j[-1]) + Decimal( R2j[-1]) + Decimal( R3j[-1]) + Decimal( R4j[-1]) + Decimal( R5j[-1]) + Decimal( R6j[-1]) +  Decimal( R7j[-1]) + Decimal( R8j[-1]) + Decimal( CCl4j[-1]) + Decimal( CHCl3j[-1]) + Decimal( VCMj[-1])
+EDCj = [float(initedc)]
+ECj = [float(0.0)]
+HClj = [float(0.0)] 
+Cokej = [float(0.0)] #Coke is written as simply C in the paper
+CPj = [float(0.0)]
+Dij = [float(0.0)]
+Trij = [float(0.0)]
+C4H6Cl2j = [float(0.0)]
+C6H6j = [float(0.0)]
+C2H2j = [float(0.0)]
+C11j = [float(0.0)]
+C112j = [float(0.0)]
+C1112j = [float(0.0)]
+R1j = [float(0.0)]
+R2j = [float(0.0)]
+R3j = [float(0.0)]
+R4j = [float(0.0)]
+R5j = [float(0.0)]
+R6j = [float(0.0)]
+R7j = [float(0.0)]
+R8j = [float(0.0)]
+CCl4j = [float(initccl4)]
+CHCl3j = [float(0.0)]
+VCMj = [float(0.0)]
+T0j = [float(Temp_K)]
+T1j = [float(0.0)]
+Ctotalj = float(EDCj[-1]) + float(ECj[-1]) + float(HClj[-1]) + float( Cokej[-1]) + float( CPj[-1]) + float( Dij[-1]) + float( Trij[-1]) + float( C4H6Cl2j[-1]) + float( C6H6j[-1]) + float( C2H2j[-1]) + float( C11j[-1]) + float( C112j[-1])  + float( C1112j[-1]) + float( R1j[-1]) + float( R2j[-1]) + float( R3j[-1]) + float( R4j[-1]) + float( R5j[-1]) + float( R6j[-1]) +  float( R7j[-1]) + float( R8j[-1]) + float( CCl4j[-1]) + float( CHCl3j[-1]) + float( VCMj[-1])
 C_Total = [Ctotal]
 C_Totalj = [Ctotalj]
-initial_edc = Decimal(initedc)
+initial_edc = float(initedc)
 conversion = [0.0]
 RE_vals = []
 U_coeffs = []
@@ -1106,11 +1077,11 @@ yield_vcml = []
 yield_vcmj = [1.0]
 yield_vcmjl = []
 
-y0 = [Decimal(initedc), EC[-1],HCl[-1],Coke[-1],CP[-1],Di[-1],C4H6Cl2[-1],C6H6[-1],C2H2[-1],C11[-1],C112[-1],R1[-1],R2[-1],R3[-1],R4[-1],R5[-1],R6[-1],VCM[-1], T0[-1], T1[-1]]
+y0 = [float(initedc), EC[-1],HCl[-1],Coke[-1],CP[-1],Di[-1],C4H6Cl2[-1],C6H6[-1],C2H2[-1],C11[-1],C112[-1],R1[-1],R2[-1],R3[-1],R4[-1],R5[-1],R6[-1],VCM[-1], T0[-1], T1[-1]]
 #y0diff = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], VCM[-1], T0[-1], T1[-1], dEDC[-1], dEC[-1], dHCl[-1], dCoke[-1], dCP[-1], dDi[-1], dC4H6Cl2[-1], dC6H6[-1], dC2H2[-1], dC11[-1], dC112[-1], dR1[-1], dR2[-1], dR3[-1], dR4[-1], dR5[-1], dR6[-1], dVCM[-1]]
 C_Total = [sum(y0)]
 C_Totalj = [sum(y0)]
-initial_edc = Decimal(initedc)
+initial_edc = float(initedc)
 conversion = [0.0]
 RE_vals = []
 U_coeffs = []
@@ -1234,8 +1205,8 @@ taui2 = 1.0
 #print('Meterss: {}'.format(Ls/u_z))
 #print('Volume: {}'.format(totalvol))
 #print('Area/Second: {}'.format(taui))
-# for il in tqdm(range(iternum)):
-for il in range(iternum):
+for il in tqdm(range(iternum)):
+# for il in range(iternum):
     
     change = il*chngamnt
     amount_new = Temp_K - change
@@ -1244,40 +1215,27 @@ for il in range(iternum):
     Temp_vals.append(amount_new)
     Temp_vals2.insert(0,amount_new)
     Tnew = Temp_vals[-1]
-    T0[0] = Decimal(amount_new)
-    T0j[0] = Decimal(amount_new)
+    T0[0] = float(amount_new)
+    T0j[0] = float(amount_new)
     dt = [Tnew]
-    diffT0 = [Decimal(Tnew)]
+    diffT0 = [float(Tnew)]
     Twall = amount_new
     Twalls.append(amount_new)
 #    rhoinit = (PascalP)/(amount_new*Rr)
     initedc = PascalP/(amount_new*Rr*zedc) #rhoinit
-    EDC = [Decimal(initedc)]
-    EDCj = [Decimal(initedc)]
+    EDC = [float(initedc)]
+    EDCj = [float(initedc)]
     Eabb = [342,230,7,34,42,45,48,56,63,13,12,4,6,15,17,14,0,56,61,30,31,84,90,70,70,33,33,33,13,20,70] #[kJ/mol]
     Eab = [x*1000.0 for x in Eabb]
-    Ea = [Decimal(x) for x in Eab] #kJ/mol
+    Ea = [float(x) for x in Eab] #kJ/mol
     ks = [5.9E+15,2.2E+12,1.3E+13,1.2E+13,1E+12,5E+11,2E+11,1E+11,1E+12,1E+13,1E+13,1.7E+13,1.2E+13,1.7E+13,1.7E+13,1.6E+13,91000000000,1.2E+14,3E+11,20000000000,5E+11,2.1E+14,5E+14,2E+13,2.5E+13,1E+12,5E+11,5E+11,1E+13,1E+14,1.6E+14]
 #    n = [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,2,2]
     n = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
     k_0b = [i/((1E6)**(j-1)) for i,j in zip(ks,n)]
     k_0 = [De(i) for i in k_0b]
 
-#    k0a =[5.9E15, 1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11, 1.0E13, 1.0E13, 1.7E13, 1.2E13, 1.7E13, 9.1E10, 1.2E14, 5.0E11, 2.0E10, 3.0E11, 2.1E14, 5.0E14, 2.0E13, 1.0E14, 1.6E14] #If first order: [1/s]. If second order: [cm^3/mol*s]
-#    k_0s = [1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11, 1.0E13, 1.0E13, 1.7E13, 1.2E13, 1.7E13, 9.1E10, 1.2E14, 5.0E11, 2.0E10, 3.0E11, 2.1E14, 5.0E14, 2.0E13, 1.0E14, 1.6E14]
-#    k_0b = [i/1E6 for i in k_0s]
-#    k_0b.insert(0,5.9E15) 
-#    k0ra =[5.9E15, 1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11]
-#    k0i = [x for x in k0a] 
-#    k_0b = [5.9E15, 1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11, 1.0E13, 1.0E13, 1.7E13, 1.2E13, 1.7E13, 9.1E10, 1.2E14, 5.0E11, 2.0E10, 3.0E11, 2.1E14, 5.0E14, 2.0E13, 1.0E14, 1.6E14] #If first order: [1/s]. If second order: [cm^3/mol*s]
-#    k_0 = [Decimal(x) for x in k_0b]
-#    k_0ra = [Decimal(x) for x in k0ra]
-#    eara = Eabb = [342,7,42,45,34,48]
-#    Ear = [Decimal(x*1000.0) for x in eara]
-#    Ear2 = [float(x*1000.0) for x in eara]
-#    print('\n Iteration Number: {} of {}. Ea Value: {} [kJ/mol]'.format(il+1,iternum,Eab[0]))
-    # for x2 in dist_c:
-    for x2 in tqdm(dist_c):
+    for x2 in dist_c:
+    # for x2 in tqdm(dist_c):
         cross_area = math.pi*(ri**2)
         alistb2 = alistfun(float(T0[-1]),float(PascalP))
         Y0b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
@@ -1323,7 +1281,7 @@ for il in range(iternum):
                     klval_i2.append(float(chemicalkl))
                     chemicalmug= getattr(i2,'mu') #  [Pa*s] 
                     mu_i2.append(float(chemicalmug))
-                    chemicaltb= getattr(i2,'Tb') # [K]
+                    chemicaltb= getattr(i2,'Tb') # [K] 
                     TB_i2.append(float(chemicaltb))
                     chemicalvm = getattr(i2,'Vmg')
                     Vm2.append(float(chemicalvm/1E6))
@@ -1359,6 +1317,7 @@ for il in range(iternum):
         ksss = gmix.kgs
         CPs = gmix.Cpgms
         CVs = gmix.Cvgms
+        Kval1a = gmix.kg
         kval2 = kmix(float(T0[-1]),C_i2,ksss, viss, tbss, mwss,CPs,CVs) #[W/m*K]
         Molew = gmix.MWs
         sigma = gmix.molecular_diameters
@@ -1395,101 +1354,6 @@ for il in range(iternum):
         Tstar3 = tc.lennard_jones.Tstar(T=float(T0[-1]), epsilon_k=ek3, epsilon=None)
         Tstar4 = tc.lennard_jones.Tstar(T=float(T0[-1]), epsilon_k=ek4, epsilon=None)
         colint1 = tc.lennard_jones.collision_integral_Kim_Monroe(Tstar, l=1, s=1)
-#        colint2 = colint(Tstar)
-#        colint3 = colint(Tstar2)
-#        colint4 = colint(Tstar3)
-#        colint5 = colint(Tstar4)
-#        ek = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TC)
-#        ke = 1/ek
-#        Tstar = tc.lennard_jones.Tstar(T=float(T0[-1]), epsilon_k=ek, epsilon=None)
-#        colint = tc.lennard_jones.collision_integral_Kim_Monroe(Tstar, l=1, s=1)
-#        Ds = []
-#        for i in range(0,len(C_i2),1):
-#            slist = []
-#            for j in range(0,len(C_i2),1):
-#                m1 = float(Molew[i]) # g/mol
-#                m2 = float(Molew[j]) # g/mol
-#                s1 = float(sigma[i]) # angstrom
-#                s2 = float(sigma[j]) # angstrom
-#                Pds = float(Patm) # atm
-#                T = float(Tgas) # K
-#                dij = Dab(T,Pds,m1,m2,s1,s2,colint) # [m^2/s]
-#                slist.append(dij)
-#            Ds.append(slist[:])
-#            slist.clear()
-#        DAs = DI(C_i2,Ds)
-#        try:
-#            Diff_coeffEDC.append(DAs[0])
-#        except:
-#            Diff_coeffEDC.append(0.0)
-#        try:
-#            Diff_coeffEC.append(DAs[1])
-#        except:
-#            Diff_coeffEC.append(0.0)
-#        try:
-#            Diff_coeffHCl.append(DAs[2])
-#        except:
-#            Diff_coeffHCl.append(0.0)
-#        try:
-#            Diff_coeffCoke.append(DAs[3])
-#        except:
-#            Diff_coeffCoke.append(0.0)
-#        try:
-#            Diff_coeffCP.append(DAs[4])
-#        except:
-#            Diff_coeffCP.append(0.0)
-#        try:
-#            Diff_coeffDi.append(DAs[5])
-#        except:
-#            Diff_coeffDi.append(0.0)
-#        try:
-#            Diff_coeffC4H6Cl2.append(DAs[6])
-#        except:
-#            Diff_coeffC4H6Cl2.append(0.0)
-#        try:
-#            Diff_coeffC6H6.append(DAs[7])
-#        except:
-#            Diff_coeffC6H6.append(0.0)
-#        try:
-#            Diff_coeffC2H2.append(DAs[8])
-#        except:
-#            Diff_coeffC2H2.append(0.0)
-#        try:
-#            Diff_coeffC11.append(DAs[9])
-#        except:
-#            Diff_coeffC11.append(0.0)
-#        try:
-#            Diff_coeffC112.append(DAs[10])
-#        except:
-#            Diff_coeffC112.append(0.0)
-#        try:
-#            Diff_coeffR1.append(DAs[11])
-#        except:
-#            Diff_coeffR1.append(0.0)
-#        try:
-#            Diff_coeffR2.append(DAs[12])
-#        except:
-#            Diff_coeffR2.append(0.0)
-#        try:
-#            Diff_coeffR3.append(DAs[13])
-#        except:
-#            Diff_coeffR3.append(0.0)
-#        try:
-#            Diff_coeffR4.append(DAs[14])
-#        except:
-#            Diff_coeffR4.append(0.0)
-#        try:
-#            Diff_coeffR5.append(DAs[15])
-#        except:
-#            Diff_coeffR5.append(0.0)
-#        try:
-#            Diff_coeffR6.append(DAs[16])
-#        except:
-#            Diff_coeffR6.append(0.0)
-#        try:
-#            Diff_coeffVCM.append(DAs[17])
-#        except:
-#            Diff_coeffVCM.append(0.0)
         gmixw2 = tc.Mixture(IDs = names2b, zs=C_i2, T=float(Twalls[-1]), P=PascalP)
         vsb = gmixw2.mug # [Pa*s]
         vslist = gmixw2.mugs # [Pa*s]
@@ -1521,20 +1385,6 @@ for il in range(iternum):
         con1 = (u_z*rhocpgm1)/kval2 # [1/m] -> [1/cm]
         con2 = (alpha*U_coeff)/kval2 # [m] (Sa) 
         con3 = delhm/kval2 # -> [m] 
-#        con4 = [0.0*x for x in range(0,len(Y0b),1)] # [1/m]
-#        con5 = [0.0*x for x in range(0,len(Y0b),1)] # [1/m^2]
-#        l3 = len(DAs)
-#        for h in range(0,len(Y0b),1):
-#            if h <= l3-1:
-#                vnew = DAs[h]
-#                if vnew != 0:
-#                    con4[h] = (u_zc)/vnew
-#                else:
-#                    pass
-#            else:
-#                    pass
-#        
-#            
         RE_vals.append(re)
         U_coeffs.append(U_coeff)
         h_vals.append(gash)
@@ -1651,27 +1501,8 @@ for il in range(iternum):
         Tstar4j = tc.lennard_jones.Tstar(T=float(T0j[-1]), epsilon_k=ek4j, epsilon=None)
         colintj = tc.lennard_jones.collision_integral_Kim_Monroe(Tstarj, l=1, s=1)
         colint1j = tc.lennard_jones.collision_integral_Kim_Monroe(Tstar1j, l=1, s=1)
-#        colint2j = colint(Tstar1j)
-#        colint3j = colint(Tstar2j)
-#        colint4j = colint(Tstar3j)
-#        colint5j = colint(Tstar4j)
         Tstarj = tc.lennard_jones.Tstar(T=float(T0j[-1]), epsilon_k=ekj, epsilon=None)
         colintj = tc.lennard_jones.collision_integral_Kim_Monroe(Tstarj, l=1, s=1)
-#        Djs = []
-#        for i in range(0,len(C_i2j),1):
-#            slistj = []
-#            for j in range(0,len(C_i2j),1):
-#                m1j = float(Molewj[i]) # g/mol
-#                m2j = float(Molewj[j]) # g/mol
-#                s1j = float(sigmaj[i]) # angstrom
-#                s2j = float(sigmaj[j]) # angstrom
-#                Pds = float(Patm) # atm
-#                Tj = float(Tgasj) # K
-#                dij2 = Dab(Tj,Pds,m1j,m2j,s1j,s2j,colintj) # [cm^2/s]
-#                slistj.append(dij2)
-#            Djs.append(slistj[:])
-#            slistj.clear()
-#        DAjs = DI(C_i2j,Djs)
         gmixw2j = tc.Mixture(IDs = names2bj, zs=C_i2j, T=float(Twalls[-1]), P=PascalP)
         vsj = gmixw2j.mug # [g/cm*s^2]
         vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
@@ -1714,108 +1545,95 @@ for il in range(iternum):
         Y0Db = [De(x) for x in Y02b]
         Y0Dj = [De(x) for x in Y02j]
         Y0Dj2 = [De(x) for x in Y02jb]
-#        c = float(sum(Y0diff2)) # [mol/cm^3]
-#        cj = sum(Y02jb)
-#        l1 = len(Y0diff2)
-#        l2 = len(DAs)
-#        for t in range(0,len(Y0diff2),1):
-#            if t <= l2-1:
-#                vnew2 = DAs[t]
-#                if vnew != 0:
-#                    con5[t] = 1.0/(vnew2)
-#                else:
-#                    pass
-#            else:
-#                    pass
-        args1 = [De(c1_vals[-1]),De(c2_vals[-1]),De(c3_vals[-1]),k_0, De(Twalls[-1]), De(Rval)]
+        args1 = [float(c1_vals[-1]),float(c2_vals[-1]),float(c3_vals[-1]),k_0, float(Twalls[-1]), float(Rval)]
         argsj = [float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]),k_0b, float(Twalls[-1]), float(Rval)]
         argsjD = [De(c1_valsj[-1]),De(c2_valsj[-1]),De(c3_valsj[-1]),k_0, De(Twalls[-1]), De(Rval)]
-#        args1diff = [float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]),k_0b, float(Twalls[-1])]
-#        args1diff2 = [De(c1_valsj[-1]),De(c2_valsj[-1]),De(c3_valsj[-1]),k_0, De(Twalls[-1])]
-        getcontext().prec = 25
-        precision = 25
-        res = solve_ivp(RHS, [0.0, Ls], Y02 , method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000.0, 500000000.0, 20000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1])), jac=jacob) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resj = solve_ivp(RHS, [0.0, Ls], Y02j , method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000.0, 500000000.0, 20000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1])), jac=jacob) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        edcint = initedc - res.y[0][-1]
-        edcintj = initedc - resj.y[0][-1]
-        yield1 = res.y[23][-1]/edcint
-        yield1j = resj.y[23][-1]/edcintj
+        # getcontext().prec = 15
+        # precision = 15
+        resa = solve_ivp(RHS, [0.0,  Ls], Y02 , method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Twalls[-1])), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        # print(resa.y[24][-1][-1])
+        resb = solve_ivp(RHS, [0.0,  Ls], Y02j , method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(Twalls[-1])), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        # print(resb.y[24][-1][-1])
+        edcint = initedc - resa.y[0][-1]
+        edcintj = initedc - resb.y[0][-1]
+        yield1 = resa.y[23][-1]/edcint
+        yield1j = resb.y[23][-1]/edcintj
         yield_vcm.append(yield1)
         yield_vcmj.append(yield1j)
-        selectivity_val = (res.y[23][-1]/res.y[2][-1])
+        selectivity_val = (resa.y[23][-1]/resa.y[2][-1])
         selectivity.append(selectivity_val)
-        selectivity_val2 = (res.y[2][-1]/res.y[23][-1])
+        selectivity_val2 = (resa.y[2][-1]/resa.y[23][-1])
         selectivity2.append(selectivity_val2)
-        selectivity_valj = (resj.y[23][-1]/resj.y[2][-1])
+        selectivity_valj = (resb.y[23][-1]/resb.y[2][-1])
         selectivityj.append(selectivity_valj)
-        selectivity_val2j = (resj.y[2][-1]/resj.y[23][-1])
+        selectivity_val2j = (resb.y[2][-1]/resb.y[23][-1])
         selectivity2j.append(selectivity_val2j)
-        conversionedc = 100.0*(1.0 - res.y[0][-1]/initedc)
-        conversionedcj = 100.0*(1.0 - resj.y[0][-1]/initedc)
+        conversionedc = 100.0*(1.0 - resa.y[0][-1]/initedc)
+        conversionedcj = 100.0*(1.0 - resb.y[0][-1]/initedc)
         conversion_EDCb.append(conversionedc)
         conversion_EDCjb.append(conversionedcj)
-        EDC.append(Decimal(res.y[0][-1])) #This is where all of the lists are appended with the last calculated value for each compound
-        EC.append(Decimal(res.y[1][-1]))
-        HCl.append(Decimal(res.y[2][-1]))
-        Coke.append(Decimal(res.y[3][-1]))
-        CP.append(Decimal(res.y[4][-1]))
-        Di.append(Decimal(res.y[5][-1]))
-        Tri.append(Decimal(res.y[6][-1]))
-        C4H6Cl2.append(Decimal(res.y[7][-1]))
-        C6H6.append(Decimal(res.y[8][-1]))
-        C2H2.append(Decimal(res.y[9][-1]))
-        C11.append(Decimal(res.y[10][-1]))
-        C112.append(Decimal(res.y[11][-1]))
-        C1112.append(Decimal(res.y[12][-1]))
-        R1.append(Decimal(res.y[13][-1]))
-        R2.append(Decimal(res.y[14][-1]))
-        R3.append(Decimal(res.y[15][-1]))
-        R4.append(Decimal(res.y[16][-1]))
-        R5.append(Decimal(res.y[17][-1]))
-        R6.append(Decimal(res.y[18][-1]))
-        R7.append(Decimal(res.y[19][-1]))
-        R8.append(Decimal(res.y[20][-1]))
-        CCl4.append(Decimal(res.y[21][-1]))
-        CHCl3.append(Decimal(res.y[22][-1]))
-        VCM.append(Decimal(res.y[23][-1]))
-        T0.append(Decimal(res.y[24][-1]))
-        T1.append(Decimal(res.y[25][-1]))
-        EDCj.append(Decimal(resj.y[0][-1])) #This is where all of the lists are appended with the last calculated value for each compound
-        ECj.append(Decimal(resj.y[1][-1]))
-        HClj.append(Decimal(resj.y[2][-1]))
-        Cokej.append(Decimal(resj.y[3][-1]))
-        CPj.append(Decimal(resj.y[4][-1]))
-        Dij.append(Decimal(resj.y[5][-1]))
-        Trij.append(Decimal(resj.y[6][-1]))
-        C4H6Cl2j.append(Decimal(resj.y[7][-1]))
-        C6H6j.append(Decimal(resj.y[8][-1]))
-        C2H2j.append(Decimal(resj.y[9][-1]))
-        C11j.append(Decimal(resj.y[10][-1]))
-        C112j.append(Decimal(resj.y[11][-1]))
-        C1112j.append(Decimal(resj.y[12][-1]))
-        R1j.append(Decimal(resj.y[13][-1]))
-        R2j.append(Decimal(resj.y[14][-1]))
-        R3j.append(Decimal(resj.y[15][-1]))
-        R4j.append(Decimal(resj.y[16][-1]))
-        R5j.append(Decimal(resj.y[17][-1]))
-        R6j.append(Decimal(resj.y[18][-1]))
-        R7j.append(Decimal(resj.y[19][-1]))
-        R8j.append(Decimal(resj.y[20][-1]))
-        CCl4j.append(Decimal(resj.y[21][-1]))
-        CHCl3j.append(Decimal(resj.y[22][-1]))
-        VCMj.append(Decimal(resj.y[23][-1]))
-        T0j.append(Decimal(resj.y[24][-1]))
-        T1j.append(Decimal(resj.y[25][-1]))
-        Y1f = [res.y[0][-1], res.y[1][-1],res.y[2][-1],res.y[3][-1], res.y[4][-1], res.y[5][-1], res.y[6][-1], res.y[7][-1], res.y[8][-1], res.y[9][-1], res.y[10][-1], res.y[11][-1],res.y[12][-1], res.y[13][-1], res.y[14][-1], res.y[15][-1], res.y[16][-1], res.y[17][-1] , res.y[18][-1], res.y[19][-1], res.y[20][-1] , res.y[21][-1], res.y[22][-1], res.y[23][-1]]
+        EDC.append(float(resa.y[0][-1])) #This is where all of the lists are appended with the last calculated value for each compound
+        EC.append(float(resa.y[1][-1]))
+        HCl.append(float(resa.y[2][-1]))
+        Coke.append(float(resa.y[3][-1]))
+        CP.append(float(resa.y[4][-1]))
+        Di.append(float(resa.y[5][-1]))
+        Tri.append(float(resa.y[6][-1]))
+        C4H6Cl2.append(float(resa.y[7][-1]))
+        C6H6.append(float(resa.y[8][-1]))
+        C2H2.append(float(resa.y[9][-1]))
+        C11.append(float(resa.y[10][-1]))
+        C112.append(float(resa.y[11][-1]))
+        C1112.append(float(resa.y[12][-1]))
+        R1.append(float(resa.y[13][-1]))
+        R2.append(float(resa.y[14][-1]))
+        R3.append(float(resa.y[15][-1]))
+        R4.append(float(resa.y[16][-1]))
+        R5.append(float(resa.y[17][-1]))
+        R6.append(float(resa.y[18][-1]))
+        R7.append(float(resa.y[19][-1]))
+        R8.append(float(resa.y[20][-1]))
+        CCl4.append(float(resa.y[21][-1]))
+        CHCl3.append(float(resa.y[22][-1]))
+        VCM.append(float(resa.y[23][-1]))
+        T0.append(float(resa.y[24][-1]))
+        T1.append(float(resa.y[25][-1]))
+        EDCj.append(float(resb.y[0][-1])) #This is where all of the lists are appended with the last calculated value for each compound
+        ECj.append(float(resb.y[1][-1]))
+        HClj.append(float(resb.y[2][-1]))
+        Cokej.append(float(resb.y[3][-1]))
+        CPj.append(float(resb.y[4][-1]))
+        Dij.append(float(resb.y[5][-1]))
+        Trij.append(float(resb.y[6][-1]))
+        C4H6Cl2j.append(float(resb.y[7][-1]))
+        C6H6j.append(float(resb.y[8][-1]))
+        C2H2j.append(float(resb.y[9][-1]))
+        C11j.append(float(resb.y[10][-1]))
+        C112j.append(float(resb.y[11][-1]))
+        C1112j.append(float(resb.y[12][-1]))
+        R1j.append(float(resb.y[13][-1]))
+        R2j.append(float(resb.y[14][-1]))
+        R3j.append(float(resb.y[15][-1]))
+        R4j.append(float(resb.y[16][-1]))
+        R5j.append(float(resb.y[17][-1]))
+        R6j.append(float(resb.y[18][-1]))
+        R7j.append(float(resb.y[19][-1]))
+        R8j.append(float(resb.y[20][-1]))
+        CCl4j.append(float(resb.y[21][-1]))
+        CHCl3j.append(float(resb.y[22][-1]))
+        VCMj.append(float(resb.y[23][-1]))
+        T0j.append(float(resb.y[24][-1]))
+        T1j.append(float(resb.y[25][-1]))
+        Y1f = [resa.y[0][-1], resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1] , resa.y[18][-1], resa.y[19][-1], resa.y[20][-1] , resa.y[21][-1], resa.y[22][-1], resa.y[23][-1]]
         sumf = sum(Y1f)
         C_Total.append(sumf)
-        Y1fj = [resj.y[0][-1], resj.y[1][-1],resj.y[2][-1],resj.y[3][-1], resj.y[4][-1], resj.y[5][-1], resj.y[6][-1], resj.y[7][-1], resj.y[8][-1], resj.y[9][-1], resj.y[10][-1], resj.y[11][-1],resj.y[12][-1], resj.y[13][-1], resj.y[14][-1], resj.y[15][-1], resj.y[16][-1], resj.y[17][-1] , resj.y[18][-1], resj.y[19][-1], resj.y[20][-1] , resj.y[21][-1], resj.y[22][-1], resj.y[23][-1]]
+        Y1fj = [resb.y[0][-1], resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1] , resb.y[18][-1], resb.y[19][-1], resb.y[20][-1] , resb.y[21][-1], resb.y[22][-1], resb.y[23][-1]]
         sumfj = sum(Y1fj)
         C_Totalj.append(sumfj)
-        P1f = [res.y[1][-1],res.y[2][-1],res.y[3][-1], res.y[4][-1], res.y[5][-1], res.y[6][-1], res.y[7][-1], res.y[8][-1], res.y[9][-1], res.y[10][-1], res.y[11][-1],res.y[12][-1], res.y[13][-1], res.y[14][-1], res.y[15][-1], res.y[16][-1], res.y[17][-1] , res.y[18][-1], res.y[19][-1], res.y[20][-1] , res.y[21][-1], res.y[22][-1], res.y[23][-1]]
-        P1fj = [resj.y[1][-1],resj.y[2][-1],resj.y[3][-1], resj.y[4][-1], resj.y[5][-1], resj.y[6][-1], resj.y[7][-1], resj.y[8][-1], resj.y[9][-1], resj.y[10][-1], resj.y[11][-1],resj.y[12][-1], resj.y[13][-1], resj.y[14][-1], resj.y[15][-1], resj.y[16][-1], resj.y[17][-1] , resj.y[18][-1], resj.y[19][-1], resj.y[20][-1] , resj.y[21][-1], resj.y[22][-1], resj.y[23][-1]]
-        D1f = [res.y[2][-1],res.y[23][-1]]
-        D1fj = [resj.y[2][-1],resj.y[23][-1]]
+        P1f = [resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1] , resa.y[18][-1], resa.y[19][-1], resa.y[20][-1] , resa.y[21][-1], resa.y[22][-1], resa.y[23][-1]]
+        P1fj = [resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1] , resb.y[18][-1], resb.y[19][-1], resb.y[20][-1] , resb.y[21][-1], resb.y[22][-1], resb.y[23][-1]]
+        D1f = [resa.y[2][-1],resa.y[23][-1]]
+        D1fj = [resb.y[2][-1],resb.y[23][-1]]
         prod1f = sum(P1f)
         prod1fj = sum(P1fj)
         des1f = sum(D1f)
@@ -1826,12 +1644,12 @@ for il in range(iternum):
         pr1j.append(pur1jf)
         
         
-#        Y1 = [res.y[0][-1], res.y[1][-1],res.y[2][-1],res.y[3][-1], res.y[4][-1], res.y[5][-1], res.y[6][-1], res.y[7][-1], res.y[8][-1], res.y[9][-1], res.y[10][-1], res.y[11][-1],res.y[12][-1], res.y[13][-1], res.y[14][-1], res.y[15][-1], res.y[16][-1], res.y[17][-1]]
-#        Y1j = [resj.y[0][-1], resj.y[1][-1],resj.y[2][-1],resj.y[3][-1], resj.y[4][-1], resj.y[5][-1], resj.y[6][-1], resj.y[7][-1], resj.y[8][-1], resj.y[9][-1], resj.y[10][-1], resj.y[11][-1],resj.y[12][-1], resj.y[13][-1], resj.y[14][-1], resj.y[15][-1], resj.y[16][-1], resj.y[17][-1]]
-#        P1 = [res.y[1][-1],res.y[2][-1],res.y[3][-1], res.y[4][-1], res.y[5][-1], res.y[6][-1], res.y[7][-1], res.y[8][-1], res.y[9][-1], res.y[10][-1], res.y[11][-1],res.y[12][-1], res.y[13][-1], res.y[14][-1], res.y[15][-1], res.y[16][-1], res.y[17][-1]]
-#        P1j = [resj.y[1][-1],resj.y[2][-1],resj.y[3][-1], resj.y[4][-1], resj.y[5][-1], resj.y[6][-1], resj.y[7][-1], resj.y[8][-1], resj.y[9][-1], resj.y[10][-1], resj.y[11][-1],resj.y[12][-1], resj.y[13][-1], resj.y[14][-1], resj.y[15][-1], resj.y[16][-1], resj.y[17][-1]]
-#        D1 = [res.y[2][-1],res.y[17][-1]]
-#        D1j = [resj.y[2][-1],resj.y[17][-1]]
+#        Y1 = [resa.y[0][-1], resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
+#        Y1j = [resb.y[0][-1], resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
+#        P1 = [resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
+#        P1j = [resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
+#        D1 = [resa.y[2][-1],resa.y[17][-1]]
+#        D1j = [resb.y[2][-1],resb.y[17][-1]]
 #        C_T0 = sum(Y1)
 #        C_Total.append(C_T0)
 #        C_T0j = sum(Y1j)
@@ -1845,7 +1663,7 @@ for il in range(iternum):
 #        pur1j = (sum(D1j)/sum(P1j)) * 100 
 #        pr1j.append(pur1j)
         prev_eval = J_eval[0] #This loads the previous number of jacobian calculations
-        j_eval = resj.nfev + prev_eval #This adds the previous to the most recent amount
+        j_eval = resb.nfev + prev_eval #This adds the previous to the most recent amount
         J_eval[0] = j_eval #This stores them in the initial list from above
     EDCl.append([i for i in EDC])
     ECl.append([i for i in EC])
@@ -1871,8 +1689,8 @@ for il in range(iternum):
     CCl4l.append([i for i in CCl4])
     CHCl3l.append([i for i in CHCl3])
     VCMl.append([i for i in VCM])
-    T0l.append([i*Decimal(1) for i in T0])
-    T1l.append([i*Decimal(1) for i in T1])
+    T0l.append([i*float(1) for i in T0])
+    T1l.append([i*float(1) for i in T1])
     EDClj.append([i for i in EDCj])
     EClj.append([i for i in ECj])
     HCllj.append([i for i in HClj])
@@ -1897,17 +1715,17 @@ for il in range(iternum):
     CCl4lj.append([i for i in CCl4j])
     CHCl3lj.append([i for i in CHCl3j])
     VCMlj.append([i for i in VCMj])
-    T0lj.append([i*Decimal(1) for i in T0j])
-    T1lj.append([i*Decimal(1) for i in T1j])
-    conversion_EDCfb = [(1-(Decimal(x)/initial_edc))*Decimal(100) for x in EDC] #Calculates the conversion of EDC (% basis) at each time interr
-    conversion_EDCfbj = [(1-(Decimal(y)/initial_edc))*Decimal(100) for y in EDCj]
+    T0lj.append([i*float(1) for i in T0j])
+    T1lj.append([i*float(1) for i in T1j])
+    conversion_EDCfb = [(1-(float(x)/initial_edc))*float(100) for x in EDC] #Calculates the conversion of EDC (% basis) at each time interr
+    conversion_EDCfbj = [(1-(float(y)/initial_edc))*float(100) for y in EDCj]
     conversion_EDCf.append(conversion_EDCfb[:])
     conversion_EDCfj.append(conversion_EDCfbj[:])
     conversion_EDCfb.clear()
     conversion_EDCfbj.clear()
     if initccl4 != 0:
-        conversion_CCl4b = [(1-(Decimal(x)/initccl4))*Decimal(100) for x in CCl4] #Calculates the conversion of CCl4 (% basis) at each time interr
-        conversion_CCl4bj = [(1-(Decimal(y)/initccl4))*Decimal(100) for y in CCl4j]
+        conversion_CCl4b = [(1-(float(x)/initccl4))*float(100) for x in CCl4] #Calculates the conversion of CCl4 (% basis) at each time interr
+        conversion_CCl4bj = [(1-(float(y)/initccl4))*float(100) for y in CCl4j]
         conversion_CCl4.append(conversion_CCl4b[:])
         conversion_CCl4j.append(conversion_CCl4bj[:])
         conversion_CCl4b.clear()
@@ -1966,101 +1784,101 @@ for il in range(iternum):
     VCMj.clear()
     T0j.clear()
     T1j.clear()
-    EDC = [Decimal(initedc)]
-    EC = [Decimal(0.0)]
-    HCl = [Decimal(0.0)] 
-    Coke = [Decimal(0.0)] 
-    CP = [Decimal(0.0)]
-    Di = [Decimal(0.0)]
-    C4H6Cl2 = [Decimal(0.0)]
-    C6H6 = [Decimal(0.0)]
-    C2H2 = [Decimal(0.0)]
-    C11 = [Decimal(0.0)]
-    C112 = [Decimal(0.0)]
-    R1 = [Decimal(0.0)]
-    R2 = [Decimal(0.0)]
-    R3 = [Decimal(0.0)]
-    R4 = [Decimal(0.0)]
-    R5 = [Decimal(0.0)]
-    R6 = [Decimal(0.0)]
-    VCM = [Decimal(0.0)]
-    T0 = [Decimal(Temp_K)]
-    T1 = [Decimal(0.0)]
-    EDCj = [Decimal(initedc)]
-    ECj = [Decimal(0.0)]
-    HClj = [Decimal(0.0)] 
-    Cokej = [Decimal(0.0)] 
-    CPj = [Decimal(0.0)]
-    Dij = [Decimal(0.0)]
-    C4H6Cl2j = [Decimal(0.0)]
-    C6H6j = [Decimal(0.0)]
-    C2H2j = [Decimal(0.0)]
-    C11j = [Decimal(0.0)]
-    C112j = [Decimal(0.0)]
-    R1j = [Decimal(0.0)]
-    R2j = [Decimal(0.0)]
-    R3j = [Decimal(0.0)]
-    R4j = [Decimal(0.0)]
-    R5j = [Decimal(0.0)]
-    R6j = [Decimal(0.0)]
-    VCMj = [Decimal(0.0)]
-    T0j = [Decimal(Temp_K)]
-    T1j = [Decimal(0.0)]
+    EDC = [float(initedc)]
+    EC = [float(0.0)]
+    HCl = [float(0.0)] 
+    Coke = [float(0.0)] 
+    CP = [float(0.0)]
+    Di = [float(0.0)]
+    C4H6Cl2 = [float(0.0)]
+    C6H6 = [float(0.0)]
+    C2H2 = [float(0.0)]
+    C11 = [float(0.0)]
+    C112 = [float(0.0)]
+    R1 = [float(0.0)]
+    R2 = [float(0.0)]
+    R3 = [float(0.0)]
+    R4 = [float(0.0)]
+    R5 = [float(0.0)]
+    R6 = [float(0.0)]
+    VCM = [float(0.0)]
+    T0 = [float(Temp_K)]
+    T1 = [float(0.0)]
+    EDCj = [float(initedc)]
+    ECj = [float(0.0)]
+    HClj = [float(0.0)] 
+    Cokej = [float(0.0)] 
+    CPj = [float(0.0)]
+    Dij = [float(0.0)]
+    C4H6Cl2j = [float(0.0)]
+    C6H6j = [float(0.0)]
+    C2H2j = [float(0.0)]
+    C11j = [float(0.0)]
+    C112j = [float(0.0)]
+    R1j = [float(0.0)]
+    R2j = [float(0.0)]
+    R3j = [float(0.0)]
+    R4j = [float(0.0)]
+    R5j = [float(0.0)]
+    R6j = [float(0.0)]
+    VCMj = [float(0.0)]
+    T0j = [float(Temp_K)]
+    T1j = [float(0.0)]
     # Eafb.clear()
     # Eaf.clear()
     # Eaf2.clear()
-    EDC = [Decimal(initedc)]
-    EC = [Decimal(0.0)]
-    HCl = [Decimal(0.0)] 
-    Coke = [Decimal(0.0)] #Coke is written as simply C in the paper
-    CP = [Decimal(0.0)]
-    Di = [Decimal(0.0)]
-    Tri = [Decimal(0.0)]
-    C4H6Cl2 = [Decimal(0.0)]
-    C6H6 = [Decimal(0.0)]
-    C2H2 = [Decimal(0.0)]
-    C11 = [Decimal(0.0)]
-    C112 = [Decimal(0.0)]
-    C1112 = [Decimal(0.0)]
-    R1 = [Decimal(0.0)]
-    R2 = [Decimal(0.0)]
-    R3 = [Decimal(0.0)]
-    R4 = [Decimal(0.0)]
-    R5 = [Decimal(0.0)]
-    R6 = [Decimal(0.0)]
-    R7 = [Decimal(0.0)]
-    R8 = [Decimal(0.0)]
-    CCl4 = [Decimal(initccl4)]
-    CHCl3 = [Decimal(0.0)]
-    VCM = [Decimal(0.0)]
-    T0 = [Decimal(Temp_K)]
-    T1 = [Decimal(0.0)]
-    EDCj = [Decimal(initedc)]
-    ECj = [Decimal(0.0)]
-    HClj = [Decimal(0.0)] 
-    Cokej = [Decimal(0.0)] #Coke is written as simply C in the paper
-    CPj = [Decimal(0.0)]
-    Dij = [Decimal(0.0)]
-    Trij = [Decimal(0.0)]
-    C4H6Cl2j = [Decimal(0.0)]
-    C6H6j = [Decimal(0.0)]
-    C2H2j = [Decimal(0.0)]
-    C11j = [Decimal(0.0)]
-    C112j = [Decimal(0.0)]
-    C1112j = [Decimal(0.0)]
-    R1j = [Decimal(0.0)]
-    R2j = [Decimal(0.0)]
-    R3j = [Decimal(0.0)]
-    R4j = [Decimal(0.0)]
-    R5j = [Decimal(0.0)]
-    R6j = [Decimal(0.0)]
-    R7j = [Decimal(0.0)]
-    R8j = [Decimal(0.0)]
-    CCl4j = [Decimal(initccl4)]
-    CHCl3j = [Decimal(0.0)]
-    VCMj = [Decimal(0.0)]
-    T0j = [Decimal(Temp_K)]
-    T1j = [Decimal(0.0)]
+    EDC = [float(initedc)]
+    EC = [float(0.0)]
+    HCl = [float(0.0)] 
+    Coke = [float(0.0)] #Coke is written as simply C in the paper
+    CP = [float(0.0)]
+    Di = [float(0.0)]
+    Tri = [float(0.0)]
+    C4H6Cl2 = [float(0.0)]
+    C6H6 = [float(0.0)]
+    C2H2 = [float(0.0)]
+    C11 = [float(0.0)]
+    C112 = [float(0.0)]
+    C1112 = [float(0.0)]
+    R1 = [float(0.0)]
+    R2 = [float(0.0)]
+    R3 = [float(0.0)]
+    R4 = [float(0.0)]
+    R5 = [float(0.0)]
+    R6 = [float(0.0)]
+    R7 = [float(0.0)]
+    R8 = [float(0.0)]
+    CCl4 = [float(initccl4)]
+    CHCl3 = [float(0.0)]
+    VCM = [float(0.0)]
+    T0 = [float(Temp_K)]
+    T1 = [float(0.0)]
+    EDCj = [float(initedc)]
+    ECj = [float(0.0)]
+    HClj = [float(0.0)] 
+    Cokej = [float(0.0)] #Coke is written as simply C in the paper
+    CPj = [float(0.0)]
+    Dij = [float(0.0)]
+    Trij = [float(0.0)]
+    C4H6Cl2j = [float(0.0)]
+    C6H6j = [float(0.0)]
+    C2H2j = [float(0.0)]
+    C11j = [float(0.0)]
+    C112j = [float(0.0)]
+    C1112j = [float(0.0)]
+    R1j = [float(0.0)]
+    R2j = [float(0.0)]
+    R3j = [float(0.0)]
+    R4j = [float(0.0)]
+    R5j = [float(0.0)]
+    R6j = [float(0.0)]
+    R7j = [float(0.0)]
+    R8j = [float(0.0)]
+    CCl4j = [float(initccl4)]
+    CHCl3j = [float(0.0)]
+    VCMj = [float(0.0)]
+    T0j = [float(Temp_K)]
+    T1j = [float(0.0)]
     pr1.clear()
     pr1j.clear()
     pr1.append(100.0)

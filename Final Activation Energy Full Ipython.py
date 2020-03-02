@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sp
 import mpmath as mp
-
+from matplotlib import cm
 import thermo as tc
 from operator import mul
 from scipy.integrate import solve_ivp
@@ -25,8 +25,13 @@ import pandas as pd
 import decimal
 from decimal import Decimal, getcontext
 from IPython.display import display, DisplayObject, display_latex
-
-
+import os
+clear = lambda: os.system('cls')
+cwd = os.getcwd()
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print(dir_path)
+sp.init_session(use_latex=False,quiet=True)
+plt.ioff()
 getcontext().prec = 50
 
 #Data for inital kinetics
@@ -819,8 +824,8 @@ patm = PascalP/101325 #[atm]
 Ratm = 8.20573660809596E-5 #[m^3*atm/K*mol]
 Rkcal = 1.98720425864083E-3 #[kcal/K*mol]
 segment_second = int(input('Enter iterations per second --> '))
-gnodes = 100
-gnodes2 = 5
+gnodes = 1
+gnodes2 = 1
 chngamnt = float(input('Enter Activation Energy change per iteration [J/mol] --> '))
 iternum = int(input('Enter total iterations --> '))
 graph_num = 1
@@ -1136,6 +1141,7 @@ for il in range(iternum):
     
     change = il*(chngamnt/1000.0)
     amount_new = 342.0 - change
+    Temp_vals.append(amount_new)
     # bedc = Bviral3(amount_new,Tcedc,Pcedc,omegaedc)
     # zedc = btoz(bedc,amount_new,PascalP)
     Twall = amount_new
@@ -1590,6 +1596,12 @@ for il in range(iternum):
     VCMl.append([i for i in VCM])
     T0l.append([i*float(1) for i in T0])
     T1l.append([i*float(1) for i in T1])
+    selectivityl.append([i for i in selectivity])
+    selectivity2l.append([i for i in selectivity2])
+    selectivityjl.append([i for i in selectivityj])
+    selectivity2jl.append([i for i in selectivity2j])
+    yield_vcml.append([i*100 for i in yield_vcm])
+    yield_vcmjl.append([i*100 for i in yield_vcmj])
     EDClj.append([i for i in EDCj])
     EClj.append([i for i in ECj])
     HCllj.append([i for i in HClj])
@@ -1616,6 +1628,20 @@ for il in range(iternum):
     VCMlj.append([i for i in VCMj])
     T0lj.append([i*float(1) for i in T0j])
     T1lj.append([i*float(1) for i in T1j])
+    RE_valsl.append([float(i) for i in RE_vals])
+    U_coeffsl.append([float(i) for i in U_coeffs])
+    h_valsl.append([float(i) for i in h_vals])
+    kmix_valsl.append([float(i) for i in kmix_vals])
+    c1_valsl.append([float(i) for i in c1_vals])
+    c2_valsl.append([float(i) for i in c2_vals])
+    c3_valsl.append([float(i) for i in c3_vals])
+    RE_valsjl.append([float(i) for i in RE_valsj])
+    U_coeffsjl.append([float(i) for i in U_coeffsj])
+    h_valsjl.append([float(i) for i in h_valsj])
+    kmix_valsjl.append([float(i) for i in kmix_valsj])
+    c1_valsjl.append([float(i) for i in c1_valsj])
+    c2_valsjl.append([float(i) for i in c2_valsj])
+    c3_valsjl.append([float(i) for i in c3_valsj])
     conversion_EDCfb = [(1-(float(x)/initial_edc))*float(100) for x in EDC] #Calculates the conversion of EDC (% basis) at each time interr
     conversion_EDCfbj = [(1-(float(y)/initial_edc))*float(100) for y in EDCj]
     conversion_EDCf.append(conversion_EDCfb[:])
@@ -1683,6 +1709,24 @@ for il in range(iternum):
     VCMj.clear()
     T0j.clear()
     T1j.clear()
+    RE_vals.clear()
+    RE_valsj.clear()
+    c1_vals.clear()
+    c2_vals.clear()
+    c3_vals.clear()
+    c1_valsj.clear()
+    c2_valsj.clear()
+    c3_valsj.clear()
+    U_coeffs.clear()
+    U_coeffsj.clear()
+    h_vals.clear()
+    h_valsj.clear()
+    kmix_vals.clear()
+    kmix_valsj.clear()
+    selectivity.clear()
+    selectivity2.clear()
+    selectivityj.clear()
+    selectivity2j.clear()
     EDC = [float(initedc)]
     EC = [float(0.0)]
     HCl = [float(0.0)] 
@@ -1723,6 +1767,12 @@ for il in range(iternum):
     VCMj = [float(0.0)]
     T0j = [float(Temp_K)]
     T1j = [float(0.0)]
+    selectivity = [1.0]
+    selectivity2 = [1.0]
+    selectivityj = [1.0]
+    selectivity2j = [1.0]
+    yield_vcm = [1.0]
+    yield_vcmj = [1.0]
     # Eafb.clear()
     # Eaf.clear()
     # Eaf2.clear()
@@ -1791,13 +1841,13 @@ for il in range(iternum):
 eaconvf = []
 eaconvjf = []
 
-for i,j in enumerate(conversion_EDC):
-    val1 = conversion_EDC[i]
+for i,j in enumerate(conversion_EDCf):
+    val1 = conversion_EDCf[i]
     val2 = val1[-1]
     eaconvf.append(val2)
     
-for i2,j2 in enumerate(conversion_EDCj):
-    val1j = conversion_EDCj[i2]
+for i2,j2 in enumerate(conversion_EDCfj):
+    val1j = conversion_EDCfj[i2]
     val2j = val1j[-1]
     eaconvjf.append(val2j)    
     
@@ -1946,7 +1996,7 @@ np.savetxt(r"{}\VCM.txt".format(dir_path),vcm)
 
 
 
-convedc = np.array(conversion_EDC)
+convedc = np.array(conversion_EDCf)
 np.savetxt(r"{}\Conversion EDC.txt".format(dir_path),convedc)
 edcj = np.array(EDClj)
 np.savetxt(r"{}\EDCj.txt".format(dir_path),edcj)
@@ -1997,11 +2047,11 @@ np.savetxt(r"{}\CHCl3Fullj.txt".format(dir_path),chcl3lj)
 
 vcmj = np.array(VCMlj)
 np.savetxt(r"{}\VCMj.txt".format(dir_path),vcmj)
-convedcj = np.array(conversion_EDCj)
+convedcj = np.array(conversion_EDCfj)
 np.savetxt(r"{}\Conversion_EDCJac.txt".format(dir_path),convedcj)
 total = np.array(C_Total,ndmin=1)
 np.savetxt(r"{}\Total.txt".format(dir_path),total)
-purel = np.array(pure,ndmin=1)
+purel = np.array(puref,ndmin=1)
 np.savetxt(r"{}\Purity.txt".format(dir_path),purel)
 distance = np.array(xD)
 np.savetxt(r"{}\Distance.txt".format(dir_path),distance)   
@@ -2039,7 +2089,7 @@ c3valsj = np.array(c3_valsjl,ndmin=1)
 np.savetxt(r"{}\Constant3j.txt".format(dir_path),c3valsj) 
 totalj = np.array(C_Totalj,ndmin=1)
 np.savetxt(r"{}\Totalj.txt".format(dir_path),totalj)
-purejl = np.array(purej,ndmin=1)
+purejl = np.array(purefj,ndmin=1)
 np.savetxt(r"{}\Purityj.txt".format(dir_path),purejl)
 t0j = np.array(T0lj,ndmin=1)
 np.savetxt(r"{}\TemperatureJac.txt".format(dir_path),t0j)
@@ -2071,795 +2121,795 @@ np.savetxt(r"{}\selectivityvcmj.txt".format(dir_path),yieldvcm)
 yieldvcmj = np.array(yield_vcmjl,ndmin=1)
 np.savetxt(r"{}\selectivityvcmj.txt".format(dir_path),yieldvcmj)
 
-#Temperature = Temp_K - 273.15
+Temperature = Temp_K - 273.15
 
-#viridis = cm.get_cmap('viridis', iternum+1)
-#
-#concl = [edc,ec,hcl,cc,cp1,di,c4h6cl2,c6h6,c2h2,c11,c112,r1,r2,r3,r4,r5,r6,vcm]
-#concjl = [edcj,ecj,hclj,ccj,cp1j,dij,c4h6cl2j,c6h6j,c2h2j,c11j,c112j,r1j,r2j,r3j,r4j,r5j,r6j,vcmj]
-#
-#
-#for i, j in enumerate(concl):
-#    cur_list = concl[i]
-#    nameD = namesb[i]
-#    nameD2 = namesb2[i]
-#    for ii,jj in enumerate(graph_nodes):
-#        fig = plt.figure()
-#        cur_list2 = concl[i][jj]
-#        eavalg = str(Temp_vals[jj])
-#        index_jj = int(jj)
-#        
-#        
-#        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label=r"Temperature {}K".format(eavalg))
-#        plt.legend(loc='best')
-#        plt.grid()
-#        plt.xlabel(r'Distance [$m$]')
-#        plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#        plt.title('{} Concentration'.format(nameD2))
-#        fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\{}-Concentration NoJ-{}.pdf".format(nameD,eavalg))
-#        fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\{}-Concentration NoJ-{}.svg".format(nameD,eavalg))
-#
-#for i, j in enumerate(concjl):
-#    cur_list = concjl[i]
-#    nameD = namesb[i]
-#    nameD2 = namesb2[i]
-#    for ii,jj in enumerate(graph_nodes):
-#        fig = plt.figure()
-#        cur_list2 = concjl[i][jj]
-#        eavalg = str(Temp_vals[jj])
-#        index_jj = int(jj)
-#        
-#        
-#        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label=r"Temperature {}K".format(eavalg))
-#        plt.legend(loc='best')
-#        plt.grid()
-#        plt.xlabel(r'Distance [$m$]')
-#        plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#        plt.title('{} Concentration'.format(nameD2))
-#        fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\{}-Concentration J-{}.pdf".format(nameD,eavalg))
-#        fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\{}-Concentration J-{}.svg".format(nameD,eavalg))
-#
-#
-#
-#font = {'family': 'serif',
-#        'color':  'black',
-#        'weight': 'normal',
-#        'size': 16,
-#        }
-#
-#font2 = {'family': 'serif',
-#        'color':  'black',
-#        'weight': 'normal',
-#        'size': 30,
-#        'ha': 'center',
-#        'va': 'bottom'
-#        }
-#
-#font3 = {'family': 'serif',
-#        'color':  'black',
-#        'weight': 'normal',
-#        'size': 18,
-#        'ha': 'center',
-#        'va': 'center',
-#        'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.1)
-#        }
-#
-##fig, ax = plt.subplots()
-##ax.plot(xD, edc[0,:]) 
-##ax.set(xlabel=r'Distance [$m$]', ylabel=r'Concentration [$\frac{mol}{m^3}$]', 
-##      title="EDC Concentration Profile")
-##ax.grid()
-#fig = plt.figure()
-#plt1 = plt.plot(xD, edc[0,:])
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.xlabel(r'Distance [$m$]')
-#plt.title("EDC Concentration Profile")
-#plt.grid()
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDCconcentration.png") #Saves the graph
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDCconcentration.svg")
-#
+viridis = cm.get_cmap('viridis', iternum+1)
+
+concl = [edc,ec,hcl,cc,cp1,di,c4h6cl2,c6h6,c2h2,c11,c112,r1,r2,r3,r4,r5,r6,vcm]
+concjl = [edcj,ecj,hclj,ccj,cp1j,dij,c4h6cl2j,c6h6j,c2h2j,c11j,c112j,r1j,r2j,r3j,r4j,r5j,r6j,vcmj]
+
+
+for i, j in enumerate(concl):
+    cur_list = concl[i]
+    nameD = namesb[i]
+    nameD2 = namesb2[i]
+    for ii,jj in enumerate(graph_nodes):
+        fig = plt.figure()
+        cur_list2 = concl[i][jj]
+        eavalg = str(Temp_vals[jj])
+        index_jj = int(jj)
+        
+        
+        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label=r"Temperature {}K".format(eavalg))
+        plt.legend(loc='best')
+        plt.grid()
+        plt.xlabel(r'Distance [$m$]')
+        plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+        plt.title('{} Concentration'.format(nameD2))
+        fig.savefig(r"{}\{}-Concentration NoJ-{}.pdf".format(dir_path,nameD,eavalg))
+        fig.savefig(r"{}\{}-Concentration NoJ-{}.svg".format(dir_path,nameD,eavalg))
+
+for i, j in enumerate(concjl):
+    cur_list = concjl[i]
+    nameD = namesb[i]
+    nameD2 = namesb2[i]
+    for ii,jj in enumerate(graph_nodes):
+        fig = plt.figure()
+        cur_list2 = concjl[i][jj]
+        eavalg = str(Temp_vals[jj])
+        index_jj = int(jj)
+        
+        
+        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label=r"Temperature {}K".format(dir_path,eavalg))
+        plt.legend(loc='best')
+        plt.grid()
+        plt.xlabel(r'Distance [$m$]')
+        plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+        plt.title('{} Concentration'.format(dir_path,nameD2))
+        fig.savefig(r"{}\{}-Concentration J-{}.pdf".format(dir_path,nameD,eavalg))
+        fig.savefig(r"{}\{}-Concentration J-{}.svg".format(dir_path,nameD,eavalg))
+
+
+
+font = {'family': 'serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 16,
+        }
+
+font2 = {'family': 'serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 30,
+        'ha': 'center',
+        'va': 'bottom'
+        }
+
+font3 = {'family': 'serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 18,
+        'ha': 'center',
+        'va': 'center',
+        'bbox': dict(boxstyle="square", fc="white", ec="black", pad=0.1)
+        }
+
 #fig, ax = plt.subplots()
-#ax.plot(tvals, eaendc, 'b-', label='Conversion')
-#ax.plot(tvals, eaendcj, 'r-', label='Conversion With Jacobian')
-#ax.set(xlabel="Initial Temperature [K]", ylabel='Conversion [%]', title="Final Conversion")
-#ax.legend()
+#ax.plot(xD, edc[0,:]) 
+#ax.set(xlabel=r'Distance [$m$]', ylabel=r'Concentration [$\frac{mol}{m^3}$]', 
+#      title="EDC Concentration Profile")
 #ax.grid()
-#ax.invert_xaxis()
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Final Conversionback.pdf", bbox_inches='tight')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Final Conversionback.svg", bbox_inches='tight')
-#
-#fig = plt.figure()
-#plt1e = plt.plot(tvals, eaendc, 'b-')
-#plt2e = plt.plot(tvals, eaendcj, 'g-')
-#plt.ylabel('Conversion')
-#plt.xlabel("Initial Temperature [K]")
-#plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#plt.title("Final Conversion")
-#plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
-#plt.grid()
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Final Conversion.png") #Saves the graph
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Final Conversion.svg")
-#
-#fig = plt.figure()
-#for ii,i in enumerate(graph_nodes2):
-#    index_i = int(i) 
-#    
-#    
-#    plt.plot(xD, edc[i, :], color=viridis.colors[index_i, :], label="Temperature Value: {} [K]".format(Temp_vals[i]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('EDC Concentration')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-NoJ.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-NoJ.svg")
-#
-#fig = plt.figure()
-#for ii,i in enumerate(graph_nodes2):
-#    index_i = int(i) 
-#    
-#    
-#    plt.plot(xD, edcj[i, :], color=viridis.colors[index_i, :], label="Temperature Value: {} [K]".format(Temp_vals[i]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('EDC Concentration')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-J.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-J.svg")
-#
-#
-#for jj,j in enumerate(graph_nodes):
+fig = plt.figure()
+plt1 = plt.plot(xD, edc[0,:])
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.xlabel(r'Distance [$m$]')
+plt.title("EDC Concentration Profile")
+plt.grid()
+fig.savefig(r"{}\EDCconcentration.png".format(dir_path)) #Saves the graph
+fig.savefig(r"{}\EDCconcentration.svg".format(dir_path))
+
+fig, ax = plt.subplots()
+ax.plot(tvals, eaendc, 'b-', label='Conversion')
+ax.plot(tvals, eaendcj, 'r-', label='Conversion With Jacobian')
+ax.set(xlabel="Initial Temperature [K]", ylabel='Conversion [%]', title="Final Conversion")
+ax.legend()
+ax.grid()
+ax.invert_xaxis()
+fig.savefig(r"{}\Final Conversionback.pdf".format(dir_path), bbox_inches='tight')
+fig.savefig(r"{}\Final Conversionback.svg".format(dir_path), bbox_inches='tight')
+
+fig = plt.figure()
+plt1e = plt.plot(tvals, eaendc, 'b-')
+plt2e = plt.plot(tvals, eaendcj, 'g-')
+plt.ylabel('Conversion')
+plt.xlabel("Initial Temperature [K]")
+plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.title("Final Conversion")
+plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
+plt.grid()
+fig.savefig(r"{}\Final Conversion.png".format(dir_path)) #Saves the graph
+fig.savefig(r"{}\Final Conversion.svg".format(dir_path))
+
+fig = plt.figure()
+for ii,i in enumerate(graph_nodes2):
+    index_i = int(i) 
+    
+    
+    plt.plot(xD, edc[i, :], color=viridis.colors[index_i, :], label="Temperature Value: {} [K]".format(Temp_vals[i]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('EDC Concentration')
+fig.savefig(r"{}\EDC-NoJ.pdf".format(dir_path))
+fig.savefig(r"{}\EDC-NoJ.svg".format(dir_path))
+
+fig = plt.figure()
+for ii,i in enumerate(graph_nodes2):
+    index_i = int(i) 
+    
+    
+    plt.plot(xD, edcj[i, :], color=viridis.colors[index_i, :], label="Temperature Value: {} [K]".format(Temp_vals[i]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('EDC Concentration')
+fig.savefig(r"{}\EDC-J.pdf".format(dir_path))
+fig.savefig(r"{}\EDC-J.svg".format(dir_path))
+
+
+for jj,j in enumerate(graph_nodes):
+      fig = plt.figure()
+      index_j = int(j)
+      
+      
+      plt.plot(xD, edcj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      TemperatureC = KtoC(Temp_K)
+      plt.legend(loc='best')
+      plt.grid()
+      plt.xlabel(r'Distance [$m$]')
+      plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+      plt.title('EDC With Jacobian')
+      fig.savefig(r"{}\EDC.pdf".format(dir_path))
+      fig.savefig(r"{}\EDC.svg".format(dir_path))
+
+
+
+
+
+for jj,j in enumerate(graph_nodes):
+      fig = plt.figure()
+      
+      
+      index_j = int(j)
+      plt.plot(timeD, convedcj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      TemperatureC = KtoC(Temp_K)
+      plt.legend(loc='best')
+      plt.axhline(y=100, color='k', linestyle='--')
+      plt.grid()
+      plt.xlabel('Times [s]')
+      plt.ylabel('Conversion')
+      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.title('EDC Jacobian Conversion')
+      fig.savefig(r"{}\EDC-conv.pdf".format(dir_path))
+      fig.savefig(r"{}\EDC-conv.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, ecj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('Ethylchloride With Jacobian')
+fig.savefig(r"{}\EC.pdf".format(dir_path))
+fig.savefig(r"{}\EC.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+      index_j = int(j)
+      
+      
+      plt.plot(xD, hclj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('Hydrogen Chloride With Jacobian')
+fig.savefig(r"{}\HCl.pdf".format(dir_path))
+fig.savefig(r"{}\HCl.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, ccj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('Coke With Jacobian')
+fig.savefig(r"{}\Coke.pdf".format(dir_path))
+fig.savefig(r"{}\Coke.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, cp1j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('1-/2-chloroprene With Jacobian')
+fig.savefig(r"{}\CP.pdf".format(dir_path))
+fig.savefig(r"{}\CP.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, dij[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('Di With Jacobian')
+fig.savefig(r"{}\Di.pdf".format(dir_path))
+fig.savefig(r"{}\Di.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, c4h6cl2j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title(r'$C_{4}H_{6}Cl_{2}$ With Jacobian', fontdict=font2)
+fig.savefig(r"{}\C4H6Cl2.pdf".format(dir_path))
+fig.savefig(r"{}\C4H6Cl2.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, c6h6j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title(r'$C_{6}H_{6}$ With Jacobian')
+fig.savefig(r"{}\C6H6.pdf".format(dir_path))
+fig.savefig(r"{}\C6H6.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, c2h2j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title(r'$C_{2}H_{2}$ With Jacobian')
+fig.savefig(r"{}\C2H2.pdf".format(dir_path))
+fig.savefig(r"{}\C2H2.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, c11j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('1,1-dichloroethane With Jacobian')
+fig.savefig(r"{}\C11.pdf".format(dir_path))
+fig.savefig(r"{}\C11.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+    index_j = int(j)
+    
+    
+    plt.plot(xD, c112j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+    TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('1,1,2-trichloroethane With Jacobian')
+fig.savefig(r"{}\C112.pdf".format(dir_path))
+fig.savefig(r"{}\C112.svg".format(dir_path))
+
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+      index_j = int(j)
+      
+      
+      plt.plot(xD, vcmj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      TemperatureC = KtoC(Temp_K)
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+plt.title('VCM With Jacobian')
+fig.savefig(r"{}\VCM.pdf".format(dir_path))
+fig.savefig(r"{}\VCM.svg".format(dir_path))
+
+
+
+for jj,j in enumerate(graph_nodes):
+      fig = plt.figure()
+      
+      
+      index_t = int(j)
+      plt.plot(xD, t0[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      plt.legend(loc='best')
+      plt.axhline(y=t0[j, 0], color='k', linestyle='--')
+      plt.grid()
+      plt.xlabel(r'Distance [$m$]')
+      plt.ylabel('Temperature [K]')
+      plt.title('Temperature Profile')
+      fig.savefig(r"{}\T-Profile{}.pdf".format(dir_path,Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile{}.svg".format(dir_path,Temp_vals[j]))
+
+for jj,j in enumerate(graph_nodes):
+      fig = plt.figure()
+      
+      
+      index_t = int(j)
+      plt.plot(xD, t0j[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+      plt.legend(loc='best')
+      plt.axhline(y=t0j[j, 0], color='k', linestyle='--')
+      plt.grid()
+      plt.xlabel(r'Distance [$m$]')
+      plt.ylabel('Temperature [K]')
+      plt.title('Temperature Profile')
+      fig.savefig(r"{}\T-Profile-J{}.pdf".format(dir_path,Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile-J{}.svg".format(dir_path,Temp_vals[j]))
+
+# for jj,j in enumerate(graph_nodes):
 #       fig = plt.figure()
-#       index_j = int(j)
-#       
-#       
-#       plt.plot(xD, edcj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#       TemperatureC = KtoC(Temp_K)
-#       plt.legend(loc='best')
-#       plt.grid()
-#       plt.xlabel(r'Distance [$m$]')
-#       plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#       plt.title('EDC With Jacobian')
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC.pdf")
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC.svg")
-#
-#
-#
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#       fig = plt.figure()
-#       
-#       
-#       index_k = int(j)
-#       plt.plot(timeD, convedcj[j, :], color=viridis.colors[index_k,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#       TemperatureC = KtoC(Temp_K)
-#       plt.legend(loc='best')
-#       plt.axhline(y=100, color='k', linestyle='--')
-#       plt.grid()
-#       plt.xlabel('Times [s]')
-#       plt.ylabel('Conversion')
-#       plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#       plt.title('EDC Jacobian Conversion')
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-conv.pdf")
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EDC-conv.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, ecj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('Ethylchloride With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EC.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\EC.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#       index_j = int(j)
-#       
-#       
-#       plt.plot(xD, hclj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#       TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('Hydrogen Chloride With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\HCl.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\HCl.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, ccj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('Coke With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Coke.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Coke.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, cp1j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('1-/2-chloroprene With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\CP.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\CP.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, dij[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('Di With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Di.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Di.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, c4h6cl2j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title(r'$C_{4}H_{6}Cl_{2}$ With Jacobian', fontdict=font2)
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C4H6Cl2.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C4H6Cl2.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, c6h6j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title(r'$C_{6}H_{6}$ With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C6H6.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C6H6.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, c2h2j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title(r'$C_{2}H_{2}$ With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C2H2.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C2H2.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, c11j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('1,1-dichloroethane With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C11.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C11.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#    index_j = int(j)
-#    
-#    
-#    plt.plot(xD, c112j[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#    TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('1,1,2-trichloroethane With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C112.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\C112.svg")
-#
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#       index_j = int(j)
-#       
-#       
-#       plt.plot(xD, vcmj[j, :], color=viridis.colors[index_j,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#       TemperatureC = KtoC(Temp_K)
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#plt.title('VCM With Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\VCM.pdf")
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\VCM.svg")
-#
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#       fig = plt.figure()
-#       
-#       
+      
+      
 #       index_t = int(j)
-#       plt.plot(xD, t0[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
+#       plt.plot(xD, dt0[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
 #       plt.legend(loc='best')
-#       plt.axhline(y=t0[j, 0], color='k', linestyle='--')
+#       plt.axhline(y=Twalls[jj], color='k', linestyle='--')
 #       plt.grid()
 #       plt.xlabel(r'Distance [$m$]')
 #       plt.ylabel('Temperature [K]')
 #       plt.title('Temperature Profile')
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile{}.pdf".format(Temp_vals[j]))
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile{}.svg".format(Temp_vals[j]))
-#
-#for jj,j in enumerate(graph_nodes):
-#       fig = plt.figure()
-#       
-#       
-#       index_t = int(j)
-#       plt.plot(xD, t0j[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-#       plt.legend(loc='best')
-#       plt.axhline(y=t0j[j, 0], color='k', linestyle='--')
-#       plt.grid()
-#       plt.xlabel(r'Distance [$m$]')
-#       plt.ylabel('Temperature [K]')
-#       plt.title('Temperature Profile')
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile-J{}.pdf".format(Temp_vals[j]))
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile-J{}.svg".format(Temp_vals[j]))
-#
-##for jj,j in enumerate(graph_nodes):
-##       fig = plt.figure()
-##       
-##       
-##       index_t = int(j)
-##       plt.plot(xD, dt0[j, :], color=viridis.colors[index_t,:], label="Temperature Value: {} [K]".format(Temp_vals[j]))
-##       plt.legend(loc='best')
-##       plt.axhline(y=Twalls[jj], color='k', linestyle='--')
-##       plt.grid()
-##       plt.xlabel(r'Distance [$m$]')
-##       plt.ylabel('Temperature [K]')
-##       plt.title('Temperature Profile')
-##       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile Diffusion{}.pdf".format(Temp_vals[j]))
-##       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\T-Profile Diffusion{}.svg".format(Temp_vals[j]))
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    
-#    plt.plot(xD, r1j[j, :], 'b--', label=r'$R_{1}$')
-#    plt.plot(xD, r2j[j, :], 'g--', label=r'$R_{2}$')
-#    plt.plot(xD, r3j[j, :], 'r--', label=r'$R_{3}$')
-#    plt.plot(xD, r4j[j, :], 'c--', label=r'$R_{4}$')
-#    plt.plot(xD, r5j[j, :], 'y--', label=r'$R_{5}$')
-#    plt.plot(xD, r6j[j, :], 'm--', label=r'$R_{6}$')
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#    plt.legend(loc='best')
-#    plt.title(r"Radicals Concentration at {} K".format(Temp_vals[j]))
-#    plt.grid()
-#     
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\RadicalT{}.pdf".format(Temp_vals[j]), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\RadicalT{}.svg".format(Temp_vals[j]), bbox_inches='tight')
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#
-#    index_j = int(j)
-#    TemperatureC = KtoC(Temp_K)       
-#    plt.plot(xD, ecj[j, :], 'g-', label='Ethylchloride')
-#    plt.plot(xD, ccj[j, :], 'r-', label='Soot/Coke')
-#    plt.plot(xD, cp1j[j, :], 'b-', label='1-/2-chloroprene')
-#    plt.plot(xD, dij[j, :], 'y-', label='1,1-dichloroethylene')
-#    plt.plot(xD, c4h6cl2j[j, :], 'o-', label=r'$C_{4}H_{6}Cl_{2}$') #C4H6Cl2
-#    plt.plot(xD, c6h6j[j, :], 'r-', label=r'$C_{6}H_{6}$')
-#    plt.plot(xD, c2h2j[j, :], 'k-', label=r'$C_{2}H_{2}$')
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#    plt.legend(loc='best')
-#    plt.title(r"By-Product Concentration at {} K".format(Temp_vals[j]))
-#    plt.grid()
-#     
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\By-ProductT{}.pdf".format(Temp_vals[j]), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\By-ProductT{}.svg".format(Temp_vals[j]), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    TemperatureC = KtoC(Temp_K)
-#    index_j = int(j)
-#    plt.plot(xD, edc[j, :], 'b-', label='EDC')
-#    plt.plot(xD, hcl[j, :], 'r-', label='HCl')
-#    plt.plot(xD, vcm[j, :], 'g-', label='VCM')
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#    plt.legend(loc='best')
-#    plt.title("Temperature {} K".format(Temp_vals[j]))
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ProductsNoJT{}.pdf".format(Temp_vals[j]), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ProductsNoJT{}.svg".format(Temp_vals[j]), bbox_inches='tight')
-#    
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    TemperatureC = KtoC(Temp_vals[j])
-#    index_j = int(j)
-#    plt.plot(xD, edcj[j, :], 'b-', label='EDC')
-#    plt.plot(xD, hclj[j, :], 'r-', label='HCl')
-#    plt.plot(xD, vcmj[j, :], 'g-', label='VCM')
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
-#    plt.legend(loc='best')
-#    plt.title("Temperature {} K".format(Temp_vals[j]))
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ProductsJT{}.pdf".format(Temp_vals[j]), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ProductsJT{}.svg".format(Temp_vals[j]), bbox_inches='tight') 
-#    
-#   
-#
-#for jj,j in enumerate(graph_nodes):
-#       fig = plt.figure()
-#       
-#       
-#       index_t = int(j)
-#       plt.plot(xD, purejl[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
-#       plt.legend(loc='best')
-#       plt.grid()
-#       plt.xlabel(r'Distance [$m$]')
-#       plt.ylabel('Product Purity')
-#       plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#       plt.title('Product Purity - Jacobian')
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Temp_vals-PurityJ{}.pdf".format(Temp_vals[j]))
-#       fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Temp_vals-PurityJ{}.svg".format(Temp_vals[j]))
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#       index_t = int(j)
-#       plt.plot(xD, purejl[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel('Product Purity')
-#plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#plt.title('Product Purity - Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\OverallTemp_vals-PurityJ{}.pdf".format(Temp_vals[j]))
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\OverallTemp_vals-PurityJ{}.svg".format(Temp_vals[j]))
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    
-#    
-#    index_t = int(j)
-#    plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
-#    plt.legend(loc='best')
-#    plt.grid()
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel('Product Purity')
-#    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#    plt.title('Product Purity')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Temp_vals-Purity{}.pdf".format(Temp_vals[j]))
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Temp_vals-Purity{}.svg".format(Temp_vals[j]))
-#
-#fig = plt.figure()
-#for jj,j in enumerate(graph_nodes2):
-#       index_t = int(j)
-#       plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
-#plt.legend(loc='best')
-#plt.grid()
-#plt.xlabel(r'Distance [$m$]')
-#plt.ylabel('Product Purity')
-#plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#plt.title('Product Purity - Jacobian')
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\OverallTemp_vals-Purity{}.pdf".format(Temp_vals[j]))
-#fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\OverallTemp_vals-Purity{}.svg".format(Temp_vals[j]))
-#
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#
-#    index_j = int(j)
-#    plt.plot(xD, convedc[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel('Conversion')
-#    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#    plt.legend(loc='best')
-#    plt.title("Conversion of EDC")
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ConversionT{}.pdf".format(Temp_vals[j]), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ConversionT{}.svg".format(Temp_vals[j]), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt.plot(xD, convedcj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel('Conversion')
-#    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-#    plt.legend(loc='best')
-#    plt.title("Conversion of EDC")
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ConversionJT{}.pdf".format(eavalg), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\ConversionJT{}.svg".format(eavalg), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt.plot(xD[0:-1], kvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'Thermal Conductivity [$\frac{W}{m * k}$]')
-#    plt.legend(loc='best')
-#    plt.title('Mixture Thermal Conductivity ($\kappa_{mix}$)')
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\KvalsJT{}.pdf".format(eavalg), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\KvalsJT{}.svg".format(eavalg), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt.plot(xD[0:-1], uvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'U [$\frac{W}{m^2 \cdot K}$]')
-#    plt.legend(loc='best')
-#    plt.title('Overall Heat Transfer Coefficient ($\it{U}$)')
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\UvalsJT{}.pdf".format(eavalg), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\UvalsJT{}.svg".format(eavalg), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt.plot(xD[0:-1], hvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
-#    plt.xlabel(r'Distance [$m$]')
-#    plt.ylabel(r'h [$\frac{W}{m^2 \cdot K}$]')
-#    plt.legend(loc='best')
-#    plt.title('Heat Transfer Coefficient ($\it{h}$)')
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\HvalsJT{}.pdf".format(eavalg), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\HvalsJT{}.svg".format(eavalg), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
-#    Cval = KtoC(Temp_vals[j])
-#    plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Constant 1 [$\frac{}{}$]'.format(str('{1}'),str('{m}')), fontdict=font)
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"],loc='best',fontsize='large')
-#    plt.title('Constant 1', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant1JT{}.pdf".format(eavalg))
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant1JT{}.svg".format(eavalg))
-##    plt.draw()
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
-#    Cval = KtoC(Temp_vals[j])
-#    plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
-#    plt.xlabel(r'Distance [$\frac{1}{m^2}$]', fontdict=font)
-#    plt.ylabel(r'Constant 2 [$\frac{K}{m^2}$]', fontdict=font)
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{U}*\alpha}{\kappa}$"],loc='best',fontsize='large')
-#    plt.title('Constant 2', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant2JT{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant2JT{}.svg".format(float(eavalg)), bbox_inches='tight')
-#    
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
-#    Cval = KtoC(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Constant 3 [$\frac{s*m*K}{mol}$]', fontdict=font)
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\Delta{H_{rxn}}}{\kappa}$"],loc='best',fontsize='large')
-#    plt.title('Constant 3', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant3JT{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Constant3JT{}.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
-#    Cval = KtoC(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Reynolds Number $R_{e}$', fontdict=font)
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
-#    plt.title('Reynolds Number', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Reynolds Number {}K.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Reynolds Number {}K.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
-#    Cval = KtoC(Temp_vals[j])
-#    plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Reynolds Number [$R_{e}$]', fontdict=font)
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
-#    plt.title('Reynolds Number Jacobian', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Reynolds Number J {}K.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Reynolds Number J {}K.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt4 = plt.plot(xD, selectvcm[j][:], 'b-', label='Selectivity')
-#    Cval = KtoC(Temp_vals[j])
-#    plt4 = plt.plot(xD, selectvcm[j][:], 'b-', label='Selectivity')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
-#    plt.axhline(y=float(1.0), color='k', linestyle='--')
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
-#    plt.title('Selectivity of Vinyl Chloride Monomer', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityVCM-T-{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityVCM-T-{}.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt5 = plt.plot(xD, selecthcl[j][:], 'b-', label='Selectivity')
-#    Cval = KtoC(Temp_vals[j])
-#    plt5 = plt.plot(xD, selecthcl[j][:], 'b-', label='Selectivity')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
-#    plt.axhline(y=float(1.0), color='k', linestyle='--')
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
-#    plt.title('Selectivity of Hydrogen Chloride', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityHCl-T-{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityHCl-T-{}.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt4 = plt.plot(xD, selectvcmj[j][:], 'b-', label='Selectivity')
-#    Cval = KtoC(Temp_vals[j])
-#    plt4 = plt.plot(xD, selectvcmj[j][:], 'b-', label='Selectivity')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
-#    plt.axhline(y=float(1.0), color='k', linestyle='--')
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
-#    plt.title('Selectivity of Vinyl Chloride Monomer Jacobian', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityVCMJ-T-{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityVCMJ-T-{}.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt5 = plt.plot(xD, selecthclj[j][:], 'b-', label='Selectivity')
-#    Cval = KtoC(Temp_vals[j])
-#    plt5 = plt.plot(xD, selecthclj[j][:], 'b-', label='Selectivity')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
-#    plt.axhline(y=float(1.0), color='k', linestyle='--')
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
-#    plt.title('Selectivity of Hydrogen Chloride Jacobian', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityHClJ-T-{}.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\SelectivityHClJ-T-{}.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt4 = plt.plot(xD, yieldvcm[j][:], 'b-', label='Yield')
-#    Cval = KtoC(Temp_vals[j])
-#    plt4 = plt.plot(xD, yieldvcm[j][:], 'b-', label='Yield')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
-#    plt.axhline(y=float(100.0), color='k', linestyle='--')
-#    plt.gca().set_yticklabels(['{:.0f}%'.format(float(x)) for x in plt.gca().get_yticks()]) 
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
-#    plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Yield VCM {}K.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Yield VCM {}K.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#for jj,j in enumerate(graph_nodes):
-#    fig = plt.figure()
-#    index_j = int(j)
-#    eavalg = str(Temp_vals[j])
-#    plt4 = plt.plot(xD, yieldvcmj[j][:], 'b-', label='Yield')
-#    Cval = KtoC(Temp_vals[j])
-#    plt4 = plt.plot(xD, yieldvcmj[j][:], 'b-', label='Yield')
-#    plt.xlabel(r'Distance [$m$]', fontdict=font)
-#    plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
-#    plt.axhline(y=float(100.0), color='k', linestyle='--')
-#    plt.gca().set_yticklabels(['{:.0f}%'.format(float(x)) for x in plt.gca().get_yticks()]) 
-#    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
-#    plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
-#    plt.grid()
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Yield VCM J {}K.pdf".format(float(eavalg)), bbox_inches='tight')
-#    fig.savefig(r"C:\Users\tjcze\Desktop\Thesis\Python\Simple\Temperature-Values\Yield VCM J {}K.svg".format(float(eavalg)), bbox_inches='tight')
-#
-#
-#print("The Jacobian was evaluated %d times." % J_eval[0])
+#       fig.savefig(r"{}\T-Profile Diffusion{}.pdf".format(dir_path,Temp_vals[j]))
+#       fig.savefig(r"{}\T-Profile Diffusion{}.svg".format(dir_path,Temp_vals[j]))
+
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    
+    plt.plot(xD, r1j[j, :], 'b--', label=r'$R_{1}$')
+    plt.plot(xD, r2j[j, :], 'g--', label=r'$R_{2}$')
+    plt.plot(xD, r3j[j, :], 'r--', label=r'$R_{3}$')
+    plt.plot(xD, r4j[j, :], 'c--', label=r'$R_{4}$')
+    plt.plot(xD, r5j[j, :], 'y--', label=r'$R_{5}$')
+    plt.plot(xD, r6j[j, :], 'm--', label=r'$R_{6}$')
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+    plt.legend(loc='best')
+    plt.title(r"Radicals Concentration at {} K".format(Temp_vals[j]))
+    plt.grid()
+    
+    fig.savefig(r"{}\RadicalT{}.pdf".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\RadicalT{}.svg".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+
+    index_j = int(j)
+    TemperatureC = KtoC(Temp_K)       
+    plt.plot(xD, ecj[j, :], 'g-', label='Ethylchloride')
+    plt.plot(xD, ccj[j, :], 'r-', label='Soot/Coke')
+    plt.plot(xD, cp1j[j, :], 'b-', label='1-/2-chloroprene')
+    plt.plot(xD, dij[j, :], 'y-', label='1,1-dichloroethylene')
+    plt.plot(xD, c4h6cl2j[j, :], 'o-', label=r'$C_{4}H_{6}Cl_{2}$') #C4H6Cl2
+    plt.plot(xD, c6h6j[j, :], 'r-', label=r'$C_{6}H_{6}$')
+    plt.plot(xD, c2h2j[j, :], 'k-', label=r'$C_{2}H_{2}$')
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+    plt.legend(loc='best')
+    plt.title(r"By-Product Concentration at {} K".format(Temp_vals[j]))
+    plt.grid()
+    
+    fig.savefig(r"{}\By-ProductT{}.pdf".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-ProductT{}.svg".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    TemperatureC = KtoC(Temp_K)
+    index_j = int(j)
+    plt.plot(xD, edc[j, :], 'b-', label='EDC')
+    plt.plot(xD, hcl[j, :], 'r-', label='HCl')
+    plt.plot(xD, vcm[j, :], 'g-', label='VCM')
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+    plt.legend(loc='best')
+    plt.title("Temperature {} K".format(Temp_vals[j]))
+    plt.grid()
+    fig.savefig(r"{}\ProductsNoJT{}.pdf".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJT{}.svg".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    TemperatureC = KtoC(Temp_vals[j])
+    index_j = int(j)
+    plt.plot(xD, edcj[j, :], 'b-', label='EDC')
+    plt.plot(xD, hclj[j, :], 'r-', label='HCl')
+    plt.plot(xD, vcmj[j, :], 'g-', label='VCM')
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
+    plt.legend(loc='best')
+    plt.title("Temperature {} K".format(Temp_vals[j]))
+    plt.grid()
+    fig.savefig(r"{}\ProductsJT{}.pdf".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsJT{}.svg".format(dir_path,Temp_vals[j]), bbox_inches='tight') 
+    
+  
+
+for jj,j in enumerate(graph_nodes):
+      fig = plt.figure()
+      
+      
+      index_j = int(j)
+      plt.plot(xD, purejl[j, :], color=viridis.colors[index_j,:], label="Temperature {} K".format(Temp_vals[j]))
+      plt.legend(loc='best')
+      plt.grid()
+      plt.xlabel(r'Distance [$m$]')
+      plt.ylabel('Product Purity')
+      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.title('Product Purity - Jacobian')
+      fig.savefig(r"{}\Temp_vals-PurityJ{}.pdf".format(dir_path,Temp_vals[j]))
+      fig.savefig(r"{}\Temp_vals-PurityJ{}.svg".format(dir_path,Temp_vals[j]))
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+      index_t = int(j)
+      plt.plot(xD, purejl[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel('Product Purity')
+plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+plt.title('Product Purity - Jacobian')
+fig.savefig(r"{}\OverallTemp_vals-PurityJ{}.pdf".format(dir_path,Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-PurityJ{}.svg".format(dir_path,Temp_vals[j]))
+
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    
+    
+    index_t = int(j)
+    plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
+    plt.legend(loc='best')
+    plt.grid()
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel('Product Purity')
+    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.title('Product Purity')
+    fig.savefig(r"{}\Temp_vals-Purity{}.pdf".format(dir_path,Temp_vals[j]))
+    fig.savefig(r"{}\Temp_vals-Purity{}.svg".format(dir_path,Temp_vals[j]))
+
+fig = plt.figure()
+for jj,j in enumerate(graph_nodes2):
+      index_t = int(j)
+      plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Temperature {} K".format(Temp_vals[j]))
+plt.legend(loc='best')
+plt.grid()
+plt.xlabel(r'Distance [$m$]')
+plt.ylabel('Product Purity')
+plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.title('Product Purity - Jacobian')
+fig.savefig(r"{}\OverallTemp_vals-Purity{}.pdf".format(dir_path,Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-Purity{}.svg".format(dir_path,Temp_vals[j]))
+
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+
+    index_j = int(j)
+    plt.plot(xD, convedc[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel('Conversion')
+    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+    plt.legend(loc='best')
+    plt.title("Conversion of EDC")
+    plt.grid()
+    fig.savefig(r"{}\ConversionT{}.pdf".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionT{}.svg".format(dir_path,Temp_vals[j]), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt.plot(xD, convedcj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel('Conversion')
+    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.legend(loc='best')
+    plt.title("Conversion of EDC")
+    plt.grid()
+    fig.savefig(r"{}\ConversionJT{}.pdf".format(dir_path,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJT{}.svg".format(dir_path,eavalg), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt.plot(xD[0:-1], kvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'Thermal Conductivity [$\frac{W}{m * k}$]')
+    plt.legend(loc='best')
+    plt.title('Mixture Thermal Conductivity ($\kappa_{mix}$)')
+    plt.grid()
+    fig.savefig(r"{}\KvalsJT{}.pdf".format(dir_path,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJT{}.svg".format(dir_path,eavalg), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt.plot(xD[0:-1], uvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'U [$\frac{W}{m^2 \cdot K}$]')
+    plt.legend(loc='best')
+    plt.title('Overall Heat Transfer Coefficient ($\it{U}$)')
+    plt.grid()
+    fig.savefig(r"{}\UvalsJT{}.pdf".format(dir_path,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJT{}.svg".format(dir_path,eavalg), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt.plot(xD[0:-1], hvalsj[j, :], 'b-', label="Temperature {} K".format(Temp_vals[j]))
+    plt.xlabel(r'Distance [$m$]')
+    plt.ylabel(r'h [$\frac{W}{m^2 \cdot K}$]')
+    plt.legend(loc='best')
+    plt.title('Heat Transfer Coefficient ($\it{h}$)')
+    plt.grid()
+    fig.savefig(r"{}\HvalsJT{}.pdf".format(dir_path,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJT{}.svg".format(dir_path,eavalg), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
+    Cval = KtoC(Temp_vals[j])
+    plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Constant 1 [$\frac{}{}$]'.format(str('{1}'),str('{m}')), fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"],loc='best',fontsize='large')
+    plt.title('Constant 1', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Constant1JT{}.pdf".format(dir_path,eavalg))
+    fig.savefig(r"{}\Constant1JT{}.svg".format(dir_path,eavalg))
+#    plt.draw()
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
+    Cval = KtoC(Temp_vals[j])
+    plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
+    plt.xlabel(r'Distance [$\frac{1}{m^2}$]', fontdict=font)
+    plt.ylabel(r'Constant 2 [$\frac{K}{m^2}$]', fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{U}*\alpha}{\kappa}$"],loc='best',fontsize='large')
+    plt.title('Constant 2', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Constant2JT{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2JT{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+    
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
+    Cval = KtoC(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Constant 3 [$\frac{s*m*K}{mol}$]', fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\Delta{H_{rxn}}}{\kappa}$"],loc='best',fontsize='large')
+    plt.title('Constant 3', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Constant3JT{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3JT{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
+    Cval = KtoC(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Reynolds Number $R_{e}$', fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.title('Reynolds Number', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Reynolds Number {}K.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {}K.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
+    Cval = KtoC(Temp_vals[j])
+    plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Reynolds Number [$R_{e}$]', fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.title('Reynolds Number Jacobian', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Reynolds Number J {}K.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {}K.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt4 = plt.plot(xD, selectvcm[j][:], 'b-', label='Selectivity')
+    Cval = KtoC(Temp_vals[j])
+    plt4 = plt.plot(xD, selectvcm[j][:], 'b-', label='Selectivity')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
+    plt.axhline(y=float(1.0), color='k', linestyle='--')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.title('Selectivity of Vinyl Chloride Monomer', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\SelectivityVCM-T-{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-T-{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt5 = plt.plot(xD, selecthcl[j][:], 'b-', label='Selectivity')
+    Cval = KtoC(Temp_vals[j])
+    plt5 = plt.plot(xD, selecthcl[j][:], 'b-', label='Selectivity')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
+    plt.axhline(y=float(1.0), color='k', linestyle='--')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.title('Selectivity of Hydrogen Chloride', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\SelectivityHCl-T-{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-T-{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt4 = plt.plot(xD, selectvcmj[j][:], 'b-', label='Selectivity')
+    Cval = KtoC(Temp_vals[j])
+    plt4 = plt.plot(xD, selectvcmj[j][:], 'b-', label='Selectivity')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
+    plt.axhline(y=float(1.0), color='k', linestyle='--')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.title('Selectivity of Vinyl Chloride Monomer Jacobian', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\SelectivityVCMJ-T-{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-T-{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt5 = plt.plot(xD, selecthclj[j][:], 'b-', label='Selectivity')
+    Cval = KtoC(Temp_vals[j])
+    plt5 = plt.plot(xD, selecthclj[j][:], 'b-', label='Selectivity')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
+    plt.axhline(y=float(1.0), color='k', linestyle='--')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.title('Selectivity of Hydrogen Chloride Jacobian', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\SelectivityHClJ-T-{}.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-T-{}.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt4 = plt.plot(xD, yieldvcm[j][:], 'b-', label='Yield')
+    Cval = KtoC(Temp_vals[j])
+    plt4 = plt.plot(xD, yieldvcm[j][:], 'b-', label='Yield')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
+    plt.axhline(y=float(100.0), color='k', linestyle='--')
+    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Yield VCM {}K.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {}K.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+for jj,j in enumerate(graph_nodes):
+    fig = plt.figure()
+    index_j = int(j)
+    eavalg = str(Temp_vals[j])
+    plt4 = plt.plot(xD, yieldvcmj[j][:], 'b-', label='Yield')
+    Cval = KtoC(Temp_vals[j])
+    plt4 = plt.plot(xD, yieldvcmj[j][:], 'b-', label='Yield')
+    plt.xlabel(r'Distance [$m$]', fontdict=font)
+    plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
+    plt.axhline(y=float(100.0), color='k', linestyle='--')
+    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
+    plt.grid()
+    fig.savefig(r"{}\Yield VCM J {}K.pdf".format(dir_path,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {}K.svg".format(dir_path,float(eavalg)), bbox_inches='tight')
+
+
+print("The Jacobian was evaluated %d times." % J_eval[0])
 end = time.time() #Time when it finishes, this is real time
 
 def timer(start,end):
     hours, rem = divmod(end-start, 3600)
     minutes, seconds = divmod(rem, 60)
-    print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours),int(minutes),int(seconds)))
+    print("Completion Time: {} Hours {} Minutes {} Seconds".format(dir_path,int(hours),int(minutes),int(seconds)))
 
 timer(start,end) # Prints the amount of time passed since starting the program

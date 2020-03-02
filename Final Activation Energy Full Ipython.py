@@ -8,8 +8,8 @@ Created on Sat Feb  2 12:15:07 2019
 
 
 from __future__ import division
-%conda install thermo
-%pip install scipy==1.4.1
+# %conda install thermo
+# %pip install scipy==1.4.1
 import time
 import math
 import matplotlib.pyplot as plt 
@@ -33,7 +33,7 @@ print(dir_path)
 sp.init_session(use_latex=False,quiet=True)
 plt.ioff()
 getcontext().prec = 50
-
+plt.rcParams.update({'figure.max_open_warning': 0})
 #Data for inital kinetics
 #https://doi.org/10.1021/ie8006903
 
@@ -2148,6 +2148,7 @@ for i, j in enumerate(concl):
         plt.title('{} Concentration'.format(nameD2))
         fig.savefig(r"{}\{}-Concentration NoJ-{}.pdf".format(dir_path,nameD,eavalg))
         fig.savefig(r"{}\{}-Concentration NoJ-{}.svg".format(dir_path,nameD,eavalg))
+        
 
 for i, j in enumerate(concjl):
     cur_list = concjl[i]
@@ -2168,6 +2169,7 @@ for i, j in enumerate(concjl):
         plt.title('{} Concentration'.format(dir_path,nameD2))
         fig.savefig(r"{}\{}-Concentration J-{}.pdf".format(dir_path,nameD,eavalg))
         fig.savefig(r"{}\{}-Concentration J-{}.svg".format(dir_path,nameD,eavalg))
+        
 
 
 
@@ -2508,7 +2510,7 @@ for jj,j in enumerate(graph_nodes):
       plt.title('Temperature Profile')
       fig.savefig(r"{}\T-Profile-J{}.pdf".format(dir_path,Temp_vals[j]))
       fig.savefig(r"{}\T-Profile-J{}.svg".format(dir_path,Temp_vals[j]))
-
+      
 # for jj,j in enumerate(graph_nodes):
 #       fig = plt.figure()
       

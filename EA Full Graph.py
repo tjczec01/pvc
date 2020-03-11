@@ -210,7 +210,7 @@ namespdf = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C1
 namesj = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11','C112','C1112','R1','R2','R3','R4','R5','R6','R7','R8','CCl4','CHCl3','VCM']
 
 # These are mostly a group of strings used to name the chemicals 
-eqsnum = 21
+eqsnum = len(Initreactionsf)
 reacteqs = []
 prodeqs = []
 reacteqs2 = []

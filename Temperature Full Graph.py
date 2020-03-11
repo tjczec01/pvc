@@ -1873,8 +1873,8 @@ for i,j in enumerate(totallist1):
     eet = Temp_vals[:]
     eead = Temp_vals[:]
     eav = np.asarray(eea)
-    eas = ["Activation Energy {} [kJ/mol]".format(ij) for ij in Temp_vals]
-    eaf = ["Activation Energies"]
+    eas = ["Temperature {} K".format(ij) for ij in Temp_vals]
+    eaf = ["Temperatures"]
     eaf.append(eas)
     ttv = ["Time [s]"]
     ttv2 = ["Time Interval: {} [s]".format(time_int)]

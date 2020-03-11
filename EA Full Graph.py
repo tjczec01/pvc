@@ -810,6 +810,7 @@ rhoin2 = rhoin/edcmw
 rhoing = begmix.rhogm #[mol/m^3]
 rhoingb = begmix.rhogm/1E6 #[mol/m^3]
 Ea_vals = []
+Ea_vals2 = []
 mws = begmix.MW # g/mol
 mwskg = mws/1E3 # kg/mol
 Rval = Rvalc*mwskg
@@ -829,7 +830,7 @@ patm = PascalP/101325.0 #[atm]
 Ratm = 8.20573660809596E-5 #[m^3*atm/K*mol]
 Rkcal = 1.98720425864083E-3 #[kcal/K*mol]
 segment_second = 100 #int(input('Enter iterations per second --> '))
-gnodes = 5
+gnodes = 10
 gnodes2 = 1
 chngamnt = 100.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
 iternum = 200 #int(input('Enter total iterations --> '))
@@ -1111,7 +1112,6 @@ ysv, Ks, EAs, Ts = symfunc(namesj, rxnnum)
 ysv.append(sp.symbols('T0'))
 ysv.append(sp.symbols('T1'))
 yblank = []
-Ea_vals2 = []
 Twalls = []
 iterlist = [i for i in range(0,iternum,1)]
 rtolval = 1E-7
@@ -2113,8 +2113,8 @@ np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcmj)
 
 viridis = cm.get_cmap('viridis', iternum+1)
 
-concl = [edc,ec,hcl,cc,cp1,di,c4h6cl2,c6h6,c2h2,c11,c112,r1,r2,r3,r4,r5,r6,vcm]
-concjl = [edcj,ecj,hclj,ccj,cp1j,dij,c4h6cl2j,c6h6j,c2h2j,c11j,c112j,r1j,r2j,r3j,r4j,r5j,r6j,vcmj]
+concl = [edc,ec,hcl,cc,cp1,di,tri,c4h6cl2,c6h6,c2h2,c11,c112,c1112,r1,r2,r3,r4,r5,r6,r7,r8,chcl3l,ccl4l,vcm]
+concjl = [edcj,ecj,hclj,ccj,cp1j,dij,trij,c4h6cl2j,c6h6j,c2h2j,c11j,c112j,c1112j,r1j,r2j,r3j,r4j,r5j,r6j,r7j,r8j,chcl3lj,ccl4lj,vcmj]
 
 for i, j in enumerate(concl):
     cur_list = concl[i]
@@ -2447,8 +2447,8 @@ for jj,j in enumerate(graph_nodes):
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel("Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       plt.title('Activation Energy Profile')
-      fig.savefig(r"{}\T-Profile-J{}.pdf".format(path_fol,Ea_vals[j]))
-      fig.savefig(r"{}\T-Profile-J{}.svg".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile-J {} kJ.pdf".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile-J {} kJ.svg".format(path_fol,Ea_vals[j]))
       plt.close()
       
 # for jj,j in enumerate(graph_nodes):
@@ -2478,8 +2478,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"Radicals Concentration at {} K".format(Ea_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\RadicalT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\RadicalT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radical{} kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radical{} kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2498,8 +2498,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"By-Product Concentration at {} K".format(Ea_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\By-ProductT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By-ProductT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-Product{} kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-Product{} kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2514,8 +2514,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\ProductsNoJT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsNoJT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-{}-kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-{}-kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
     
 for jj,j in enumerate(graph_nodes):
@@ -2530,8 +2530,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\ProductsJT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsJT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight') 
+    fig.savefig(r"{}\ProductsJ-{}-kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsJ-{}-kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight') 
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2544,8 +2544,8 @@ for jj,j in enumerate(graph_nodes):
       plt.ylabel('Product Purity')
       plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
       plt.title('Product Purity - Jacobian')
-      fig.savefig(r"{}\Ea_vals-PurityJ{}.pdf".format(path_fol,Ea_vals[j]))
-      fig.savefig(r"{}\Ea_vals-PurityJ{}.svg".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\Ea_vals-PurityJ {} kJ.pdf".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\Ea_vals-PurityJ {} kJ.svg".format(path_fol,Ea_vals[j]))
       plt.close()
 
 fig = plt.figure()
@@ -2558,8 +2558,8 @@ plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
 plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
 plt.title('Product Purity - Jacobian')
-fig.savefig(r"{}\OverallEa_vals-PurityJ{}.pdf".format(path_fol,Ea_vals[j]))
-fig.savefig(r"{}\OverallEa_vals-PurityJ{}.svg".format(path_fol,Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-PurityJ {} kJ.pdf".format(path_fol,Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-PurityJ {} kJ.svg".format(path_fol,Ea_vals[j]))
 plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2600,8 +2600,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Conversion{} kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Conversion{} kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2615,8 +2615,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionJT{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionJT{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-{}-kJ.pdf".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-{}-kJ.svg".format(path_fol,eavalg), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2629,8 +2629,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Mixture Thermal Conductivity ($\kappa_{mix}$)')
     plt.grid()
-    fig.savefig(r"{}\KvalsJT{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\KvalsJT{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-{}-kJ.pdf".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-{}-kJ.svg".format(path_fol,eavalg), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2643,8 +2643,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Overall Heat Transfer Coefficient ($\it{U}$)')
     plt.grid()
-    fig.savefig(r"{}\UvalsJT{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\UvalsJT{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-{}-kJ.pdf".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-{}-kJ.svg".format(path_fol,eavalg), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2657,8 +2657,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Heat Transfer Coefficient ($\it{h}$)')
     plt.grid()
-    fig.savefig(r"{}\HvalsJT{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\HvalsJT{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-{}-kJ.pdf".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-{}-kJ.svg".format(path_fol,eavalg), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2673,8 +2673,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"],loc='best',fontsize='large')
     plt.title('Constant 1', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant1JT{}.pdf".format(path_fol,eavalg))
-    fig.savefig(r"{}\Constant1JT{}.svg".format(path_fol,eavalg))
+    fig.savefig(r"{}\Constant1J-{}-kJ.pdf".format(path_fol,eavalg))
+    fig.savefig(r"{}\Constant1J-{}-kJ.svg".format(path_fol,eavalg))
     plt.close()    
 
 for jj,j in enumerate(graph_nodes):
@@ -2689,8 +2689,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend([r"Activation Energy: {}".format(Cval) + r"[$\frac{kJ}{mol}$]",r"$\frac{\it{U}*\alpha}{\kappa}$"],loc='best',fontsize='large')
     plt.title('Constant 2', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant2JT{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant2JT{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2705,8 +2705,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\Delta{H_{rxn}}}{\kappa}$"],loc='best',fontsize='large')
     plt.title('Constant 3', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant3JT{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant3JT{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2721,8 +2721,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
     plt.title('Reynolds Number', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number {}K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number {}K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2737,8 +2737,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
     plt.title('Reynolds Number Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number J {}K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number J {}K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2754,8 +2754,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCM-T-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCM-T-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2771,8 +2771,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHCl-T-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHCl-T-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2788,8 +2788,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCMJ-T-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCMJ-T-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2805,8 +2805,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHClJ-T-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHClJ-T-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-{}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-{}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2823,8 +2823,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM {}K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM {}K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2841,8 +2841,8 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM J {}K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM J {}K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {}-kJ.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
 print("The Jacobian was evaluated %d times." % J_eval[0])

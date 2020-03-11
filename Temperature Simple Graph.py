@@ -695,7 +695,7 @@ patm = PascalP/101325.0 #[atm]
 Ratm = 8.20573660809596E-5 #[m^3*atm/K*mol]
 Rkcal = 1.98720425864083E-3 #[kcal/K*mol]
 segment_second = 10 #int(input('Enter iterations per second --> '))
-gnodes = 10
+gnodes = 10 #Divide iternum by this to get the interval over which the graphs will be saved. i.e. 250/10 = 25 iterations or 25 Kelvin
 gnodes2 = 1
 chngamnt = 1.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
 iternum = 250 #int(input('Enter total iterations --> '))

@@ -7,7 +7,8 @@ Created on Tue Mar 10 19:26:23 2020
 from __future__ import division
 import time
 import math
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import numpy as np
 import sympy as sp
 import mpmath as mp
@@ -30,177 +31,179 @@ plt.ioff()
 plt.rcParams.update({'figure.max_open_warning': 10})
 #Data for inital kinetics
 #https://doi.org/10.1021/ie8006903
-    
+#Thesis: https://ir.library.louisville.edu/etd/3359/
+
+
 mp.pretty = True
 # Dictionary for all relevent forward and reverse reactions
 Initreactionsf = [
 {"Ea" : 1, "K_Value": 1,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 2, "K_Value": 2,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 3, "K_Value": 3,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 4, "K_Value": 4,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 5, "K_Value": 5,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 1, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 6, "K_Value": 6,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}},
 {"Ea" : 7, "K_Value": 7,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 1, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 8, "K_Value": 8,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  1,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  1,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 1, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 9, "K_Value": 9,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  1, 'VCM':  0}},
 {"Ea" : 10, "K_Value": 10,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}},
 {"Ea" : 11, "K_Value": 11,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 1, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 12, "K_Value": 12,
- "Reactants" : {'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 13, "K_Value": 13,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 1, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 1, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 14, "K_Value": 14,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 1, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 1, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 15, "K_Value": 15,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 1, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 1, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  1,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 16, "K_Value": 16,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  1, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  1, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 17, "K_Value": 17,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 18, "K_Value": 18,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 19, "K_Value": 19,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 20, "K_Value": 20,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  1, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 21, "K_Value": 21,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  1, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 22, "K_Value": 22,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  1}},
 {"Ea" : 23, "K_Value": 23,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 24, "K_Value": 24,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 1, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 25, "K_Value": 25,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  1,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  1,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 1, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 26, "K_Value": 26,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 1, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 27, "K_Value": 27,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 1, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 28, "K_Value": 28,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 1, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 29, "K_Value": 29,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'R7':  0,  'R8':  1, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 1, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  1, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 30, "K_Value": 30,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  2, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  2, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  1, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 {"Ea" : 31, "K_Value": 31,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 2, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 2, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  2, 'Coke': 2, 'CP':  0, 'Di': 0, 'Tri': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0, 'C11' : 0, 'C112' : 0, 'C1112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'R7':  0,  'R8':  0, 'CCl4':  0, 'CHCl3':  0, 'VCM':  0}},
 ]
 Eqlistf = [
-{"Name" : 'EDC' , 
- "Reactions" : {"Reaction 1" : -1,"Reaction 2" : 0,"Reaction 3" : -1,"Reaction 4" : -1, "Reaction 5" : -1,"Reaction 6" : -1, "Reaction 7" : -1, "Reaction 8" : -1, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+{"Name" : 'EDC' ,
+ "Reactions" : {"Reaction 1" : -1,"Reaction 2" : 0,"Reaction 3" : -1,"Reaction 4" : -1, "Reaction 5" : -1,"Reaction 6" : -1, "Reaction 7" : -1, "Reaction 8" : -1, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'EC' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" : -1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" : -1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'HCl' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" : 1, "Reaction 12" : 1, "Reaction 13" : 1, "Reaction 14" : 1, "Reaction 15" : 1, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" : 1, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" : 1}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" : 1, "Reaction 12" : 1, "Reaction 13" : 1, "Reaction 14" : 1, "Reaction 15" : 1, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" : 1, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" : 1},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'Coke' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" : 1}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" : 1},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'CP' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'Di' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : 1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : 1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" : 1, "Reaction 28" :0 , "Reaction 29" : 1, "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : -1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : 1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : 1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" : 1, "Reaction 28" :0 , "Reaction 29" : 1, "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : -1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'Tri' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C4H6Cl2' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : 1, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : 1, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C6H6' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : 1, "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : 1, "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C2H2' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : 1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : -1, "Reaction 31" : -1}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : -1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : 1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : -1, "Reaction 31" : -1},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : -1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C11' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : -1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : -1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C112' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : 1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : -1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : 1, "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : 1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : -1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : 1, "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'C1112' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : -1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : -1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R1' ,
- "Reactions" : {"Reaction 1" : 1,"Reaction 2" : 1,"Reaction 3" : -1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" : -1, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : -1, "Reaction 15" : -1, "Reaction 16" : -1, "Reaction 17" : -1, "Reaction 18" : -1, "Reaction 19" :0, "Reaction 20" : 1, "Reaction 21" : 1, "Reaction 22" : 1, "Reaction 23" : 1, "Reaction 24" : 1, "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : 1, "Reaction 31" : -1}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" : -1, "Reaction 24" : -1, "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 1,"Reaction 2" : 1,"Reaction 3" : -1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" : -1, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : -1, "Reaction 15" : -1, "Reaction 16" : -1, "Reaction 17" : -1, "Reaction 18" : -1, "Reaction 19" :0, "Reaction 20" : 1, "Reaction 21" : 1, "Reaction 22" : 1, "Reaction 23" : 1, "Reaction 24" : 1, "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : 1, "Reaction 31" : -1},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" : -1, "Reaction 24" : -1, "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R2' ,
- "Reactions" : {"Reaction 1" : 1,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : -1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" :0, "Reaction 12" : 1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : -1, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 1,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : -1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" :0, "Reaction 12" : 1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : -1, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R3' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 1,"Reaction 5" : 1,"Reaction 6" : 1, "Reaction 7" : 1, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : -1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : 1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 1,"Reaction 5" : 1,"Reaction 6" : 1, "Reaction 7" : 1, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : -1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : 1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R4' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : -1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : 1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : 1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : -1, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : -1, "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : -1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : 1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : 1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : -1, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : -1, "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R5' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" :  -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" : 1, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" : -1, "Reaction 22" :0 , "Reaction 23" : -1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" : -1, "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : -1, "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : 1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" :  -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" : 1, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" : -1, "Reaction 22" :0 , "Reaction 23" : -1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" : -1, "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" : -1, "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" : 1, "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R6' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : -1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1, "Reaction 29" : -1, "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : 1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : -1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1, "Reaction 29" : -1, "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" : 1, "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R7' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : -1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : 1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : -1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : 1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : -1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" : 1, "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'R8' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : 1, "Reaction 27" : 1, "Reaction 28" : 1, "Reaction 29" : -1, "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : 1, "Reaction 27" : 1, "Reaction 28" : 1, "Reaction 29" : -1, "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : -1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'CCl4' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : -1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : -1, "Reaction 27" : -1, "Reaction 28" : -1, "Reaction 29" : 1, "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : -1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" : -1, "Reaction 27" : -1, "Reaction 28" : -1, "Reaction 29" : 1, "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" : 1, "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'CHCl3' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : -1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : -1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" :0 , "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 {"Name" : 'VCM' ,
- "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : -1, "Reaction 18" : -1, "Reaction 19" : -1, "Reaction 20" : -1, "Reaction 21" : -1, "Reaction 22" : 1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}}, 
+ "Reactions" : {"Reaction 1" : 0,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : -1, "Reaction 18" : -1, "Reaction 19" : -1, "Reaction 20" : -1, "Reaction 21" : -1, "Reaction 22" : 1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0, "Reaction 22" : -1, "Reaction 23" :0 , "Reaction 24" :0 , "Reaction 25" :0 , "Reaction 26" :0 , "Reaction 27" :0 , "Reaction 28" :0 , "Reaction 29" :0 , "Reaction 30" :0 , "Reaction 31" :0}},
 ]
 #List of names and acronyms
 
@@ -209,7 +212,7 @@ namesf = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11'
 namespdf = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11','C112','C1112','R1','R2','R3','R4','R5','R6','R7','R8','CCl4','CHCl3','VCM','T0','T1','Pure','S_VCM','S_HCl','Yield']
 namesj = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11','C112','C1112','R1','R2','R3','R4','R5','R6','R7','R8','CCl4','CHCl3','VCM']
 
-# These are mostly a group of strings used to name the chemicals 
+# These are mostly a group of strings used to name the chemicals
 eqsnum = len(Initreactionsf)
 reacteqs = []
 prodeqs = []
@@ -242,7 +245,7 @@ def symfunc(names, rxnum):
               Ksyms = [sp.symbols(r'K_{}'.format(j)) for j in range(rxnum)]
               EAsyms = [sp.symbols(r'Ea_{}'.format(k)) for k in range(rxnum)]
               Tsyms = [sp.symbols('T0'), sp.symbols('T1')]
-              
+
               return Csyms, Ksyms, EAsyms, Tsyms
 
 #These are mostly functions used to calculate the unused diffusion coefficients
@@ -275,7 +278,7 @@ def DI(Ys,Dijs):
         for i in range(0,len(Ys),1):
             Yi = Ys[i]
             Di = Dijs[i]
-            Yj = [g for q,g in enumerate(Ys) if q!=Yi] 
+            Yj = [g for q,g in enumerate(Ys) if q!=Yi]
             Djb = [w for j,w in enumerate(Dijs) if j!=Di]
             Dif =  lambda l: [item for sublist in l for item in sublist]
             Dj = Dif(Djb)
@@ -293,12 +296,12 @@ def DI(Ys,Dijs):
 def getnu(velocity,rho,distance,diameter,k,viscosity,vs,Twall,Tgas,pr,re):
         Nu = [0.0]
         if re <= 3000.0:
-                        
+
                         term1a = lambda re,pr,distance,diameter,viscosity,vs:  ((re*pr*(distance/diameter))**(1/3) * (viscosity/vs)**0.14)
                         term1 = term1a(re,pr,distance,diameter,viscosity,vs)
                         if term1 <=2:
                             Nu[0] = 3.66
-                            
+
                         if term1 > 2:
                             f1 = lambda re,pr,distance,diameter,viscosity,vs : (1.86*((re*pr)/(distance/diameter))**(1/3) *(viscosity/vs)**0.14)
                             Nu[0] = f1(re,pr,distance,diameter,viscosity,vs)
@@ -311,28 +314,28 @@ def getnu(velocity,rho,distance,diameter,k,viscosity,vs,Twall,Tgas,pr,re):
                         if Twall <= Tgas:
                             f3 = lambda re,pr,distance,diameter,viscosity,vs : 0.023*(re**(4/5))*(pr**0.3)
                             Nu[0] = f3(re,pr,distance,diameter,viscosity,vs)
-                            
+
                         if Twall > Tgas:
 #                            f4 = lambda re,pr,distance,diameter,viscosity,vs : 0.023*(re**(4/5))*(pr**0.4)
                             f5 = lambda re,pr,distance,diameter,viscosity,vs : 0.027*(re**(4.0/5.0))*((pr**0.4)**(1.0/3.0))*((viscosity/vs)**0.14)
 #                            Nu[0] = f4(re,pr,distance,diameter,viscosity,vs)
                             Nu[0] = f5(re,pr,distance,diameter,viscosity,vs)
-        
+
         Nuv = Nu[0]
-        
+
         if (distance/diameter) < 60:
             Nu.clear()
-            f5 = lambda Nuv, distance,diameter : (Nuv)/(1 + (1/((distance/diameter)**(2/3)))) 
+            f5 = lambda Nuv, distance,diameter : (Nuv)/(1 + (1/((distance/diameter)**(2/3))))
             Nu.append(f5(Nuv, distance,diameter))
-        else: 
+        else:
                 pass
-        return float(Nu[0])   
+        return float(Nu[0])
 
-#Calcluates Reynolds number    
+#Calcluates Reynolds number
 def reynolds(rho,velocity,distance,viscosity):
         p = rho
         v = velocity
-        x = distance 
+        x = distance
         u = viscosity
         Re = (p*x*v)/u
         return Re
@@ -341,7 +344,7 @@ def reynolds(rho,velocity,distance,viscosity):
 def hterm(Nu,distance,k):
         h = (k*Nu)/distance
         return h
- 
+
 #Calculates the Prandtl number
 def Pr(cp,viscosity,k):
     # cp = [J/kg-K]
@@ -376,73 +379,73 @@ def cpmix(cp,conc):
     cpmix = [i*j for i,j in zip(Ci,cp)]
     cpmixanswer = sum(cpmix)
     return cpmixanswer
-        
+
 def chemicals(CAS,temp):
         return tc.Chemical('{}'.format(CAS), T=temp)
-    
-    
+
+
 def formula(string):
         return tc.serialize_formula('{}'.format(string))
-        
-        
+
+
 def mean(numbers):
-    return float(sum(numbers)) / max(len(numbers), 1)       
-        
+    return float(sum(numbers)) / max(len(numbers), 1)
+
 def cp(alist):
             c2alist = []
             for i in alist:
-                chemicalt = getattr(i,'Cpgm') # [J/mol/K] 
+                chemicalt = getattr(i,'Cpgm') # [J/mol/K]
                 c2alist.append(chemicalt)
             return c2alist
-        
-def mw(alist): 
+
+def mw(alist):
             c2blist = []
             for i in alist:
                 chemicalt2 = getattr(i,'MW')  # [g/mol]
                 c2blist.append(chemicalt2)
             return c2blist
-        
+
 def name(namelist):
-            nlist = namelist 
+            nlist = namelist
             names = []
             for i in nlist:
-                chemicaltn = getattr(i,"IUPAC_name") 
+                chemicaltn = getattr(i,"IUPAC_name")
                 names.append(chemicaltn)
             return [nlist]
-        
+
 def cpsum(alist):
             chemlist = alist
             c2alist2 = []
             for i in chemlist:
-                
-                chemicalta = getattr(i,'Cpgm') # [J/mol/K] 
+
+                chemicalta = getattr(i,'Cpgm') # [J/mol/K]
                 c2alist2.append(chemicalta)
             return sum(c2alist2)
-        
+
 def mwsum(alist):
             chemlist = alist
             for i in chemlist:
                 c2clist2 = []
-                chemicaltc = getattr(i,'MW') # [g/m^3] 
+                chemicaltc = getattr(i,'MW') # [g/m^3]
                 c2clist2.append(chemicaltc)
             return sum(c2clist2)
-        
+
 def mixprop(IDs,mwmix,T,P):
             mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
             return mwmix
-        
+
 def mixpropcpg(IDs,mwmix,T,P):
             mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
             return mwmix.Cpg
-        
+
 def mixproprho(IDs,mwmix,T,P): #[kg/m^3]
             mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.rhog 
-        
+            return mwmix.rhog
+
 def mixpropkmix(IDs,mwmix,T,P): #[Pa*s]
             mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.kg 
-        
+            return mwmix.kg
+
 def mixpropvmix(IDs,mwmix,T,P): #[Pa*s]
             mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
             return mwmix.mugs
@@ -519,7 +522,7 @@ def kmix(T,yi,ks,u,Tbl,Mws,Cp,Cv):
         bottom.clear()
     kmixval = sum(klist)
     return kmixval
-      
+
 def Uab(ka,kb,cpa,cpb,cva,cvb):
     y1 = cpa/cva
     y2 = cpb/cvb
@@ -530,16 +533,17 @@ def Uab(ka,kb,cpa,cpb,cva,cvb):
     rr = r1/r2
     uab = float(kk*cab*rr)
     return uab
-        
-#rhs (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
-#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T,dT)
-#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L) 
-#Each equation is used to solve for the concentration of each compound and it is the exact same order that the compound lists are defined shortly below
 
+#RHS (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
+#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T, dT)
+#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L)
+#Each equation is used to solve for the concentration of each compound and it is the exact same order that the compound lists are defined shortly below
+#There is a program that calculates both the Jacobian and RHS equation systems (both symbolically and with certain numerical values plugged in) and saves them in the exact necessary format at in a txt file at https://github.com/tjczec01/chemicalsystem
+#It will also outpus the necessary Latex equations for printing purposes
 
 def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3, Twalls):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C 
-       
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C
+
        rhseqs =      [-C_EDC*C_R1*K_3*math.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*math.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*math.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*math.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*math.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*math.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*math.exp(-Ea_9/(R*T)) - C_EDC*K_1*math.exp(-Ea_1/(R*T)),
                      -C_EC*C_R1*K_12*math.exp(-Ea_12/(R*T)) + C_EDC*C_R2*K_4*math.exp(-Ea_4/(R*T)) + C_R2*C_VCM*K_19*math.exp(-Ea_19/(R*T)),
                      C_C11*C_R1*K_13*math.exp(-Ea_13/(R*T)) + C_C1112*C_R1*K_15*math.exp(-Ea_15/(R*T)) + C_C112*C_R1*K_14*math.exp(-Ea_14/(R*T)) + 2*C_C2H2*C_R1**2*K_31*math.exp(-Ea_31/(R*T)) + C_CHCl3*C_R1*K_16*math.exp(-Ea_16/(R*T)) + C_EC*C_R1*K_12*math.exp(-Ea_12/(R*T)) + C_EDC*C_R1*K_3*math.exp(-Ea_3/(R*T)) + C_R1*C_R2*K_10*math.exp(-Ea_10/(R*T)) + C_R1*C_R3*K_11*math.exp(-Ea_11/(R*T)) + C_R1*C_VCM*K_18*math.exp(-Ea_18/(R*T)),
@@ -567,7 +571,7 @@ def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, 
                      T1,
                      Constant_1*T1 - Constant_2*(-T + Twalls) - Constant_3*(-C_EDC*C_R1*K_3*math.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*math.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*math.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*math.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*math.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*math.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*math.exp(-Ea_9/(R*T)) - C_EDC*K_1*math.exp(-Ea_1/(R*T)))]
 
-       
+
        # rhseqs =      [-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)) - C_EDC*K_1*np.exp(-Ea_1/(R*T)),
        #               -C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) + C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)),
        #               C_C11*C_R1*K_13*np.exp(-Ea_13/(R*T)) + C_C1112*C_R1*K_15*np.exp(-Ea_15/(R*T)) + C_C112*C_R1*K_14*np.exp(-Ea_14/(R*T)) + 2*C_C2H2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)) + C_CHCl3*C_R1*K_16*np.exp(-Ea_16/(R*T)) + C_EC*C_R1*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) + C_R1*C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)),
@@ -594,13 +598,13 @@ def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, 
        #               C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) + C_R1*C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_R1*C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_R1*C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_R1*C_VCM*K_22*np.exp(-Ea_22/(R*T)) - C_R2*C_VCM*K_19*np.exp(-Ea_19/(R*T)) + C_R3*K_22*np.exp(-Ea_22/(R*T)) - C_R4*C_VCM*K_20*np.exp(-Ea_20/(R*T)) - C_R5*C_VCM*K_21*np.exp(-Ea_21/(R*T)),
        #               T1,
        #               Constant_1*T1 - Constant_2*(-T + Twalls) - Constant_3*(-C_EDC*C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_EDC*C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_EDC*C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_EDC*C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*np.exp(-Ea_9/(R*T)) - C_EDC*K_1*np.exp(-Ea_1/(R*T)))]
-              
+
        return rhseqs
-                                                 
+
 
 def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3, Twalls):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C 
-       
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_Tri, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_C1112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_R7, C_R8, C_CCl4, C_CHCl3, C_VCM, T, T1 = C
+
        JacN = [[-C_R1*K_3*math.exp(-Ea_3/(R*T)) - C_R2*K_4*math.exp(-Ea_4/(R*T)) - C_R4*K_5*math.exp(-Ea_5/(R*T)) - C_R5*K_6*math.exp(-Ea_6/(R*T)) - C_R6*K_7*math.exp(-Ea_7/(R*T)) - C_R7*K_8*math.exp(-Ea_8/(R*T)) - C_R8*K_9*math.exp(-Ea_9/(R*T)) - K_1*math.exp(-Ea_1/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EDC*K_3*math.exp(-Ea_3/(R*T)), -C_EDC*K_4*math.exp(-Ea_4/(R*T)), 0, -C_EDC*K_5*math.exp(-Ea_5/(R*T)), -C_EDC*K_6*math.exp(-Ea_6/(R*T)), -C_EDC*K_7*math.exp(-Ea_7/(R*T)), -C_EDC*K_8*math.exp(-Ea_8/(R*T)), -C_EDC*K_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0],
               [C_R2*K_4*math.exp(-Ea_4/(R*T)), -C_R1*K_12*math.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EC*K_12*math.exp(-Ea_12/(R*T)), C_EDC*K_4*math.exp(-Ea_4/(R*T)) + C_VCM*K_19*math.exp(-Ea_19/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_19*math.exp(-Ea_19/(R*T)), 0, 0],
               [C_R1*K_3*math.exp(-Ea_3/(R*T)), C_R1*K_12*math.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*math.exp(-Ea_31/(R*T)), C_R1*K_13*math.exp(-Ea_13/(R*T)), C_R1*K_14*math.exp(-Ea_14/(R*T)), C_R1*K_15*math.exp(-Ea_15/(R*T)), C_C11*K_13*math.exp(-Ea_13/(R*T)) + C_C1112*K_15*math.exp(-Ea_15/(R*T)) + C_C112*K_14*math.exp(-Ea_14/(R*T)) + 4*C_C2H2*C_R1*K_31*math.exp(-Ea_31/(R*T)) + C_CHCl3*K_16*math.exp(-Ea_16/(R*T)) + C_EC*K_12*math.exp(-Ea_12/(R*T)) + C_EDC*K_3*math.exp(-Ea_3/(R*T)) + C_R2*K_10*math.exp(-Ea_10/(R*T)) + C_R3*K_11*math.exp(-Ea_11/(R*T)) + C_VCM*K_18*math.exp(-Ea_18/(R*T)), C_R1*K_10*math.exp(-Ea_10/(R*T)), C_R1*K_11*math.exp(-Ea_11/(R*T)), 0, 0, 0, 0, 0, 0, C_R1*K_16*math.exp(-Ea_16/(R*T)), C_R1*K_18*math.exp(-Ea_18/(R*T)), 0, 0],
@@ -628,7 +632,7 @@ def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12
               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               [-Constant_3*(-C_R1*K_3*math.exp(-Ea_3/(R*T)) - C_R2*K_4*math.exp(-Ea_4/(R*T)) - C_R4*K_5*math.exp(-Ea_5/(R*T)) - C_R5*K_6*math.exp(-Ea_6/(R*T)) - C_R6*K_7*math.exp(-Ea_7/(R*T)) - C_R7*K_8*math.exp(-Ea_8/(R*T)) - C_R8*K_9*math.exp(-Ea_9/(R*T)) - K_1*math.exp(-Ea_1/(R*T))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*K_3*math.exp(-Ea_3/(R*T)), C_EDC*Constant_3*K_4*math.exp(-Ea_4/(R*T)), 0, C_EDC*Constant_3*K_5*math.exp(-Ea_5/(R*T)), C_EDC*Constant_3*K_6*math.exp(-Ea_6/(R*T)), C_EDC*Constant_3*K_7*math.exp(-Ea_7/(R*T)), C_EDC*Constant_3*K_8*math.exp(-Ea_8/(R*T)), C_EDC*Constant_3*K_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, Constant_2, Constant_1]]
 
-       
+
        # JacN = [[-C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_R8*K_9*np.exp(-Ea_9/(R*T)) - K_1*np.exp(-Ea_1/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EDC*K_3*np.exp(-Ea_3/(R*T)), -C_EDC*K_4*np.exp(-Ea_4/(R*T)), 0, -C_EDC*K_5*np.exp(-Ea_5/(R*T)), -C_EDC*K_6*np.exp(-Ea_6/(R*T)), -C_EDC*K_7*np.exp(-Ea_7/(R*T)), -C_EDC*K_8*np.exp(-Ea_8/(R*T)), -C_EDC*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0],
        #        [C_R2*K_4*np.exp(-Ea_4/(R*T)), -C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EC*K_12*np.exp(-Ea_12/(R*T)), C_EDC*K_4*np.exp(-Ea_4/(R*T)) + C_VCM*K_19*np.exp(-Ea_19/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_19*np.exp(-Ea_19/(R*T)), 0, 0],
        #        [C_R1*K_3*np.exp(-Ea_3/(R*T)), C_R1*K_12*np.exp(-Ea_12/(R*T)), 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_31*np.exp(-Ea_31/(R*T)), C_R1*K_13*np.exp(-Ea_13/(R*T)), C_R1*K_14*np.exp(-Ea_14/(R*T)), C_R1*K_15*np.exp(-Ea_15/(R*T)), C_C11*K_13*np.exp(-Ea_13/(R*T)) + C_C1112*K_15*np.exp(-Ea_15/(R*T)) + C_C112*K_14*np.exp(-Ea_14/(R*T)) + 4*C_C2H2*C_R1*K_31*np.exp(-Ea_31/(R*T)) + C_CHCl3*K_16*np.exp(-Ea_16/(R*T)) + C_EC*K_12*np.exp(-Ea_12/(R*T)) + C_EDC*K_3*np.exp(-Ea_3/(R*T)) + C_R2*K_10*np.exp(-Ea_10/(R*T)) + C_R3*K_11*np.exp(-Ea_11/(R*T)) + C_VCM*K_18*np.exp(-Ea_18/(R*T)), C_R1*K_10*np.exp(-Ea_10/(R*T)), C_R1*K_11*np.exp(-Ea_11/(R*T)), 0, 0, 0, 0, 0, 0, C_R1*K_16*np.exp(-Ea_16/(R*T)), C_R1*K_18*np.exp(-Ea_18/(R*T)), 0, 0],
@@ -655,7 +659,7 @@ def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12
        #        [C_R5*K_6*np.exp(-Ea_6/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_10*np.exp(-Ea_10/(R*T)) - C_VCM*K_17*np.exp(-Ea_17/(R*T)) - C_VCM*K_18*np.exp(-Ea_18/(R*T)) - C_VCM*K_22*np.exp(-Ea_22/(R*T)), C_R1*K_10*np.exp(-Ea_10/(R*T)) - C_VCM*K_19*np.exp(-Ea_19/(R*T)), K_22*np.exp(-Ea_22/(R*T)), -C_VCM*K_20*np.exp(-Ea_20/(R*T)), C_EDC*K_6*np.exp(-Ea_6/(R*T)) - C_VCM*K_21*np.exp(-Ea_21/(R*T)), 0, 0, 0, 0, 0, -C_R1*K_17*np.exp(-Ea_17/(R*T)) - C_R1*K_18*np.exp(-Ea_18/(R*T)) - C_R1*K_22*np.exp(-Ea_22/(R*T)) - C_R2*K_19*np.exp(-Ea_19/(R*T)) - C_R4*K_20*np.exp(-Ea_20/(R*T)) - C_R5*K_21*np.exp(-Ea_21/(R*T)), 0, 0],
        #        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
        #        [-Constant_3*(-C_R1*K_3*np.exp(-Ea_3/(R*T)) - C_R2*K_4*np.exp(-Ea_4/(R*T)) - C_R4*K_5*np.exp(-Ea_5/(R*T)) - C_R5*K_6*np.exp(-Ea_6/(R*T)) - C_R6*K_7*np.exp(-Ea_7/(R*T)) - C_R7*K_8*np.exp(-Ea_8/(R*T)) - C_R8*K_9*np.exp(-Ea_9/(R*T)) - K_1*np.exp(-Ea_1/(R*T))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*K_3*np.exp(-Ea_3/(R*T)), C_EDC*Constant_3*K_4*np.exp(-Ea_4/(R*T)), 0, C_EDC*Constant_3*K_5*np.exp(-Ea_5/(R*T)), C_EDC*Constant_3*K_6*np.exp(-Ea_6/(R*T)), C_EDC*Constant_3*K_7*np.exp(-Ea_7/(R*T)), C_EDC*Constant_3*K_8*np.exp(-Ea_8/(R*T)), C_EDC*Constant_3*K_9*np.exp(-Ea_9/(R*T)), 0, 0, 0, Constant_2, Constant_1]]
-                                                 
+
        return JacN
 
 #These are mostly functions used to calculate the unused diffusion coefficients
@@ -702,7 +706,7 @@ def Bviral4(T,Tc,pc,omega,a,b,dipole):
 def btoz(B,T,P):
        Z = 1.0 + (B*P)/(T*8.314)
        return Z
- 
+
 def densitytovm(p,MW):
        vmval = 1/((1E3*p)/(MW))
        return vmval
@@ -716,8 +720,8 @@ def alistfun(Temp,PascalP):
     Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
     Trip = tc.Chemical('79-01-6', T=Temp,P=PascalP)
     C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP) 
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP) 
+    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP)
     C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
     C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
     C1112p = tc.Chemical('630-20-6', T=Temp,P=PascalP)
@@ -744,8 +748,8 @@ def alistfun2(Temp,PascalP):
     Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
     Trip = tc.Chemical('79-01-6', T=Temp,P=PascalP)
     C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP) 
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP) 
+    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP)
     C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
     C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
     C1112p = tc.Chemical('630-20-6', T=Temp,P=PascalP)
@@ -826,11 +830,11 @@ F_in = volume_flow*rhoc2 #[mol/s]
 L = int(u_z*desired_time) # [m]
 Surface_area = math.pi*2.0*ri*L
 alpha = (math.pi*2.0*ri*L)/(Ac*L)
-patm = PascalP/101325.0 #[atm] 
+patm = PascalP/101325.0 #[atm]
 Ratm = 8.20573660809596E-5 #[m^3*atm/K*mol]
 Rkcal = 1.98720425864083E-3 #[kcal/K*mol]
-segment_second = 100 #int(input('Enter iterations per second --> '))
-gnodes = 10 #Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ 
+segment_second = 10 #int(input('Enter iterations per second --> '))
+gnodes = 10 #Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
 gnodes2 = 1
 chngamnt = 100.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
 iternum = 200 #int(input('Enter total iterations --> '))
@@ -870,7 +874,7 @@ tn = np.linspace(0,L,desired_time)
 #Concentrations
 EDC = [float(initedcb)]
 EC = [float(0.0)]
-HCl = [float(0.0)] 
+HCl = [float(0.0)]
 Coke = [float(0.0)] #Coke is written as simply C in the paper
 CP = [float(0.0)]
 Di = [float(0.0)]
@@ -899,7 +903,7 @@ J_eval = [0]
 J_evalt = [0]
 EDCj = [float(initedc)]
 ECj = [float(0.0)]
-HClj = [float(0.0)] 
+HClj = [float(0.0)]
 Cokej = [float(0.0)] #Coke is written as simply C in the paper
 CPj = [float(0.0)]
 Dij = [float(0.0)]
@@ -941,7 +945,7 @@ h_valsj = []
 kmix_valsj = []
 EDCl = []
 ECl = []
-HCll = [] 
+HCll = []
 Cokel = [] #Coke is written as simply C in the paper
 CPl = []
 Dil = []
@@ -957,7 +961,7 @@ R2l = []
 R3l = []
 R4l = []
 R5l = []
-R6l = [] 
+R6l = []
 R7l = []
 R8l = []
 CCl4l = []
@@ -967,7 +971,7 @@ T0l = []
 T1l = []
 EDClj = []
 EClj = []
-HCllj = [] 
+HCllj = []
 Cokelj = [] #Coke is written as simpljy C in the paper
 CPlj = []
 Dilj = []
@@ -1074,10 +1078,10 @@ purej = []
 dpure = []
 
 for i in alistb:
-    chemicalt = getattr(i,'IUPAC_name') 
+    chemicalt = getattr(i,'IUPAC_name')
     names.append(chemicalt)
 
-dist_end = endnum #Final position 
+dist_end = endnum #Final position
 J_eval = [0]
 J_evalt = [0]
 dist_value= [0.0]
@@ -1088,15 +1092,15 @@ mws = []
 pvis = []
 kks = []
 for i in alistb:
-            Casnum = getattr(i,'CAS') 
-            CAS.append(Casnum) 
+            Casnum = getattr(i,'CAS')
+            CAS.append(Casnum)
             tb = getattr(i,'Tb')
             Tbl.append(float(tb))
             chemicalpi = getattr(i,'rhogm')
             prhos.append(float(chemicalpi))
             chemicalmwi = getattr(i,'MW')
             mws.append(float(chemicalmwi/1000.0))
-            chemicalmug = getattr(i,'mug') 
+            chemicalmug = getattr(i,'mug')
             pvis.append(float(chemicalmug))
             chemicalkl = getattr(i,'kg')
             kks.append(float(chemicalkl))
@@ -1135,10 +1139,9 @@ tau4 = intvols/u_z
 taui = 1.0/u_z
 taui2 = 1.0
 
-for il in tqdm(range(iternum)):
-    
-# for il in range(iternum):
-    
+iterslist = [int(i) for i in range(0, iternum, 1)]
+
+for il in tqdm(iterslist):
     change = il*(chngamnt/1000.0)
     amount_new = 342.0 - change
     Ea_vals.append(amount_new)
@@ -1146,10 +1149,10 @@ for il in tqdm(range(iternum)):
     Twalls.append(Temp_K)
     EDC = [float(initedc)]
     EDCj = [float(initedc)]
-    Eabb = [amount_new,230,7,34,42,45,48,56,63,13,12,4,6,15,17,14,0,56,61,30,31,84,90,70,70,33,33,33,13,20,70] #[kJ/mol]
+    Eabb = [amount_new, 230, 7, 34, 42, 45, 48, 56, 63, 13, 12, 4, 6, 15, 17, 14, 0, 56, 61, 30, 31, 84, 90, 70, 70, 33, 33, 33, 13, 20, 70] #[kJ/mol]
     Eab = [x*1000.0 for x in Eabb]
     Ea = [float(x) for x in Eab] #kJ/mol
-    ks = [5.9E+15,2.2E+12,1.3E+13,1.2E+13,1E+12,5E+11,2E+11,1E+11,1E+12,1E+13,1E+13,1.7E+13,1.2E+13,1.7E+13,1.7E+13,1.6E+13,91000000000,1.2E+14,3E+11,20000000000,5E+11,2.1E+14,5E+14,2E+13,2.5E+13,1E+12,5E+11,5E+11,1E+13,1E+14,1.6E+14]
+    ks = [5.9E+15, 2.2E+12, 1.3E+13, 1.2E+13, 1E+12, 5E+11, 2E+11, 1E+11, 1E+12, 1E+13, 1E+13, 1.7E+13, 1.2E+13, 1.7E+13, 1.7E+13, 1.6E+13, 91000000000, 1.2E+14, 3E+11, 20000000000, 5E+11, 2.1E+14, 5E+14, 2E+13, 2.5E+13, 1E+12, 5E+11, 5E+11, 1E+13, 1E+14, 1.6E+14]
 #    n = [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,2,2]
     n = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
     k_0b = [i/((1E6)**(j-1)) for i,j in zip(ks,n)]
@@ -1191,18 +1194,18 @@ for il in tqdm(range(iternum)):
                     k = Y0bfa.index(i)
                     i2 = alistb2[k]
                     C_i2.append(float(i)/float(Ctotal))
-                    chemicalcpi = getattr(i2,'Cpgm') #[J/mol*K] 
+                    chemicalcpi = getattr(i2,'Cpgm') #[J/mol*K]
                     Cpi_list2.append(float(chemicalcpi))
-                    chemicalmwi = getattr(i2,'MW') #[g/mol] 
+                    chemicalmwi = getattr(i2,'MW') #[g/mol]
                     MWgi_list2.append(float(chemicalmwi)) #[g/mol]
                     MWi_list2.append(float(chemicalmwi/1000.0)) #[kg/mol]
-                    chemicalpi = getattr(i2,'rhogm') #[mol/m^3] 
+                    chemicalpi = getattr(i2,'rhogm') #[mol/m^3]
                     Rhoi_list2.append(float(chemicalpi))
-                    chemicalkl = getattr(i2,'kg') #[mol/m^3] 
+                    chemicalkl = getattr(i2,'kg') #[mol/m^3]
                     klval_i2.append(float(chemicalkl))
-                    chemicalmug= getattr(i2,'mu') #  [Pa*s] 
+                    chemicalmug= getattr(i2,'mu') #  [Pa*s]
                     mu_i2.append(float(chemicalmug))
-                    chemicaltb= getattr(i2,'Tb') # [K] 
+                    chemicaltb= getattr(i2,'Tb') # [K]
                     TB_i2.append(float(chemicaltb))
                     chemicalvm = getattr(i2,'Vmg')
                     Vm2.append(float(chemicalvm/1E6))
@@ -1301,8 +1304,8 @@ for il in tqdm(range(iternum)):
         delhm = 71000.0 #J/mol
         con1b = RCPavg/kval2
         con1 = (u_z*rhocpgm1)/kval2 # [1/m] -> [1/cm]
-        con2 = (alpha*U_coeff)/kval2 # [m] (Sa) 
-        con3 = delhm/kval2 # -> [m] 
+        con2 = (alpha*U_coeff)/kval2 # [m] (Sa)
+        con3 = delhm/kval2 # -> [m]
         RE_vals.append(re)
         U_coeffs.append(U_coeff)
         h_vals.append(gash)
@@ -1344,16 +1347,16 @@ for il in tqdm(range(iternum)):
                     kj = Y0bjf.index(ij)
                     i2j = alistb2j[kj]
                     C_i2j.append(float(ij)/float(Ctotalj))
-                    chemicalcpij = getattr(i2j,'Cpgm') #[J/mol*K] 
+                    chemicalcpij = getattr(i2j,'Cpgm') #[J/mol*K]
                     Cpi_list2j.append(chemicalcpij)
-                    chemicalmwij = getattr(i2j,'MW') #[g/mol] 
+                    chemicalmwij = getattr(i2j,'MW') #[g/mol]
                     MWgi_list2j.append(chemicalmwij) #[g/mol]
                     MWi_list2j.append(float(chemicalmwij/1000)) #[kg/mol]
-                    chemicalpij = getattr(i2j,'rhogm') #[mol/m^3] 
+                    chemicalpij = getattr(i2j,'rhogm') #[mol/m^3]
                     Rhoi_list2j.append(chemicalpij) #[mol/cm^3]
-                    chemicalklj = getattr(i2j,'kg') #[W/m*K] 
+                    chemicalklj = getattr(i2j,'kg') #[W/m*K]
                     klval_i2j.append(chemicalklj) #[W/cm*K]
-                    chemicalmugj= getattr(i2j,'mug') #[Pa*s] 
+                    chemicalmugj= getattr(i2j,'mug') #[Pa*s]
                     mu_i2j.append(chemicalmugj)
                     chemicaltbj= getattr(i2j,'Tb') #[K]
                     TB_i2j.append(chemicaltbj)
@@ -1457,9 +1460,9 @@ for il in tqdm(range(iternum)):
         z2 = sp.symbols('z')
         Y02b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
         Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1],T0[-1],T1[-1]]
-        Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1],T0j[-1],T1j[-1]] 
-        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1],T0j[-1],T1j[-1]]
+        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[23][-1]/edcint
@@ -1546,7 +1549,7 @@ for il in tqdm(range(iternum)):
         des1fj = sum(D1fj)
         pur1f = (des1f/prod1f) *100
         pr1.append(pur1f)
-        pur1jf = (des1fj/prod1fj) *100 
+        pur1jf = (des1fj/prod1fj) *100
         pr1j.append(pur1jf)
         prev_eval = J_eval[0] #This loads the previous number of jacobian calculations
         j_eval = resb.nfev + prev_eval #This adds the previous to the most recent amount
@@ -1641,7 +1644,7 @@ for il in tqdm(range(iternum)):
     EDC.clear()
     EC.clear()
     HCl.clear()
-    Coke.clear()    
+    Coke.clear()
     CP.clear()
     Di.clear()
     Tri.clear()
@@ -1667,7 +1670,7 @@ for il in tqdm(range(iternum)):
     EDCj.clear()
     ECj.clear()
     HClj.clear()
-    Cokej.clear()    
+    Cokej.clear()
     CPj.clear()
     Dij.clear()
     Trij.clear()
@@ -1710,8 +1713,8 @@ for il in tqdm(range(iternum)):
     selectivity2j.clear()
     EDC = [float(initedc)]
     EC = [float(0.0)]
-    HCl = [float(0.0)] 
-    Coke = [float(0.0)] 
+    HCl = [float(0.0)]
+    Coke = [float(0.0)]
     CP = [float(0.0)]
     Di = [float(0.0)]
     C4H6Cl2 = [float(0.0)]
@@ -1730,8 +1733,8 @@ for il in tqdm(range(iternum)):
     T1 = [float(0.0)]
     EDCj = [float(initedc)]
     ECj = [float(0.0)]
-    HClj = [float(0.0)] 
-    Cokej = [float(0.0)] 
+    HClj = [float(0.0)]
+    Cokej = [float(0.0)]
     CPj = [float(0.0)]
     Dij = [float(0.0)]
     C4H6Cl2j = [float(0.0)]
@@ -1759,7 +1762,7 @@ for il in tqdm(range(iternum)):
     # Eaf2.clear()
     EDC = [float(initedc)]
     EC = [float(0.0)]
-    HCl = [float(0.0)] 
+    HCl = [float(0.0)]
     Coke = [float(0.0)] #Coke is written as simply C in the paper
     CP = [float(0.0)]
     Di = [float(0.0)]
@@ -1785,7 +1788,7 @@ for il in tqdm(range(iternum)):
     T1 = [float(0.0)]
     EDCj = [float(initedc)]
     ECj = [float(0.0)]
-    HClj = [float(0.0)] 
+    HClj = [float(0.0)]
     Cokej = [float(0.0)] #Coke is written as simply C in the paper
     CPj = [float(0.0)]
     Dij = [float(0.0)]
@@ -1818,19 +1821,19 @@ for il in tqdm(range(iternum)):
     atolval = 1E-7
     atolvalj = 1E-7
     Ls2 = firststepval
-    
+
 eaconvf = []
 eaconvjf = []
 for i,j in enumerate(conversion_EDCf):
     val1 = conversion_EDCf[i]
     val2 = val1[-1]
     eaconvf.append(val2)
-    
+
 for i2,j2 in enumerate(conversion_EDCfj):
     val1j = conversion_EDCfj[i2]
     val2j = val1j[-1]
-    eaconvjf.append(val2j)    
-    
+    eaconvjf.append(val2j)
+
 totallist1 = [EDCl,ECl,HCll,Cokel,CPl,Dil,Tril,C4H6Cl2l,C6H6l,C2H2l,C11l,C112l,C1112l,R1l,R2l,R3l,R4l,R5l,R6l,R7l,R8l,CCl4l,CHCl3l,VCMl,T0l,T1l,puref]
 totallist2 = [EDClj,EClj,HCllj,Cokelj,CPlj,Dilj,Trilj,C4H6Cl2lj,C6H6lj,C2H2lj,C11lj,C112lj,C1112lj,R1lj,R2lj,R3lj,R4lj,R5lj,R6lj,R7lj,R8lj,CCl4lj,CHCl3lj,VCMlj,T0lj,T1lj,purefj]
 for i,j in enumerate(totallist1):
@@ -1934,7 +1937,7 @@ np.savetxt(r"{}\EC.txt".format(path_fol),ec)
 hcl = np.array(HCll)
 np.savetxt(r"{}\HCl.txt".format(path_fol),hcl)
 cc = np.array(Cokel)
-np.savetxt(r"{}\Coke.txt".format(path_fol),cc)   
+np.savetxt(r"{}\Coke.txt".format(path_fol),cc)
 cp1 = np.array(CPl)
 np.savetxt(r"{}\cpb.txt".format(path_fol),cp1)
 di = np.array(Dil)
@@ -1942,9 +1945,9 @@ np.savetxt(r"{}\Di.txt".format(path_fol),di)
 tri = np.array(Tril)
 np.savetxt(r"{}\Tri.txt".format(path_fol),tri)
 c4h6cl2 = np.array(C4H6Cl2l)
-np.savetxt(r"{}\C4H6Cl2.txt".format(path_fol),c4h6cl2) 
+np.savetxt(r"{}\C4H6Cl2.txt".format(path_fol),c4h6cl2)
 c6h6 = np.array(C6H6l)
-np.savetxt(r"{}\C6H6.txt".format(path_fol),c6h6) 
+np.savetxt(r"{}\C6H6.txt".format(path_fol),c6h6)
 c2h2 = np.array(C2H2l)
 np.savetxt(r"{}\C2H2.txt".format(path_fol),c2h2)
 c11 = np.array(C11l)
@@ -1954,13 +1957,13 @@ np.savetxt(r"{}\C112.txt".format(path_fol),c112)
 c1112 = np.array(C1112l)
 np.savetxt(r"{}\C1112.txt".format(path_fol),c1112)
 r1 = np.array(R1l)
-np.savetxt(r"{}\R1.txt".format(path_fol),r1) 
+np.savetxt(r"{}\R1.txt".format(path_fol),r1)
 r2 = np.array(R2l)
 np.savetxt(r"{}\R2.txt".format(path_fol),r2)
-r3 = np.array(R3l) 
+r3 = np.array(R3l)
 np.savetxt(r"{}\R3.txt".format(path_fol),r3)
 r4 = np.array(R4l)
-np.savetxt(r"{}\R4.txt".format(path_fol),r4) 
+np.savetxt(r"{}\R4.txt".format(path_fol),r4)
 r5 = np.array(R5l)
 np.savetxt(r"{}\R5.txt".format(path_fol),r5)
 r6 = np.array(R6l)
@@ -1986,7 +1989,7 @@ np.savetxt(r"{}\ECj.txt".format(path_fol),ecj)
 hclj = np.array(HCllj)
 np.savetxt(r"{}\HClj.txt".format(path_fol),hclj)
 ccj = np.array(Cokelj)
-np.savetxt(r"{}\Cokej.txt".format(path_fol),ccj)   
+np.savetxt(r"{}\Cokej.txt".format(path_fol),ccj)
 cp1j = np.array(CPlj)
 np.savetxt(r"{}\cpbj.txt".format(path_fol),cp1j)
 dij = np.array(Dilj)
@@ -1994,9 +1997,9 @@ np.savetxt(r"{}\Dij.txt".format(path_fol),dij)
 trij = np.array(Trilj)
 np.savetxt(r"{}\Trij.txt".format(path_fol),trij)
 c4h6cl2j = np.array(C4H6Cl2lj)
-np.savetxt(r"{}\C4H6Cl2j.txt".format(path_fol),c4h6cl2j) 
+np.savetxt(r"{}\C4H6Cl2j.txt".format(path_fol),c4h6cl2j)
 c6h6j = np.array(C6H6lj)
-np.savetxt(r"{}\C6H6j.txt".format(path_fol),c6h6j) 
+np.savetxt(r"{}\C6H6j.txt".format(path_fol),c6h6j)
 c2h2j = np.array(C2H2lj)
 np.savetxt(r"{}\C2H2j.txt".format(path_fol),c2h2j)
 c11j = np.array(C11lj)
@@ -2006,13 +2009,13 @@ np.savetxt(r"{}\C112j.txt".format(path_fol),c112j)
 c1112j = np.array(C1112lj)
 np.savetxt(r"{}\C1112j.txt".format(path_fol),c1112j)
 r1j = np.array(R1lj)
-np.savetxt(r"{}\R1j.txt".format(path_fol),r1j) 
+np.savetxt(r"{}\R1j.txt".format(path_fol),r1j)
 r2j = np.array(R2lj)
 np.savetxt(r"{}\R2j.txt".format(path_fol),r2j)
-r3j = np.array(R3lj) 
+r3j = np.array(R3lj)
 np.savetxt(r"{}\R3j.txt".format(path_fol),r3j)
 r4j = np.array(R4lj)
-np.savetxt(r"{}\R4j.txt".format(path_fol),r4j) 
+np.savetxt(r"{}\R4j.txt".format(path_fol),r4j)
 r5j = np.array(R5lj)
 np.savetxt(r"{}\R5j.txt".format(path_fol),r5j)
 r6j = np.array(R6lj)
@@ -2036,11 +2039,11 @@ np.savetxt(r"{}\Total.txt".format(path_fol),total)
 purel = np.array(puref,ndmin=1)
 np.savetxt(r"{}\Purity.txt".format(path_fol),purel)
 distance = np.array(xD)
-np.savetxt(r"{}\Distance.txt".format(path_fol),distance)   
+np.savetxt(r"{}\Distance.txt".format(path_fol),distance)
 t0 = np.array(T0l,ndmin=1)
 np.savetxt(r"{}\Temperature.txt".format(path_fol),t0)
 dT = np.array(T1l,ndmin=1)
-np.savetxt(r"{}\TemperatureDifferential.txt".format(path_fol),dT) 
+np.savetxt(r"{}\TemperatureDifferential.txt".format(path_fol),dT)
 revals = np.array(RE_valsl,ndmin=1)
 np.savetxt(r"{}\Reynolds.txt".format(path_fol),revals)
 uvals = np.array(U_coeffsl,ndmin=1)
@@ -2050,11 +2053,11 @@ np.savetxt(r"{}\Hvals.txt".format(path_fol),hvals)
 kvals = np.array(kmix_valsl,ndmin=1)
 np.savetxt(r"{}\Kvals.txt".format(path_fol),kvals)
 c1vals = np.array(c1_valsl,ndmin=1)
-np.savetxt(r"{}\Constant1.txt".format(path_fol),c1vals) 
+np.savetxt(r"{}\Constant1.txt".format(path_fol),c1vals)
 c2vals = np.array(c2_valsl,ndmin=1)
 np.savetxt(r"{}\Constant2.txt".format(path_fol),c2vals)
 c3vals = np.array(c3_valsl,ndmin=1)
-np.savetxt(r"{}\Constant3.txt".format(path_fol),c3vals) 
+np.savetxt(r"{}\Constant3.txt".format(path_fol),c3vals)
 revalsj = np.array(RE_valsjl,ndmin=1)
 np.savetxt(r"{}\ReynoldsJ.txt".format(path_fol),revalsj)
 uvalsj = np.array(U_coeffsjl,ndmin=1)
@@ -2064,11 +2067,11 @@ np.savetxt(r"{}\Hvalsj.txt".format(path_fol),hvalsj)
 kvalsj = np.array(kmix_valsjl,ndmin=1)
 np.savetxt(r"{}\Kvalsj.txt".format(path_fol),kvalsj)
 c1valsj = np.array(c1_valsjl,ndmin=1)
-np.savetxt(r"{}\Constant1j.txt".format(path_fol),c1valsj) 
+np.savetxt(r"{}\Constant1j.txt".format(path_fol),c1valsj)
 c2valsj = np.array(c2_valsjl,ndmin=1)
 np.savetxt(r"{}\Constant2j.txt".format(path_fol),c2valsj)
 c3valsj = np.array(c3_valsjl,ndmin=1)
-np.savetxt(r"{}\Constant3j.txt".format(path_fol),c3valsj) 
+np.savetxt(r"{}\Constant3j.txt".format(path_fol),c3valsj)
 totalj = np.array(C_Totalj,ndmin=1)
 np.savetxt(r"{}\Totalj.txt".format(path_fol),totalj)
 purejl = np.array(purefj,ndmin=1)
@@ -2076,37 +2079,37 @@ np.savetxt(r"{}\Purityj.txt".format(path_fol),purejl)
 t0j = np.array(T0lj,ndmin=1)
 np.savetxt(r"{}\TemperatureJac.txt".format(path_fol),t0j)
 dTj = np.array(T1lj,ndmin=1)
-np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol),dTj) 
+np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol),dTj)
 eavals = np.array(Ea_vals,ndmin=1)
 np.savetxt(r"{}\Eavals.txt".format(path_fol),eavals)
 eavals2 = np.array(Ea_vals2,ndmin=1)
-np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2) 
+np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2)
 eavalsr = np.array(Ea_valsrev,ndmin=1)
 np.savetxt(r"{}\Eavals.txt".format(path_fol),eavalsr)
 eavals2r = np.array(Ea_valsrev2,ndmin=1)
-np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2r) 
+np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2r)
 eaendc = np.array(eaconvf,ndmin=1)
-np.savetxt(r"{}\FinalConversion.txt".format(path_fol),eaendc) 
+np.savetxt(r"{}\FinalConversion.txt".format(path_fol),eaendc)
 eaendcj = np.array(eaconvjf,ndmin=1)
-np.savetxt(r"{}\FinalConversionJ.txt".format(path_fol),eaendcj) 
+np.savetxt(r"{}\FinalConversionJ.txt".format(path_fol),eaendcj)
 d2tdz2 = np.array(T1lj,ndmin=1)
 np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol),dTj)
 
 
 selectvcm = np.array(selectivityl,ndmin=1)
-np.savetxt(r"{}\selectivityvcm.txt".format(path_fol),selectvcm) 
+np.savetxt(r"{}\selectivityvcm.txt".format(path_fol),selectvcm)
 selecthcl = np.array(selectivity2l,ndmin=1)
-np.savetxt(r"{}\selectivityhcl.txt".format(path_fol),selecthcl) 
+np.savetxt(r"{}\selectivityhcl.txt".format(path_fol),selecthcl)
 
 
 selectvcmj = np.array(selectivityjl,ndmin=1)
-np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),selectvcmj) 
+np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),selectvcmj)
 selecthclj = np.array(selectivity2jl,ndmin=1)
-np.savetxt(r"{}\selectivityhclj.txt".format(path_fol),selecthclj) 
+np.savetxt(r"{}\selectivityhclj.txt".format(path_fol),selecthclj)
 
 
 yieldvcm = np.array(yield_vcml,ndmin=1)
-np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcm) 
+np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcm)
 yieldvcmj = np.array(yield_vcmjl,ndmin=1)
 np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcmj)
 
@@ -2203,7 +2206,7 @@ plt1e = plt.plot(eavals, eaendc, 'b-')
 plt2e = plt.plot(eavals, eaendcj, 'g-')
 plt.ylabel('Conversion')
 plt.xlabel("Initial Activation Energy: {} {}".format(Ea_vals[0], r"[$\frac{kJ}{mol}$]"))
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title("Final Conversion")
 plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
 plt.grid()
@@ -2213,7 +2216,7 @@ plt.close()
 
 fig = plt.figure()
 for jj,j in enumerate(graph_nodes2):
-    index_j = int(j) 
+    index_j = int(j)
     plt.plot(xD, edc[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
@@ -2227,7 +2230,7 @@ plt.close()
 
 fig = plt.figure()
 for jj,j in enumerate(graph_nodes2):
-    index_j = int(j) 
+    index_j = int(j)
     plt.plot(xD, edcj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
@@ -2263,7 +2266,7 @@ for jj,j in enumerate(graph_nodes):
       plt.grid()
       plt.xlabel('Times [s]')
       plt.ylabel('Conversion')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('EDC Jacobian Conversion')
       fig.savefig(r"{}\EDC-conv.pdf".format(path_fol))
       fig.savefig(r"{}\EDC-conv.svg".format(path_fol))
@@ -2450,7 +2453,7 @@ for jj,j in enumerate(graph_nodes):
       fig.savefig(r"{}\T-Profile-J {} kJ.pdf".format(path_fol,Ea_vals[j]))
       fig.savefig(r"{}\T-Profile-J {} kJ.svg".format(path_fol,Ea_vals[j]))
       plt.close()
-      
+
 # for jj,j in enumerate(graph_nodes):
 #       fig = plt.figure()
 #       index_t = int(j)
@@ -2485,7 +2488,7 @@ for jj,j in enumerate(graph_nodes):
 for jj,j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
-    TemperatureC = KtoC(Temp_K)       
+    TemperatureC = KtoC(Temp_K)
     plt.plot(xD, ecj[j, :], 'g-', label='Ethylchloride')
     plt.plot(xD, ccj[j, :], 'r-', label='Soot/Coke')
     plt.plot(xD, cp1j[j, :], 'b-', label='1-/2-chloroprene')
@@ -2517,7 +2520,7 @@ for jj,j in enumerate(graph_nodes):
     fig.savefig(r"{}\ProductsNoJ-{}-kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     fig.savefig(r"{}\ProductsNoJ-{}-kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
-    
+
 for jj,j in enumerate(graph_nodes):
     fig = plt.figure()
     TemperatureC = KtoC(Ea_vals[j])
@@ -2531,7 +2534,7 @@ for jj,j in enumerate(graph_nodes):
     plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
     fig.savefig(r"{}\ProductsJ-{}-kJ.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsJ-{}-kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight') 
+    fig.savefig(r"{}\ProductsJ-{}-kJ.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 for jj,j in enumerate(graph_nodes):
@@ -2542,7 +2545,7 @@ for jj,j in enumerate(graph_nodes):
       plt.grid()
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel('Product Purity')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('Product Purity - Jacobian')
       fig.savefig(r"{}\Ea_vals-PurityJ {} kJ.pdf".format(path_fol,Ea_vals[j]))
       fig.savefig(r"{}\Ea_vals-PurityJ {} kJ.svg".format(path_fol,Ea_vals[j]))
@@ -2556,7 +2559,7 @@ plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
 fig.savefig(r"{}\OverallEa_vals-PurityJ {} kJ.pdf".format(path_fol,Ea_vals[j]))
 fig.savefig(r"{}\OverallEa_vals-PurityJ {} kJ.svg".format(path_fol,Ea_vals[j]))
@@ -2570,7 +2573,7 @@ for jj,j in enumerate(graph_nodes):
     plt.grid()
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Product Purity')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.title('Product Purity')
     fig.savefig(r"{}\Ea_vals-Purity{}.pdf".format(path_fol,Ea_vals[j]))
     fig.savefig(r"{}\Ea_vals-Purity{}.svg".format(path_fol,Ea_vals[j]))
@@ -2584,7 +2587,7 @@ plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
 fig.savefig(r"{}\OverallEa_vals-Purity{}.pdf".format(path_fol,Ea_vals[j]))
 fig.savefig(r"{}\OverallEa_vals-Purity{}.svg".format(path_fol,Ea_vals[j]))
@@ -2596,7 +2599,7 @@ for jj,j in enumerate(graph_nodes):
     plt.plot(xD, convedc[j, :], 'b-', label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
@@ -2611,7 +2614,7 @@ for jj,j in enumerate(graph_nodes):
     plt.plot(xD, convedcj[j, :], 'b-', label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
@@ -2675,7 +2678,7 @@ for jj,j in enumerate(graph_nodes):
     plt.grid()
     fig.savefig(r"{}\Constant1J-{}-kJ.pdf".format(path_fol,eavalg))
     fig.savefig(r"{}\Constant1J-{}-kJ.svg".format(path_fol,eavalg))
-    plt.close()    
+    plt.close()
 
 for jj,j in enumerate(graph_nodes):
     fig = plt.figure()
@@ -2819,7 +2822,7 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
@@ -2837,7 +2840,7 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
@@ -2845,10 +2848,10 @@ for jj,j in enumerate(graph_nodes):
     fig.savefig(r"{}\Yield VCM J {}-kJ.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
     plt.close()
 
-print("The Jacobian was evaluated %d times." % J_eval[0])
+print("The Jacobian was evaluated {} times.\n".format(J_eval[0]))
 end = time.time() #Time when it finishes, this is real time
 
-def timer(start,end):
+def timer(start, end):
     hours, rem = divmod(end-start, 3600)
     minutes, seconds = divmod(rem, 60)
     print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours),int(minutes),int(seconds)))

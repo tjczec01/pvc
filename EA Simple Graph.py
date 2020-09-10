@@ -2,12 +2,15 @@
 """
 Created on Tue Mar 10 19:26:23 2020
 
-@author: tjcze
+@author: Travis J Czechorski
+
+E-mail: tjczec01@gmail.com
 """
 from __future__ import division
 import time
 import math
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import numpy as np
 import sympy as sp
 import mpmath as mp
@@ -30,152 +33,153 @@ plt.ioff()
 plt.rcParams.update({'figure.max_open_warning': 10})
 #Data for inital kinetics
 #https://doi.org/10.1021/ie8006903
-    
+#Thesis: https://ir.library.louisville.edu/etd/3359/
+
 mp.pretty = True
 # Dictionary for all relevent forward and reverse reactions
 Initreactions = [
 {"Ea" : 1, "K_Value": 1,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 2, "K_Value": 2,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 3, "K_Value": 3,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 4, "K_Value": 4,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 1, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 5, "K_Value": 5,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}},
 {"Ea" : 6, "K_Value": 6,
- "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'VCM':  0}, 
+ "Reactants" : {'EDC':  1, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 1, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 7, "K_Value": 7,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}},
 {"Ea" : 8, "K_Value": 8,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 1, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 9, "K_Value": 9,
- "Reactants" : {'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 10, "K_Value": 10,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 1, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 1, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 11, "K_Value": 11,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 1, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 1, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'VCM':  0}},
 {"Ea" : 12, "K_Value": 12,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 13, "K_Value": 13,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  1, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0}},
 {"Ea" : 14, "K_Value": 14,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  1, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  1, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0}},
 {"Ea" : 15, "K_Value": 15,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  1, 'R5':  0, 'R6':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  1, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 16, "K_Value": 16,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  1}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  1},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  1,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 17, "K_Value": 17,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  1, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  1}},
 {"Ea" : 18, "K_Value": 18,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 19, "K_Value": 19,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  1, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 1, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 20, "K_Value": 20,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  2,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  2,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  1, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  1, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 1, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 {"Ea" : 21, "K_Value": 21,
- "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1,'C11' : 0, 'C112' : 0, 'R1': 2, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}, 
+ "Reactants" : {'EDC':  0, 'EC':  0, 'HCl':  0, 'Coke': 0,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  1,'C11' : 0, 'C112' : 0, 'R1': 2, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0},
  "Products" :{'EDC':  0, 'EC':  0, 'HCl':  2, 'Coke': 2,'CP':  0,'Di': 0, 'C4H6Cl2':  0, 'C6H6':  0, 'C2H2':  0,'C11' : 0, 'C112' : 0, 'R1': 0, 'R2':  0, 'R3':  0, 'R4':  0, 'R5':  0, 'R6':  0, 'VCM':  0}},
 ]
 
 Eqlist = [
 {"Name" : 'EDC' ,
- "Reactions" : {"Reaction 1" : -1 ,"Reaction 2" : -1,"Reaction 3" : -1,"Reaction 4" : -1,"Reaction 5" : -1,"Reaction 6" : -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}}, 
+ "Reactions" : {"Reaction 1" : -1 ,"Reaction 2" : -1,"Reaction 3" : -1,"Reaction 4" : -1,"Reaction 5" : -1,"Reaction 6" : -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name": 'EC',
-  "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+  "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : -1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
   "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'HCl',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : 1, "Reaction 8" : 1, "Reaction 9" : 1, "Reaction 10" : 1, "Reaction 11" :1, "Reaction 12" :0, "Reaction 13" :1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : 1, "Reaction 8" : 1, "Reaction 9" : 1, "Reaction 10" : 1, "Reaction 11" :1, "Reaction 12" :0, "Reaction 13" :1, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'Coke',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" : 1},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'CP',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" : 1, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'Di',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" : 1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" : 1, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :-1, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'C4H6Cl2',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : 1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : 1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'C6H6',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : 1/4, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" : 1/4, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'C2H2',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :1, "Reaction 19" :0, "Reaction 20" : -1, "Reaction 21" :-1/2 }, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :1, "Reaction 19" :0, "Reaction 20" : -1, "Reaction 21" :-1/2 },
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :-1, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'C11',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : -1, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'C112',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 0, "Reaction 11" :-1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 0, "Reaction 11" :-1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R1',
- "Reactions" : {"Reaction 1" : 1 ,"Reaction 2" : -1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" : -1, "Reaction 9" : -1, "Reaction 10" : -1, "Reaction 11" : -1, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : 0, "Reaction 15" : 1, "Reaction 16" : 1, "Reaction 17" :1, "Reaction 18" :1, "Reaction 19" : 1, "Reaction 20" : 1/4, "Reaction 21" : -1}, 
+ "Reactions" : {"Reaction 1" : 1 ,"Reaction 2" : -1,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" : -1, "Reaction 9" : -1, "Reaction 10" : -1, "Reaction 11" : -1, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : 0, "Reaction 15" : 1, "Reaction 16" : 1, "Reaction 17" :1, "Reaction 18" :1, "Reaction 19" : 1, "Reaction 20" : 1/4, "Reaction 21" : -1},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :-1, "Reaction 18" :-1, "Reaction 19" :-1, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R2',
- "Reactions" : {"Reaction 1" : 1 ,"Reaction 2" : 0,"Reaction 3" : -1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" :0, "Reaction 9" : 1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : -1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 1 ,"Reaction 2" : 0,"Reaction 3" : -1,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" : -1, "Reaction 8" :0, "Reaction 9" : 1, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : -1, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R3',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 1,"Reaction 3" : 1,"Reaction 4" : 1,"Reaction 5" : 1,"Reaction 6" : 1, "Reaction 7" :0, "Reaction 8" : -1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : -1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 1,"Reaction 3" : 1,"Reaction 4" : 1,"Reaction 5" : 1,"Reaction 6" : 1, "Reaction 7" :0, "Reaction 8" : -1, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" : -1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R4',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : -1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" :0, "Reaction 12" : 1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : -1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : -1,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" : 1, "Reaction 11" :0, "Reaction 12" : 1, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" : -1, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R5',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : -1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : 1, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :-1, "Reaction 17" :0, "Reaction 18" :-1, "Reaction 19" :0, "Reaction 20" :-1/4, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : -1,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" : 1, "Reaction 14" : 1, "Reaction 15" :0, "Reaction 16" :-1, "Reaction 17" :0, "Reaction 18" :-1, "Reaction 19" :0, "Reaction 20" :-1/4, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :1, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'R6',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : 1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :-1, "Reaction 20" :0, "Reaction 21" :0}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : -1, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" : 1, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" :0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :-1, "Reaction 20" :0, "Reaction 21" :0},
  "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :0, "Reaction 18" :0, "Reaction 19" :1, "Reaction 20" :0, "Reaction 21" :0}},
 {"Name" : 'VCM',
- "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : -1, "Reaction 15" : -1, "Reaction 16" : -1, "Reaction 17" : 1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}, 
- "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :-1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}}, 
+ "Reactions" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 1,"Reaction 6" : 0, "Reaction 7" :1, "Reaction 8" :0, "Reaction 9" :0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" : -1, "Reaction 13" : -1, "Reaction 14" : -1, "Reaction 15" : -1, "Reaction 16" : -1, "Reaction 17" : 1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0},
+ "Reverse" : {"Reaction 1" : 0 ,"Reaction 2" : 0,"Reaction 3" : 0,"Reaction 4" : 0,"Reaction 5" : 0,"Reaction 6" : 0, "Reaction 7" :0, "Reaction 8" :0, "Reaction 9" : 0, "Reaction 10" :0, "Reaction 11" :0, "Reaction 12" :0, "Reaction 13" :0, "Reaction 14" : 0, "Reaction 15" :0, "Reaction 16" :0, "Reaction 17" :-1, "Reaction 18" :0, "Reaction 19" :0, "Reaction 20" :0, "Reaction 21" :0}},
 ]
 #List of names and acronyms
 
-namespd = ['EDC','EC','HCl','Coke', 'CP','Di','C4H6Cl2','C6H6','C2H2','C11','C112','R1','R2','R3','R4','R5','R6','VCM','T0','T1','Pure','S_VCM','S_HCl','Yield']
+namespd = ['EDC', 'EC', 'HCl', 'Coke',  'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM', 'T0', 'T1', 'Pure', 'S_VCM', 'S_HCl', 'Yield']
 # namesf = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11','C112','C1112','R1','R2','R3','R4','R5','R6','R7','R8','CCl4','CHCl3','VCM','T','dT/dz']
 # namespdf = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11','C112','C1112','R1','R2','R3','R4','R5','R6','R7','R8','CCl4','CHCl3','VCM','T0','T1','Pure','S_VCM','S_HCl','Yield']
-namesj = ['EDC','EC','HCl','Coke', 'CP','Di','C4H6Cl2','C6H6','C2H2','C11','C112','R1','R2','R3','R4','R5','R6','VCM']
+namesj = ['EDC', 'EC', 'HCl', 'Coke',  'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM']
 
-# These are mostly a group of strings used to name the chemicals 
+# These are mostly a group of strings used to name the chemicals
 eqsnum = len(Initreactions)
 reacteqs = []
 prodeqs = []
 reacteqs2 = []
 prodeqs2 = []
-namesb = ['EDC','EC','HCl','Coke', 'CP','Di','C4H6Cl2','C6H6','C2H2','C11','C112','R1','R2','R3','R4','R5','R6','VCM']
-namesb2 = ['1,2-dichloroethane','Ethylchloride','Hydrogen Chloride','Coke', '1-/2-chloroprene','1,1-/cis-/trans-dichloroethylene',r'$C_{4}H_{6}Cl_{2}$',r'$C_{6}H_{6}$',r'$C_{2}H_{2}$','1,1-dichloroethane','1,1,2-trichloroethane',r'$R_{1}$',r'$R_{2}$',r'$R_{3}$',r'$R_{4}$',r'$R_{5}$',r'$R_{6}$','Vinyl Chloride Monomer']
-namespd = ['EDC','EC','HCl','Coke', 'CP','Di','C4H6Cl2','C6H6','C2H2','C11','C112','R1','R2','R3','R4','R5','R6','VCM','T0','T1','Pure','Selectivity VCM','Selectivity HCl','Yield VCM','Constant 1','Constant 2','Constant 3','h Coefficient','U Coefficient','k value','Reynolds']
+namesb = ['EDC', 'EC', 'HCl', 'Coke',  'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM']
+namesb2 = ['1, 2-dichloroethane', 'Ethylchloride', 'Hydrogen Chloride', 'Coke',  '1-/2-chloroprene', '1, 1-/cis-/trans-dichloroethylene', r'$C_{4}H_{6}Cl_{2}$', r'$C_{6}H_{6}$', r'$C_{2}H_{2}$', '1, 1-dichloroethane', '1, 1, 2-trichloroethane', r'$R_{1}$', r'$R_{2}$', r'$R_{3}$', r'$R_{4}$', r'$R_{5}$', r'$R_{6}$', 'Vinyl Chloride Monomer']
+namespd = ['EDC', 'EC', 'HCl', 'Coke',  'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM', 'T0', 'T1', 'Pure', 'Selectivity VCM', 'Selectivity HCl', 'Yield VCM', 'Constant 1', 'Constant 2', 'Constant 3', 'h Coefficient', 'U Coefficient', 'k value', 'Reynolds']
 
 Tc = 500.0
 Tk = Tc + 273.15
 
-#Cas ['107-06-2','75-00-3','7647-01-0','126-99-8','1,2-dichloroethylene','760-23-6','71-43-2','74-86-2','75-34-3','79-00-5','Cl','75-35-4','75-43-4','96-49-1','75-38-7','79-01-6','75-01-4']
+#Cas = ['107-06-2','75-00-3','7647-01-0','126-99-8','1,2-dichloroethylene','760-23-6','71-43-2','74-86-2','75-34-3','79-00-5','Cl','75-35-4','75-43-4','96-49-1','75-38-7','79-01-6','75-01-4']
 
 start = time.time() #Real time when the program starts to run
 
@@ -195,11 +199,11 @@ def symfunc(names, rxnum):
               Ksyms = [sp.symbols(r'K_{}'.format(j)) for j in range(rxnum)]
               EAsyms = [sp.symbols(r'Ea_{}'.format(k)) for k in range(rxnum)]
               Tsyms = [sp.symbols('T0'), sp.symbols('T1')]
-              
+
               return Csyms, Ksyms, EAsyms, Tsyms
 
 #These are mostly functions used to calculate the unused diffusion coefficients
-def Dab(T,P,M1,M2,sa,sb,col):
+def Dab(T, P, M1, M2, sa, sb, col):
     C1 = 1.883E-20
     T1 = T**(3.0/2.0)
     ma = 1.0/M1
@@ -223,16 +227,16 @@ def colint(Tstar):
        colint = A/(Tstar**B) + C/math.exp(D*Tstar) + E/math.exp(F*Tstar) + G/math.exp(H*Tstar)
        return colint
 
-def DI(Ys,Dijs):
+def DI(Ys, Dijs):
         flist = []
-        for i in range(0,len(Ys),1):
+        for i in range(0, len(Ys), 1):
             Yi = Ys[i]
             Di = Dijs[i]
-            Yj = [g for q,g in enumerate(Ys) if q!=Yi] 
-            Djb = [w for j,w in enumerate(Dijs) if j!=Di]
+            Yj = [g for q, g in enumerate(Ys) if q!=Yi]
+            Djb = [w for j, w in enumerate(Dijs) if j!=Di]
             Dif =  lambda l: [item for sublist in l for item in sublist]
             Dj = Dif(Djb)
-            YjDj = [x/y for x,y in zip(Yj,Dj)]
+            YjDj = [x/y for x, y in zip(Yj, Dj)]
             YjDjt = sum(YjDj)
             top = 1 - Yi
             Df = top/YjDjt
@@ -243,60 +247,60 @@ def DI(Ys,Dijs):
         return flist
 
 #Calculates the Nusselt number based on given input
-def getnu(velocity,rho,distance,diameter,k,viscosity,vs,Twall,Tgas,pr,re):
+def getnu(velocity, rho, distance, diameter, k, viscosity, vs, Twall, Tgas, pr, re):
         Nu = [0.0]
         if re <= 3000.0:
-                        
-                        term1a = lambda re,pr,distance,diameter,viscosity,vs:  ((re*pr*(distance/diameter))**(1/3) * (viscosity/vs)**0.14)
-                        term1 = term1a(re,pr,distance,diameter,viscosity,vs)
-                        if term1 <=2:
+
+                        term1a = lambda re, pr, distance, diameter, viscosity, vs:  ((re*pr*(distance/diameter))**(1/3) * (viscosity/vs)**0.14)
+                        term1 = term1a(re, pr, distance, diameter, viscosity, vs)
+                        if term1 <= 2:
                             Nu[0] = 3.66
-                            
+
                         if term1 > 2:
-                            f1 = lambda re,pr,distance,diameter,viscosity,vs : (1.86*((re*pr)/(distance/diameter))**(1/3) *(viscosity/vs)**0.14)
+                            f1 = lambda re, pr, distance, diameter, viscosity, vs: (1.86*((re*pr)/(distance/diameter))**(1/3) *(viscosity/vs)**0.14)
                             Nu[0] = f1(re,pr,distance,diameter,viscosity,vs)
         elif re > 3000.0 and  re < 10000.0:
-                        fval = lambda re,pr,distance,diameter,viscosity,vs:  ((0.79*math.log(re) - 1.64)**-2)
-                        f = fval(re,pr,distance,diameter,viscosity,vs)
-                        f2 = lambda fval,re,pr,distance,diameter,viscosity,vs : ((f/8.0)*(re-1000.0)*pr)/(1 + 12.7*(f**(1/2))*(pr**(2/3)-1))
-                        Nu[0] = f2(re,pr,distance,diameter,viscosity,vs)
+                        fval = lambda re, pr, distance, diameter, viscosity, vs:  ((0.79*math.log(re) - 1.64)**-2)
+                        f = fval(re, pr, distance, diameter, viscosity, vs)
+                        f2 = lambda fval, re, pr, distance, diameter, viscosity, vs: ((f/8.0)*(re-1000.0)*pr)/(1 + 12.7*(f**(1/2))*(pr**(2/3)-1))
+                        Nu[0] = f2(re, pr, distance, diameter, viscosity, vs)
         elif re >= 10000.0:
                         if Twall <= Tgas:
-                            f3 = lambda re,pr,distance,diameter,viscosity,vs : 0.023*(re**(4/5))*(pr**0.3)
-                            Nu[0] = f3(re,pr,distance,diameter,viscosity,vs)
-                            
+                            f3 = lambda re, pr, distance, diameter, viscosity, vs: 0.023*(re**(4/5))*(pr**0.3)
+                            Nu[0] = f3(re, pr, distance, diameter, viscosity, vs)
+
                         if Twall > Tgas:
-#                            f4 = lambda re,pr,distance,diameter,viscosity,vs : 0.023*(re**(4/5))*(pr**0.4)
-                            f5 = lambda re,pr,distance,diameter,viscosity,vs : 0.027*(re**(4.0/5.0))*((pr**0.4)**(1.0/3.0))*((viscosity/vs)**0.14)
-#                            Nu[0] = f4(re,pr,distance,diameter,viscosity,vs)
-                            Nu[0] = f5(re,pr,distance,diameter,viscosity,vs)
-        
+#                            f4 = lambda re, pr, distance, diameter, viscosity, vs : 0.023*(re**(4/5))*(pr**0.4)
+                            f5 = lambda re, pr, distance, diameter, viscosity, vs: 0.027*(re**(4.0/5.0))*((pr**0.4)**(1.0/3.0))*((viscosity/vs)**0.14)
+#                            Nu[0] = f4(re, pr, distance, diameter, viscosity, vs)
+                            Nu[0] = f5(re, pr, distance, diameter, viscosity, vs)
+
         Nuv = Nu[0]
-        
+
         if (distance/diameter) < 60:
             Nu.clear()
-            f5 = lambda Nuv, distance,diameter : (Nuv)/(1 + (1/((distance/diameter)**(2/3)))) 
-            Nu.append(f5(Nuv, distance,diameter))
-        else: 
+            f5 = lambda Nuv, distance,diameter : (Nuv)/(1 + (1/((distance/diameter)**(2/3))))
+            Nu.append(f5(Nuv, distance, diameter))
+        else:
                 pass
-        return float(Nu[0])   
+        return float(Nu[0])
 
-#Calcluates Reynolds number    
-def reynolds(rho,velocity,distance,viscosity):
+#Calcluates Reynolds number
+def reynolds(rho, velocity, distance, viscosity):
         p = rho
         v = velocity
-        x = distance 
+        x = distance
         u = viscosity
         Re = (p*x*v)/u
         return Re
 
 #Solves for the thermal convection term (h)
-def hterm(Nu,distance,k):
+def hterm(Nu,  distance,  k):
         h = (k*Nu)/distance
         return h
- 
+
 #Calculates the Prandtl number
-def Pr(cp,viscosity,k):
+def Pr(cp, viscosity, k):
     # cp = [J/kg-K]
     # u = [Pa*s] = [N*s/m^2]
     # k = [W/m-K]
@@ -305,10 +309,12 @@ def Pr(cp,viscosity,k):
         pr = (Cp*µ)/k
         return pr
 
-def Nus(velocity,rho,distance,diameter,k,viscosity,vs,Twall,Tgas,pr,re):
-    Nuv = getnu(velocity,rho,distance,diameter,k,viscosity,vs,Twall,Tgas,pr,re)
+
+def Nus(velocity, rho, distance, diameter, k, viscosity, vs, Twall, Tgas, pr, re):
+    Nuv = getnu(velocity, rho, distance, diameter, k, viscosity, vs, Twall, Tgas, pr, re)
     Nu = Nuv
     return Nu
+
 
 #Calculates the overall heat transfer coefficient (U)
 def Uvalue(di,do,hi,ho,kpipe):
@@ -316,107 +322,122 @@ def Uvalue(di,do,hi,ho,kpipe):
     Uval = 1.0/((do/di)*(1.0/hi) + ((do*math.log(do/di)/(2.0*kpipe))) + (1.0/ho))
     return Uval
 
+
 #Calculates the density of a gas mixture
-def rhomix(conc,molar_mass):
-    rhomix = [i*j for i,j in zip(conc,molar_mass)]
+def rhomix(conc, molar_mass):
+    rhomix = [i*j for i, j in zip(conc, molar_mass)]
     rhomixanswer = sum(rhomix)
     return rhomixanswer
 
+
 #Calculates the Specific heat capacity (constant pressure) of a gas mixture
-def cpmix(cp,conc):
+def cpmix(cp, conc):
     contot = sum(conc)
     Ci = [i/contot for i in conc]
-    cpmix = [i*j for i,j in zip(Ci,cp)]
+    cpmix = [i*j for i, j in zip(Ci, cp)]
     cpmixanswer = sum(cpmix)
     return cpmixanswer
-        
+
+
 def chemicals(CAS,temp):
         return tc.Chemical('{}'.format(CAS), T=temp)
-    
-    
+
+
 def formula(string):
         return tc.serialize_formula('{}'.format(string))
-        
-        
+
+
 def mean(numbers):
-    return float(sum(numbers)) / max(len(numbers), 1)       
-        
+    return float(sum(numbers)) / max(len(numbers), 1)
+
 def cp(alist):
             c2alist = []
             for i in alist:
-                chemicalt = getattr(i,'Cpgm') # [J/mol/K] 
+                chemicalt = getattr(i, 'Cpgm')   # [J/mol/K]
                 c2alist.append(chemicalt)
             return c2alist
-        
-def mw(alist): 
+
+def mw(alist):
             c2blist = []
             for i in alist:
-                chemicalt2 = getattr(i,'MW')  # [g/mol]
+                chemicalt2 = getattr(i, 'MW')    # [g/mol]
                 c2blist.append(chemicalt2)
             return c2blist
-        
+
+
 def name(namelist):
-            nlist = namelist 
+            nlist = namelist
             names = []
             for i in nlist:
-                chemicaltn = getattr(i,"IUPAC_name") 
+                chemicaltn = getattr(i, "IUPAC_name")
                 names.append(chemicaltn)
             return [nlist]
-        
+
+
 def cpsum(alist):
             chemlist = alist
             c2alist2 = []
             for i in chemlist:
-                
-                chemicalta = getattr(i,'Cpgm') # [J/mol/K] 
+
+                chemicalta = getattr(i, 'Cpgm')   # [J/mol/K]
                 c2alist2.append(chemicalta)
             return sum(c2alist2)
-        
-def mwsum(alist):
-            chemlist = alist
-            for i in chemlist:
-                c2clist2 = []
-                chemicaltc = getattr(i,'MW') # [g/m^3] 
-                c2clist2.append(chemicaltc)
-            return sum(c2clist2)
-        
-def mixprop(IDs,mwmix,T,P):
-            mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix
-        
-def mixpropcpg(IDs,mwmix,T,P):
-            mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.Cpg
-        
-def mixproprho(IDs,mwmix,T,P): #[kg/m^3]
-            mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.rhog 
-        
-def mixpropkmix(IDs,mwmix,T,P): #[Pa*s]
-            mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.kg 
-        
-def mixpropvmix(IDs,mwmix,T,P): #[Pa*s]
-            mwmix = tc.Mixture(IDs = IDs, mwmix=mwmix,T=T,  P=P)
-            return mwmix.mugs
 
-#These are mostly functions used to calculate the unused diffusion coefficients
+
+def mwsum(alist):
+    chemlist = alist
+    for i in chemlist:
+        c2clist2 = []
+        chemicaltc = getattr(i, 'MW')   # [g/m^3]
+        c2clist2.append(chemicaltc)
+    return sum(c2clist2)
+
+
+def mixprop(IDs, mwmix, T, P):
+    mwmix = tc.Mixture(IDs=IDs, mwmix=mwmix, T=T, P=P)
+    return mwmix
+
+
+def mixpropcpg(IDs, mwmix, T, P):
+    mwmix = tc.Mixture(IDs=IDs, mwmix=mwmix, T=T, P=P)
+    return mwmix.Cpg
+
+
+def mixproprho(IDs, mwmix, T, P):  # [kg/m^3]
+    mwmix = tc.Mixture(IDs=IDs, mwmix=mwmix, T=T, P=P)
+    return mwmix.rhog
+
+
+def mixpropkmix(IDs, mwmix, T, P):  # [Pa*s]
+    mwmix = tc.Mixture(IDs=IDs, mwmix=mwmix, T=T, P=P)
+    return mwmix.kg
+
+
+def mixpropvmix(IDs, mwmix, T, P):  # [Pa*s]
+    mwmix = tc.Mixture(IDs=IDs, mwmix=mwmix, T=T, P=P)
+    return mwmix.mugs
+
+# These are mostly functions used to calculate the unused diffusion coefficients
+
+
 def Si(tb):
     si = 1.5*tb
     return si
 
-def Sij(si,sj):
+
+def Sij(si, sj):
     Si = si
     Sj = sj
     sij = math.sqrt(Si*Sj)*0.733
     return sij
 
-def Aij(T,Ta,Tbb,ua,ub,Ma,Mb,ka,kb,cpa,cpb,cva,cvb):
+
+def Aij(T, Ta, Tbb, ua, ub, Ma, Mb, ka, kb, cpa, cpb, cva, cvb):
     S1 = Si(Ta)
     S2 = Si(Tbb)
-    S12 = Sij(S1,S2)
+    S12 = Sij(S1, S2)
     Mab = (Mb/Ma)**(3.0/4.0)
-    uab = Uab(ka,kb,cpa,cpb,cva,cvb)
+    uab = Uab(ka, kb, cpa, cpb, cva, cvb)
     S1t = S1/T
     S2t = S2/T
     S12t = S12/T
@@ -430,12 +451,12 @@ def Aij(T,Ta,Tbb,ua,ub,Ma,Mb,ka,kb,cpa,cpb,cva,cvb):
     aijval = (curlybrackets*sf12)*(1.0/4.0)
     return aijval
 
-def Aijlist(T,Tbs,u,Mws,Ks,Cp,Cv):
+def Aijlist(T, Tbs, u, Mws, Ks, Cp, Cv):
     lengthq = len(Mws)
     Aijf = []
-    for i in range(0,lengthq,1):
+    for i in range(0, lengthq, 1):
         aijs = []
-        for j in range(0,lengthq,1):
+        for j in range(0, lengthq, 1):
             Ta = Tbs[i]
             Tbval = Tbs[j]
             ua = u[i]
@@ -448,20 +469,20 @@ def Aijlist(T,Tbs,u,Mws,Ks,Cp,Cv):
             cvb = Cv[j]
             Ma = Mws[i]
             Mb = Mws[j]
-            aij1 = Aij(T,Ta,Tbval,ua,ub,Ma,Mb,ka,kb,cpa,cpb,cva,cvb)
+            aij1 = Aij(T, Ta, Tbval, ua, ub, Ma, Mb, ka, kb, cpa, cpb, cva, cvb)
             aijs.append(aij1)
         Aijf.append(aijs[:])
         aijs.clear()
     return Aijf
 
 #Calculates the thermal conductivity constant (k) of a mixture
-def kmix(T,yi,ks,u,Tbl,Mws,Cp,Cv):
+def kmix(T, yi, ks, u, Tbl, Mws, Cp, Cv):
     lengthf = len(yi)
-    aijs2 = Aijlist(T,Tbl,u,Mws,ks,Cp,Cv)
+    aijs2 = Aijlist(T, Tbl, u, Mws, ks, Cp, Cv)
     klist = []
-    for i in range(0,lengthf,1):
+    for i in range(0, lengthf, 1):
         bottom = []
-        for j in range(0,lengthf,1):
+        for j in range(0, lengthf, 1):
             aij = aijs2[i][j]
             aijfrac = aij*yi[j]
             bottom.append(aijfrac)
@@ -472,8 +493,8 @@ def kmix(T,yi,ks,u,Tbl,Mws,Cp,Cv):
         bottom.clear()
     kmixval = sum(klist)
     return kmixval
-      
-def Uab(ka,kb,cpa,cpb,cva,cvb):
+
+def Uab(ka, kb, cpa, cpb, cva, cvb):
     y1 = cpa/cva
     y2 = cpb/cvb
     kk = ka/kb
@@ -483,15 +504,16 @@ def Uab(ka,kb,cpa,cpb,cva,cvb):
     rr = r1/r2
     uab = float(kk*cab*rr)
     return uab
-        
-#rhs (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
-#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T,dT)
-#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L) 
-#Each equation is used to solve for the concentration of each compound and it is the exact same order that the compound lists are defined shortly below
 
+#RHS (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
+#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T, dT)
+#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L)
+#Each equation is used to solve for the concentration of each compound and it is the exact same order that the compound lists are defined shortly below
+#There is a program that calculates both the Jacobian and RHS equation systems (both symbolically and with certain numerical values plugged in) and saves them in the exact necessary format at in a txt file at https://github.com/tjczec01/chemicalsystem
+#It will also outpus the necessary Latex equations for printing purposes
 
 def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Constant_1, Constant_2, Constant_3, Twall):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_VCM, T0, T1 = C 
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_VCM, T0, T1 = C
 
        return [-C_EDC*C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_EDC*C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_EDC*C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_EDC*C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_EDC*C_R6*K_6*math.exp(-Ea_6/(R*T0)) - C_EDC*K_1*math.exp(-Ea_1/(R*T0)),
               -C_EC*C_R1*K_9*math.exp(-Ea_9/(R*T0)) + C_EDC*C_R2*K_3*math.exp(-Ea_3/(R*T0)) + C_R2*C_VCM*K_14*math.exp(-Ea_14/(R*T0)),
@@ -515,33 +537,33 @@ def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, 
               Constant_1*T1 - Constant_2*(-T0 + Twall) - Constant_3*(-C_EDC*C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_EDC*C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_EDC*C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_EDC*C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_EDC*C_R6*K_6*math.exp(-Ea_6/(R*T0)) - C_EDC*K_1*math.exp(-Ea_1/(R*T0)))]
 
 def jacob(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Constant_1, Constant_2, Constant_3, Twall):
-       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_VCM, T0, T1 = C 
-       
-       JacT = [[-C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_R6*K_6*math.exp(-Ea_6/(R*T0)) - K_1*math.exp(-Ea_1/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EDC*K_2*math.exp(-Ea_2/(R*T0)), -C_EDC*K_3*math.exp(-Ea_3/(R*T0)), 0, -C_EDC*K_4*math.exp(-Ea_4/(R*T0)), -C_EDC*K_5*math.exp(-Ea_5/(R*T0)), -C_EDC*K_6*math.exp(-Ea_6/(R*T0)), 0, 0, 0],
-              [C_R2*K_3*math.exp(-Ea_3/(R*T0)), -C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_EC*K_9*math.exp(-Ea_9/(R*T0)), C_EDC*K_3*math.exp(-Ea_3/(R*T0)) + C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0, 0, 0, 0, C_R2*K_14*math.exp(-Ea_14/(R*T0)), 0, 0],
-              [C_R1*K_2*math.exp(-Ea_2/(R*T0)), C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)), C_R1*K_10*math.exp(-Ea_10/(R*T0)), C_R1*K_11*math.exp(-Ea_11/(R*T0)), C_C11*K_10*math.exp(-Ea_10/(R*T0)) + C_C112*K_11*math.exp(-Ea_11/(R*T0)) + 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) + C_EC*K_9*math.exp(-Ea_9/(R*T0)) + C_EDC*K_2*math.exp(-Ea_2/(R*T0)) + C_R2*K_7*math.exp(-Ea_7/(R*T0)) + C_R3*K_8*math.exp(-Ea_8/(R*T0)) + C_VCM*K_13*math.exp(-Ea_13/(R*T0)), C_R1*K_7*math.exp(-Ea_7/(R*T0)), C_R1*K_8*math.exp(-Ea_8/(R*T0)), 0, 0, 0, C_R1*K_13*math.exp(-Ea_13/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)), 0, 0, 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_16*math.exp(-Ea_16/(R*T0)), 0, C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, -C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 0, 0, 0, -C_Di*K_19*math.exp(-Ea_19/(R*T0)) + C_R3*K_8*math.exp(-Ea_8/(R*T0)), 0, C_R1*K_8*math.exp(-Ea_8/(R*T0)), 0, 0, K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0, 0, C_R4*K_15*math.exp(-Ea_15/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)), 0, 0, 0, 0, 0, 0, 0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)), 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, -4*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) - 1.0*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)) - C_R1*K_18*math.exp(-Ea_18/(R*T0)), 0, 0, -2.0*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) - C_C2H2*K_18*math.exp(-Ea_18/(R*T0)), 0, 0, 0, -2*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) + K_18*math.exp(-Ea_18/(R*T0)), 0, 0, 0, 0],
-              [C_R4*K_4*math.exp(-Ea_4/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_10*math.exp(-Ea_10/(R*T0)), 0, -C_C11*K_10*math.exp(-Ea_10/(R*T0)), 0, 0, C_EDC*K_4*math.exp(-Ea_4/(R*T0)), 0, 0, 0, 0, 0],
-              [C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_R1*K_11*math.exp(-Ea_11/(R*T0)), -C_C112*K_11*math.exp(-Ea_11/(R*T0)), 0, 0, 0, C_EDC*K_5*math.exp(-Ea_5/(R*T0)), 0, 0, 0, 0],
-              [-C_R1*K_2*math.exp(-Ea_2/(R*T0)) + K_1*math.exp(-Ea_1/(R*T0)), -C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0, 0, 0, -C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) - 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)) - C_R1*K_18*math.exp(-Ea_18/(R*T0)), -C_R1*K_10*math.exp(-Ea_10/(R*T0)), -C_R1*K_11*math.exp(-Ea_11/(R*T0)), -C_C11*K_10*math.exp(-Ea_10/(R*T0)) - C_C112*K_11*math.exp(-Ea_11/(R*T0)) - 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) - C_C2H2*K_18*math.exp(-Ea_18/(R*T0)) - C_Di*K_19*math.exp(-Ea_19/(R*T0)) - C_EC*K_9*math.exp(-Ea_9/(R*T0)) - C_EDC*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_7*math.exp(-Ea_7/(R*T0)) - C_R3*K_8*math.exp(-Ea_8/(R*T0)) - C_VCM*K_12*math.exp(-Ea_12/(R*T0)) - C_VCM*K_13*math.exp(-Ea_13/(R*T0)) - C_VCM*K_17*math.exp(-Ea_17/(R*T0)), -C_R1*K_7*math.exp(-Ea_7/(R*T0)), -C_R1*K_8*math.exp(-Ea_8/(R*T0)) + K_17*math.exp(-Ea_17/(R*T0)), C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) + C_VCM*K_16*math.exp(-Ea_16/(R*T0)) + K_18*math.exp(-Ea_18/(R*T0)), K_19*math.exp(-Ea_19/(R*T0)), -C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R1*K_13*math.exp(-Ea_13/(R*T0)) - C_R1*K_17*math.exp(-Ea_17/(R*T0)) + C_R4*K_15*math.exp(-Ea_15/(R*T0)) + C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0, 0],
-              [-C_R2*K_3*math.exp(-Ea_3/(R*T0)) + K_1*math.exp(-Ea_1/(R*T0)), C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EC*K_9*math.exp(-Ea_9/(R*T0)) - C_R2*K_7*math.exp(-Ea_7/(R*T0)), -C_EDC*K_3*math.exp(-Ea_3/(R*T0)) - C_R1*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0, 0, 0, 0, -C_R2*K_14*math.exp(-Ea_14/(R*T0)), 0, 0],
-              [C_R1*K_2*math.exp(-Ea_2/(R*T0)) + C_R2*K_3*math.exp(-Ea_3/(R*T0)) + C_R4*K_4*math.exp(-Ea_4/(R*T0)) + C_R5*K_5*math.exp(-Ea_5/(R*T0)) + C_R6*K_6*math.exp(-Ea_6/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*K_2*math.exp(-Ea_2/(R*T0)) - C_R3*K_8*math.exp(-Ea_8/(R*T0)), C_EDC*K_3*math.exp(-Ea_3/(R*T0)), -C_R1*K_8*math.exp(-Ea_8/(R*T0)) - K_17*math.exp(-Ea_17/(R*T0)), C_EDC*K_4*math.exp(-Ea_4/(R*T0)), C_EDC*K_5*math.exp(-Ea_5/(R*T0)), C_EDC*K_6*math.exp(-Ea_6/(R*T0)), 0, 0, 0],
-              [-C_R4*K_4*math.exp(-Ea_4/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, C_R1*K_10*math.exp(-Ea_10/(R*T0)), 0, C_C11*K_10*math.exp(-Ea_10/(R*T0)) + C_VCM*K_12*math.exp(-Ea_12/(R*T0)), 0, 0, -C_EDC*K_4*math.exp(-Ea_4/(R*T0)) - C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0, 0, C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R4*K_15*math.exp(-Ea_15/(R*T0)), 0, 0],
-              [-C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, -1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) + C_R1*K_18*math.exp(-Ea_18/(R*T0)), 0, 0, C_C2H2*K_18*math.exp(-Ea_18/(R*T0)) + C_VCM*K_13*math.exp(-Ea_13/(R*T0)), C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0, 0, -0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) - C_EDC*K_5*math.exp(-Ea_5/(R*T0)) - C_VCM*K_16*math.exp(-Ea_16/(R*T0)) - K_18*math.exp(-Ea_18/(R*T0)), 0, C_R1*K_13*math.exp(-Ea_13/(R*T0)) + C_R2*K_14*math.exp(-Ea_14/(R*T0)) - C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0, 0],
-              [-C_R6*K_6*math.exp(-Ea_6/(R*T0)), 0, 0, 0, 0, C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 0, 0, C_R1*K_11*math.exp(-Ea_11/(R*T0)), C_C112*K_11*math.exp(-Ea_11/(R*T0)) + C_Di*K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 0, 0, -C_EDC*K_6*math.exp(-Ea_6/(R*T0)) - K_19*math.exp(-Ea_19/(R*T0)), 0, 0, 0],
-              [C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_12*math.exp(-Ea_12/(R*T0)) - C_VCM*K_13*math.exp(-Ea_13/(R*T0)) - C_VCM*K_17*math.exp(-Ea_17/(R*T0)), C_R1*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_14*math.exp(-Ea_14/(R*T0)), K_17*math.exp(-Ea_17/(R*T0)), -C_VCM*K_15*math.exp(-Ea_15/(R*T0)), C_EDC*K_5*math.exp(-Ea_5/(R*T0)) - C_VCM*K_16*math.exp(-Ea_16/(R*T0)), 0, -C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R1*K_13*math.exp(-Ea_13/(R*T0)) - C_R1*K_17*math.exp(-Ea_17/(R*T0)) - C_R2*K_14*math.exp(-Ea_14/(R*T0)) - C_R4*K_15*math.exp(-Ea_15/(R*T0)) - C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-              [-Constant_3*(-C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_R6*K_6*math.exp(-Ea_6/(R*T0)) - K_1*math.exp(-Ea_1/(R*T0))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*K_2*math.exp(-Ea_2/(R*T0)), C_EDC*Constant_3*K_3*math.exp(-Ea_3/(R*T0)), 0, C_EDC*Constant_3*K_4*math.exp(-Ea_4/(R*T0)), C_EDC*Constant_3*K_5*math.exp(-Ea_5/(R*T0)), C_EDC*Constant_3*K_6*math.exp(-Ea_6/(R*T0)), 0, Constant_2, Constant_1]]
+       C_EDC, C_EC, C_HCl, C_Coke, C_CP, C_Di, C_C4H6Cl2, C_C6H6, C_C2H2, C_C11, C_C112, C_R1, C_R2, C_R3, C_R4, C_R5, C_R6, C_VCM, T0, T1 = C
+
+       JacT = [[-C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_R6*K_6*math.exp(-Ea_6/(R*T0)) - K_1*math.exp(-Ea_1/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -C_EDC*K_2*math.exp(-Ea_2/(R*T0)), -C_EDC*K_3*math.exp(-Ea_3/(R*T0)), 0.0, -C_EDC*K_4*math.exp(-Ea_4/(R*T0)), -C_EDC*K_5*math.exp(-Ea_5/(R*T0)), -C_EDC*K_6*math.exp(-Ea_6/(R*T0)), 0.0, 0.0, 0.0],
+              [C_R2*K_3*math.exp(-Ea_3/(R*T0)), -C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -C_EC*K_9*math.exp(-Ea_9/(R*T0)), C_EDC*K_3*math.exp(-Ea_3/(R*T0)) + C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0.0, 0.0, 0.0, 0.0, C_R2*K_14*math.exp(-Ea_14/(R*T0)), 0.0, 0.0],
+              [C_R1*K_2*math.exp(-Ea_2/(R*T0)), C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)), C_R1*K_10*math.exp(-Ea_10/(R*T0)), C_R1*K_11*math.exp(-Ea_11/(R*T0)), C_C11*K_10*math.exp(-Ea_10/(R*T0)) + C_C112*K_11*math.exp(-Ea_11/(R*T0)) + 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) + C_EC*K_9*math.exp(-Ea_9/(R*T0)) + C_EDC*K_2*math.exp(-Ea_2/(R*T0)) + C_R2*K_7*math.exp(-Ea_7/(R*T0)) + C_R3*K_8*math.exp(-Ea_8/(R*T0)) + C_VCM*K_13*math.exp(-Ea_13/(R*T0)), C_R1*K_7*math.exp(-Ea_7/(R*T0)), C_R1*K_8*math.exp(-Ea_8/(R*T0)), 0.0, 0.0, 0.0, C_R1*K_13*math.exp(-Ea_13/(R*T0)), 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)), 0.0, 0.0, 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_VCM*K_16*math.exp(-Ea_16/(R*T0)), 0.0, C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, -C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, -C_Di*K_19*math.exp(-Ea_19/(R*T0)) + C_R3*K_8*math.exp(-Ea_8/(R*T0)), 0.0, C_R1*K_8*math.exp(-Ea_8/(R*T0)), 0.0, 0.0, K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0.0, 0.0, C_R4*K_15*math.exp(-Ea_15/(R*T0)), 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)), 0.0, 0.0, 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -4*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) - 1.0*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)) - C_R1*K_18*math.exp(-Ea_18/(R*T0)), 0.0, 0.0, -2.0*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) - C_C2H2*K_18*math.exp(-Ea_18/(R*T0)), 0.0, 0.0, 0.0, -2*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) + K_18*math.exp(-Ea_18/(R*T0)), 0.0, 0.0, 0.0, 0.0],
+              [C_R4*K_4*math.exp(-Ea_4/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -C_R1*K_10*math.exp(-Ea_10/(R*T0)), 0.0, -C_C11*K_10*math.exp(-Ea_10/(R*T0)), 0.0, 0.0, C_EDC*K_4*math.exp(-Ea_4/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0],
+              [C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -C_R1*K_11*math.exp(-Ea_11/(R*T0)), -C_C112*K_11*math.exp(-Ea_11/(R*T0)), 0.0, 0.0, 0.0, C_EDC*K_5*math.exp(-Ea_5/(R*T0)), 0.0, 0.0, 0.0, 0.0],
+              [-C_R1*K_2*math.exp(-Ea_2/(R*T0)) + K_1*math.exp(-Ea_1/(R*T0)), -C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0.0, 0.0, 0.0, -C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) - 2*C_R1**2*K_21*math.exp(-Ea_21/(R*T0)) - C_R1*K_18*math.exp(-Ea_18/(R*T0)), -C_R1*K_10*math.exp(-Ea_10/(R*T0)), -C_R1*K_11*math.exp(-Ea_11/(R*T0)), -C_C11*K_10*math.exp(-Ea_10/(R*T0)) - C_C112*K_11*math.exp(-Ea_11/(R*T0)) - 4*C_C2H2*C_R1*K_21*math.exp(-Ea_21/(R*T0)) - C_C2H2*K_18*math.exp(-Ea_18/(R*T0)) - C_Di*K_19*math.exp(-Ea_19/(R*T0)) - C_EC*K_9*math.exp(-Ea_9/(R*T0)) - C_EDC*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_7*math.exp(-Ea_7/(R*T0)) - C_R3*K_8*math.exp(-Ea_8/(R*T0)) - C_VCM*K_12*math.exp(-Ea_12/(R*T0)) - C_VCM*K_13*math.exp(-Ea_13/(R*T0)) - C_VCM*K_17*math.exp(-Ea_17/(R*T0)), -C_R1*K_7*math.exp(-Ea_7/(R*T0)), -C_R1*K_8*math.exp(-Ea_8/(R*T0)) + K_17*math.exp(-Ea_17/(R*T0)), C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) + C_VCM*K_16*math.exp(-Ea_16/(R*T0)) + K_18*math.exp(-Ea_18/(R*T0)), K_19*math.exp(-Ea_19/(R*T0)), -C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R1*K_13*math.exp(-Ea_13/(R*T0)) - C_R1*K_17*math.exp(-Ea_17/(R*T0)) + C_R4*K_15*math.exp(-Ea_15/(R*T0)) + C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0.0, 0.0],
+              [-C_R2*K_3*math.exp(-Ea_3/(R*T0)) + K_1*math.exp(-Ea_1/(R*T0)), C_R1*K_9*math.exp(-Ea_9/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_EC*K_9*math.exp(-Ea_9/(R*T0)) - C_R2*K_7*math.exp(-Ea_7/(R*T0)), -C_EDC*K_3*math.exp(-Ea_3/(R*T0)) - C_R1*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0.0, 0.0, 0.0, 0.0, -C_R2*K_14*math.exp(-Ea_14/(R*T0)), 0.0, 0.0],
+              [C_R1*K_2*math.exp(-Ea_2/(R*T0)) + C_R2*K_3*math.exp(-Ea_3/(R*T0)) + C_R4*K_4*math.exp(-Ea_4/(R*T0)) + C_R5*K_5*math.exp(-Ea_5/(R*T0)) + C_R6*K_6*math.exp(-Ea_6/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_EDC*K_2*math.exp(-Ea_2/(R*T0)) - C_R3*K_8*math.exp(-Ea_8/(R*T0)), C_EDC*K_3*math.exp(-Ea_3/(R*T0)), -C_R1*K_8*math.exp(-Ea_8/(R*T0)) - K_17*math.exp(-Ea_17/(R*T0)), C_EDC*K_4*math.exp(-Ea_4/(R*T0)), C_EDC*K_5*math.exp(-Ea_5/(R*T0)), C_EDC*K_6*math.exp(-Ea_6/(R*T0)), 0.0, 0.0, 0.0],
+              [-C_R4*K_4*math.exp(-Ea_4/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_R1*K_10*math.exp(-Ea_10/(R*T0)), 0.0, C_C11*K_10*math.exp(-Ea_10/(R*T0)) + C_VCM*K_12*math.exp(-Ea_12/(R*T0)), 0.0, 0.0, -C_EDC*K_4*math.exp(-Ea_4/(R*T0)) - C_VCM*K_15*math.exp(-Ea_15/(R*T0)), 0.0, 0.0, C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R4*K_15*math.exp(-Ea_15/(R*T0)), 0.0, 0.0],
+              [-C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0*C_C2H2*C_R5*K_20*math.exp(-Ea_20/(R*T0)) + C_R1*K_18*math.exp(-Ea_18/(R*T0)), 0.0, 0.0, C_C2H2*K_18*math.exp(-Ea_18/(R*T0)) + C_VCM*K_13*math.exp(-Ea_13/(R*T0)), C_VCM*K_14*math.exp(-Ea_14/(R*T0)), 0.0, 0.0, -0.5*C_C2H2**2*K_20*math.exp(-Ea_20/(R*T0)) - C_EDC*K_5*math.exp(-Ea_5/(R*T0)) - C_VCM*K_16*math.exp(-Ea_16/(R*T0)) - K_18*math.exp(-Ea_18/(R*T0)), 0.0, C_R1*K_13*math.exp(-Ea_13/(R*T0)) + C_R2*K_14*math.exp(-Ea_14/(R*T0)) - C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0.0, 0.0],
+              [-C_R6*K_6*math.exp(-Ea_6/(R*T0)), 0.0, 0.0, 0.0, 0.0, C_R1*K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 0.0, 0.0, C_R1*K_11*math.exp(-Ea_11/(R*T0)), C_C112*K_11*math.exp(-Ea_11/(R*T0)) + C_Di*K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 0.0, 0.0, -C_EDC*K_6*math.exp(-Ea_6/(R*T0)) - K_19*math.exp(-Ea_19/(R*T0)), 0.0, 0.0, 0.0],
+              [C_R5*K_5*math.exp(-Ea_5/(R*T0)), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_R2*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_12*math.exp(-Ea_12/(R*T0)) - C_VCM*K_13*math.exp(-Ea_13/(R*T0)) - C_VCM*K_17*math.exp(-Ea_17/(R*T0)), C_R1*K_7*math.exp(-Ea_7/(R*T0)) - C_VCM*K_14*math.exp(-Ea_14/(R*T0)), K_17*math.exp(-Ea_17/(R*T0)), -C_VCM*K_15*math.exp(-Ea_15/(R*T0)), C_EDC*K_5*math.exp(-Ea_5/(R*T0)) - C_VCM*K_16*math.exp(-Ea_16/(R*T0)), 0.0, -C_R1*K_12*math.exp(-Ea_12/(R*T0)) - C_R1*K_13*math.exp(-Ea_13/(R*T0)) - C_R1*K_17*math.exp(-Ea_17/(R*T0)) - C_R2*K_14*math.exp(-Ea_14/(R*T0)) - C_R4*K_15*math.exp(-Ea_15/(R*T0)) - C_R5*K_16*math.exp(-Ea_16/(R*T0)), 0.0, 0.0],
+              [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+              [-Constant_3*(-C_R1*K_2*math.exp(-Ea_2/(R*T0)) - C_R2*K_3*math.exp(-Ea_3/(R*T0)) - C_R4*K_4*math.exp(-Ea_4/(R*T0)) - C_R5*K_5*math.exp(-Ea_5/(R*T0)) - C_R6*K_6*math.exp(-Ea_6/(R*T0)) - K_1*math.exp(-Ea_1/(R*T0))), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, C_EDC*Constant_3*K_2*math.exp(-Ea_2/(R*T0)), C_EDC*Constant_3*K_3*math.exp(-Ea_3/(R*T0)), 0.0, C_EDC*Constant_3*K_4*math.exp(-Ea_4/(R*T0)), C_EDC*Constant_3*K_5*math.exp(-Ea_5/(R*T0)), C_EDC*Constant_3*K_6*math.exp(-Ea_6/(R*T0)), 0.0, Constant_2, Constant_1]]
 
        return JacT
 
 #These are mostly functions used to calculate the unused diffusion coefficients
-def Bviral(T,Tc,pc,omega):
+def Bviral(T, Tc, pc, omega):
        Tr = T/Tc
        B0 = 0.1445 - 0.33/Tr - 0.1385/(Tr**2) - 0.0121/(Tr**3)
        B1 = 0.073 + 0.46/Tr - 0.5/(Tr**2) - 0.097/(Tr**3) - 0.0073/(Tr**8)
@@ -549,7 +571,7 @@ def Bviral(T,Tc,pc,omega):
        B = Br*8.314*(Tc/pc)
        return B
 
-def Bviral2(T,Tc,pc,omega):
+def Bviral2(T, Tc, pc, omega):
        Tr = T/Tc
        B0 = 0.083 - 0.422/(Tr**1.6)
        B1 = 0.139 - 0.172/(Tr**4.2)
@@ -557,7 +579,7 @@ def Bviral2(T,Tc,pc,omega):
        B = Br*8.314*(Tc/pc)
        return B
 
-def Bviral3(T,Tc,pc,omega):
+def Bviral3(T, Tc, pc, omega):
        Tr = T/Tc
        B0 = 0.1445 - 0.33/Tr - 0.1385/Tr**2 - 0.0121/Tr**3 - 0.000607/Tr**8
        B1 = 0.0637 + 0.331/Tr**2 - 0.423/Tr**3 - 0.008/Tr**8
@@ -565,178 +587,178 @@ def Bviral3(T,Tc,pc,omega):
        B = Br*8.314*(Tc/pc)
        return B
 
-def Bviral4(T,Tc,pc,omega,a,b,dipole):
-       if dipole != 0:
-              a = -2.188E-4*(dipole**4) - 7.831E-21*(dipole**8)
-              b = 0
-       else:
-              a = 0
-              b = 0
-       Tr = T/Tc
-       B0 = 0.1445 - 0.33/Tr - 0.1385/Tr**2 - 0.0121/Tr**3 - 0.000607/Tr**8
-       B1 = 0.0637 + 0.331/Tr**2 - 0.423/Tr**3 - 0.008/Tr**8
-       B2 = 1/(Tr**6)
-       B3 = -1./(Tr**8)
-       Br = B0 + omega*B1 + a*B2 + b*B3
-       B = Br*8.314*(Tc/pc)
-       return B
+def Bviral4(T, Tc, pc, omega, a, b, dipole):
+    if dipole != 0:
+           a = -2.188E-4*(dipole**4) - 7.831E-21*(dipole**8)
+           b = 0
+    else:
+           a = 0
+           b = 0
+    Tr = T/Tc
+    B0 = 0.1445 - 0.33/Tr - 0.1385/Tr**2 - 0.0121/Tr**3 - 0.000607/Tr**8
+    B1 = 0.0637 + 0.331/Tr**2 - 0.423/Tr**3 - 0.008/Tr**8
+    B2 = 1/(Tr**6)
+    B3 = -1./(Tr**8)
+    Br = B0 + omega*B1 + a*B2 + b*B3
+    B = Br*8.314*(Tc/pc)
+    return B
 
-def btoz(B,T,P):
+def btoz(B, T, P):
        Z = 1.0 + (B*P)/(T*8.314)
        return Z
- 
-def densitytovm(p,MW):
+
+def densitytovm(p, MW):
        vmval = 1/((1E3*p)/(MW))
        return vmval
 
-def alistfun(Temp,PascalP):
-    EDCp = tc.Chemical('107-06-2', T=Temp,P=PascalP)
-    ECp = tc.Chemical('75-00-3', T=Temp,P=PascalP)
-    HClp = tc.Chemical('7647-01-0', T=Temp,P=PascalP)
-    Cokep = tc.Chemical('Activated charcoal', T=Temp,P=PascalP)
-    CPp = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP) 
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP) 
-    C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
-    C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
+def alistfun(Temp, PascalP):
+    EDCp = tc.Chemical('107-06-2', T=Temp, P=PascalP)
+    ECp = tc.Chemical('75-00-3', T=Temp, P=PascalP)
+    HClp = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
+    Cokep = tc.Chemical('Activated charcoal', T=Temp, P=PascalP)
+    CPp = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    Dip = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp, P=PascalP)
+    C6H6p = tc.Chemical('71-43-2', T=Temp, P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp, P=PascalP)
+    C11p = tc.Chemical('75-34-3', T=Temp, P=PascalP)
+    C112p = tc.Chemical('79-00-5', T=Temp, P=PascalP)
     R1p = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
-    R2p = tc.Chemical('75-35-4', T=Temp,P=PascalP)
-    R3p = tc.Chemical('75-43-4', T=Temp,P=PascalP)
-    R4p = tc.Chemical('96-49-1', T=Temp,P=PascalP)
-    R5p = tc.Chemical('75-38-7', T=Temp,P=PascalP)
-    R6p = tc.Chemical('79-01-6', T=Temp,P=PascalP)
-    VCMp = tc.Chemical('75-01-4', T=Temp,P=PascalP)
-    alist = [EDCp,ECp,HClp,Cokep,CPp,Dip,C4H6Cl2p,C6H6p,C2H2p,C11p,C112p,R1p,R2p,R3p,R4p,R5p,R6p,VCMp]
+    R2p = tc.Chemical('75-35-4', T=Temp, P=PascalP)
+    R3p = tc.Chemical('75-43-4', T=Temp, P=PascalP)
+    R4p = tc.Chemical('96-49-1', T=Temp, P=PascalP)
+    R5p = tc.Chemical('75-38-7', T=Temp, P=PascalP)
+    R6p = tc.Chemical('79-01-6', T=Temp, P=PascalP)
+    VCMp = tc.Chemical('75-01-4', T=Temp, P=PascalP)
+    alist = [EDCp, ECp, HClp, Cokep, CPp, Dip, C4H6Cl2p, C6H6p, C2H2p, C11p, C112p, R1p, R2p, R3p, R4p, R5p, R6p, VCMp]
     return alist
 
-def alistfun2(Temp,PascalP):
-    EDCp = tc.Chemical('107-06-2', T=Temp,P=PascalP)
-    ECp = tc.Chemical('75-00-3', T=Temp,P=PascalP)
-    HClp = tc.Chemical('7647-01-0', T=Temp,P=PascalP)
-    Cokep = tc.Chemical('Activated charcoal', T=Temp,P=PascalP)
-    CPp = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP) 
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP) 
-    C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
-    C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
+def alistfun2(Temp, PascalP):
+    EDCp = tc.Chemical('107-06-2', T=Temp, P=PascalP)
+    ECp = tc.Chemical('75-00-3', T=Temp, P=PascalP)
+    HClp = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
+    Cokep = tc.Chemical('Activated charcoal', T=Temp, P=PascalP)
+    CPp = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    Dip = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp, P=PascalP)
+    C6H6p = tc.Chemical('71-43-2', T=Temp, P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp, P=PascalP)
+    C11p = tc.Chemical('75-34-3', T=Temp, P=PascalP)
+    C112p = tc.Chemical('79-00-5', T=Temp, P=PascalP)
     R1p = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
-    R2p = tc.Chemical('75-35-4', T=Temp,P=PascalP)
-    R3p = tc.Chemical('75-43-4', T=Temp,P=PascalP)
-    R4p = tc.Chemical('96-49-1', T=Temp,P=PascalP)
-    R5p = tc.Chemical('75-38-7', T=Temp,P=PascalP)
-    R6p = tc.Chemical('79-01-6', T=Temp,P=PascalP)
-    VCMp = tc.Chemical('75-01-4', T=Temp,P=PascalP)
-    alist = [EDCp,ECp,HClp,Cokep,CPp,Dip,C4H6Cl2p,C6H6p,C2H2p,C11p,C112p,R1p,R2p,R3p,R4p,R5p,R6p,VCMp]
+    R2p = tc.Chemical('75-35-4', T=Temp, P=PascalP)
+    R3p = tc.Chemical('75-43-4', T=Temp, P=PascalP)
+    R4p = tc.Chemical('96-49-1', T=Temp, P=PascalP)
+    R5p = tc.Chemical('75-38-7', T=Temp, P=PascalP)
+    R6p = tc.Chemical('79-01-6', T=Temp, P=PascalP)
+    VCMp = tc.Chemical('75-01-4', T=Temp, P=PascalP)
+    alist = [EDCp, ECp, HClp, Cokep, CPp, Dip, C4H6Cl2p, C6H6p, C2H2p, C11p, C112p, R1p, R2p, R3p, R4p, R5p, R6p, VCMp]
     return alist
 
-Eabb = [342,230,7,34,42,45,48,56,63,13,12,4,6,15,17,14,0,56,61,30,31,84,90,70,70,33,33,33,13,20,70] #[kJ/mol]
+Eabb = [342.0,  230.0,  7.0,  34.0,  42.0,  45.0,  48.0,  56.0,  63.0,  13.0,  12.0,  4.0,  6.0,  15.0,  17.0,  14.0,  0.0,  56.0,  61.0,  30.0,  31.0,  84.0,  90.0,  70.0,  70.0,  33.0,  33.0,  33.0,  13.0,  20.0,  70]  # [kJ/mol]
 Eab = [x*1000.0 for x in Eabb]
-Ea = [float(x) for x in Eab] #kJ/mol
+Ea = [float(x) for x in Eab]  # kJ/mol
 
 names = []
 
-#Fluid physical and thermal properties
+# Fluid physical and thermal properties
 omegaedc = 0.28600000000000003
 Tcedc = 563
 Pcedc = 5380*1E3
 dipoleedc = 1.572
-density = (1E6*1.253)/1E3 #kg/m^3
-mwedc = 98.95 # g/mol
-mwedckg = 98.95/1E3 # kg/mol
-delhm = 71000 #[J/mol]
-Temperature = 500.0 #float(input('Enter starting temperature [°C] --> ')) #[°C]
-Temp_K = 273.15 + Temperature #[K]
-Twall_c = Temperature #[°C]
+density = (1E6*1.253)/1E3  # kg/m^3
+mwedc = 98.95  # g/mol
+mwedckg = 98.95/1E3  # kg/mol
+delhm = 71000  # [J/mol]
+Temperature = 500.0  # float(input('Enter starting temperature [°C] --> '))  # [°C]
+Temp_K = 273.15 + Temperature  # [K]
+Twall_c = Temperature  # [°C]
 Twalls = Twall_c + 273.15
-Pbar = 12.159 #[bar]
-Pstart_atm = 12.0 #float(input("Enter starting pressure [atm] --> "))
-PascalP  = Pstart_atm*101325.0 #[Pa]
+Pbar = 12.159  # [bar]
+Pstart_atm = 12.0  # float(input("Enter starting pressure [atm] --> "))
+PascalP = Pstart_atm*101325.0  # [Pa]
 Patm = PascalP/101325
-volume_flow = 1.5 #float(input("Enter volumetric flow rate [m^3/s] --> ")) #1.5 [m^3/s]
-volume_flowcm = volume_flow*1E6 #[cm^3/s]
-pipe_thickness = 0.025 #float(input("Enter pipe thickness [m] --> ")) #0.025 #[m]
-do = 0.5 #float(input("Enter total pipe diameter [m] --> "))# 0.5 #Outer diameter [m]
-ro = do/2.0  #Outer radius [m]
-di = do - 2*pipe_thickness #Inner diameter [m]
-ri = di/2.0 #Inner radius [m]
+volume_flow = 1.5  # float(input("Enter volumetric flow rate [m^3/s] --> "))  #1.5 [m^3/s]
+volume_flowcm = volume_flow*1E6  # [cm^3/s]
+pipe_thickness = 0.025  # float(input("Enter pipe thickness [m] --> "))  #0.025  # [m]
+do = 0.5  # float(input("Enter total pipe diameter [m] --> "))# 0.5  #Outer diameter [m]
+ro = do/2.0   # Outer radius [m]
+di = do - 2*pipe_thickness  # Inner diameter [m]
+ri = di/2.0  # Inner radius [m]
 cross_area = math.pi*(ri**2)
 Ac = math.pi*(ri**2)
-u_z = volume_flow/cross_area #[m/s]
+u_z = volume_flow/cross_area  # [m/s]
 initedc = (PascalP/(Temp_K*8.314))
 begmix = tc.Mixture(IDs=['107-06-2'], zs=[1.0], T=Temp_K, P=PascalP)
 edcmw = begmix.MW
 Rvalc = begmix.R_specific
-rhoino = begmix.rho #[kg/m^3]
+rhoino = begmix.rho  # [kg/m^3]
 rhoin = rhoino*(1E3)*(1E-6)
 rhoin2 = rhoin/edcmw
-rhoing = begmix.rhogm #[mol/m^3]
-rhoingb = begmix.rhogm/1E6 #[mol/m^3]
+rhoing = begmix.rhogm  # [mol/m^3]
+rhoingb = begmix.rhogm/1E6  # [mol/m^3]
 Ea_vals = []
 Ea_vals2 = []
-mws = begmix.MW # g/mol
-mwskg = mws/1E3 # kg/mol
+mws = begmix.MW  # g/mol
+mwskg = mws/1E3  # kg/mol
 Rval = Rvalc*mwskg
 rhoc = rhoin/mws
-rhoc2 = (PascalP/(Temp_K*8.314))/1E6 #[mol/m^3]
+rhoc2 = (PascalP/(Temp_K*8.314))/1E6  # [mol/m^3]
 inedc = rhoing/1E6
 initedcb = rhoing
-desired_time = 30 #int(input("Enter total reaction time [s] --> ")) #[s]
+desired_time = 30  # int(input("Enter total reaction time [s] --> ")) # [s]
 end_dist = float(u_z*desired_time)
-dist_neat = round(end_dist,1)
-F_in = volume_flow*rhoc2 #[mol/s]
-L = int(u_z*desired_time) # [m]
+dist_neat = round(end_dist, 1)
+F_in = volume_flow*rhoc2  # [mol/s]
+L = int(u_z*desired_time)   # [m]
 Surface_area = math.pi*2.0*ri*L
 alpha = (math.pi*2.0*ri*L)/(Ac*L)
-patm = PascalP/101325.0 #[atm] 
-Ratm = 8.20573660809596E-5 #[m^3*atm/K*mol]
-Rkcal = 1.98720425864083E-3 #[kcal/K*mol]
-segment_second = 100 #int(input('Enter iterations per second --> '))
-gnodes = 10 #Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
+patm = PascalP/101325.0  # [atm]
+Ratm = 8.20573660809596E-5  # [m^3*atm/K*mol]
+Rkcal = 1.98720425864083E-3  # [kcal/K*mol]
+segment_second = 10  # int(input('Enter iterations per second --> '))
+gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
 gnodes2 = 1
-chngamnt = 100.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
-iternum = 200 #int(input('Enter total iterations --> '))
+chngamnt = 100.0  # float(input('Enter Activation Energy change per iteration [J/mol] --> '))
+iternum = 20  # int(input('Enter total iterations --> '))
 graph_num = 1
-segment_num = desired_time*segment_second #Segments/Second
+segment_num = desired_time*segment_second  # Segments/Second
 time_nodes = int(iternum/gnodes)
-graph_nodes = [int(i*time_nodes) for i in range(0,gnodes,1)]
+graph_nodes = [int(i*time_nodes) for i in range(0, gnodes, 1)]
 time_nodesb = int(iternum/gnodes2)
-graph_nodes2 = [int(i*time_nodesb) for i in range(0,gnodes2,1)]
+graph_nodes2 = [int(i*time_nodesb) for i in range(0, gnodes2, 1)]
 endnum = int(L)
 distance = L
-segmentlength = dist_int = L/int(segment_num) #[m]
-total_distance = np.linspace(0,L,num=(segment_num))
-reaction_time = L/u_z #reaction_time = L/u_z #[s]
-time_per_step = segmentlength/u_z #[s]
+segmentlength = dist_int = L/int(segment_num)  # [m]
+total_distance = np.linspace(0, L, num=(segment_num))
+reaction_time = L/u_z  # reaction_time = L/u_z # [s]
+time_per_step = segmentlength/u_z  # [s]
 time_int = 1/segment_second
-alistb = alistfun(Temp_K,PascalP)
-ksteel = 16.3 #[W/m*K]
-time_vals = [i*time_int for i in range(0,segment_num,1)]
-vflow_cmf = volume_flowcm/segment_second #[cm^3/s]
+alistb = alistfun(Temp_K, PascalP)
+ksteel = 16.3  # [W/m*K]
+time_vals = [i*time_int for i in range(0, segment_num, 1)]
+vflow_cmf = volume_flowcm/segment_second  # [cm^3/s]
 vflows = volume_flow/segment_second
-time_valsb = [i*time_int for i in range(0,segment_num+1,1)]
+time_valsb = [i*time_int for i in range(0, segment_num + 1, 1)]
 tmvpd = np.asarray(time_valsb)
 dist_c = [i*u_z for i in time_vals]
 dist_cm = [i*u_z for i in time_vals]
 dist_b = [i*u_z for i in time_valsb]
 dstpd = np.asarray(dist_b)
 ffd = int(dist_c[-1])
-Ls = segmentlength #m
-vintflow = Ls*(math.pi)*(ri**2) #[m^3/s]
-vintflowcm = (Ls*100)*(math.pi)*((ri*100)**2) #[m^3/s]
+Ls = segmentlength  # m
+vintflow = Ls*(math.pi)*(ri**2)  # [m^3/s]
+vintflowcm = (Ls*100)*(math.pi)*((ri*100)**2)  # [m^3/s]
 dist_int = Ls
-volume_flowcmf = (volume_flowcm)/segment_second #[m^3/s]
+volume_flowcmf = (volume_flowcm)/segment_second  # [m^3/s]
 vintflowf = vintflow/segment_second
-tn = np.linspace(0,L,desired_time)
+tn = np.linspace(0, L, desired_time)
 
-#Concentrations
+# Concentrations
 EDC = [float(initedcb)]
 EC = [float(0.0)]
-HCl = [float(0.0)] 
-Coke = [float(0.0)] 
+HCl = [float(0.0)]
+Coke = [float(0.0)]
 CP = [float(0.0)]
 Di = [float(0.0)]
 C4H6Cl2 = [float(0.0)]
@@ -755,8 +777,8 @@ T0 = [float(Temp_K)]
 T1 = [float(0.0)]
 EDCj = [float(initedcb)]
 ECj = [float(0.0)]
-HClj = [float(0.0)] 
-Cokej = [float(0.0)] 
+HClj = [float(0.0)]
+Cokej = [float(0.0)]
 CPj = [float(0.0)]
 Dij = [float(0.0)]
 C4H6Cl2j = [float(0.0)]
@@ -775,8 +797,8 @@ T0j = [float(Temp_K)]
 T1j = [float(0.0)]
 EDCl = []
 ECl = []
-HCll = [] 
-Cokel = [] 
+HCll = []
+Cokel = []
 CPl = []
 Dil = []
 C4H6Cl2l = []
@@ -796,8 +818,8 @@ T1l = []
 pr1 = [100.0]
 EDClj = []
 EClj = []
-HCllj = [] 
-Cokelj = [] 
+HCllj = []
+Cokelj = []
 CPlj = []
 Dilj = []
 C4H6Cl2lj = []
@@ -886,13 +908,13 @@ dpure = []
 
 
 for i in alistb:
-    chemicalt = getattr(i,'IUPAC_name') 
+    chemicalt = getattr(i, 'IUPAC_name')
     names.append(chemicalt)
 
-dist_end = endnum #Final position 
+dist_end = endnum  # Final position
 J_eval = [0]
 J_evalt = [0]
-dist_value= [0.0]
+dist_value = [0.0]
 Tbl = []
 CAS = []
 prhos = []
@@ -900,22 +922,22 @@ mws = []
 pvis = []
 kks = []
 for i in alistb:
-            Casnum = getattr(i,'CAS') 
-            CAS.append(Casnum) 
-            tb = getattr(i,'Tb')
-            Tbl.append(float(tb))
-            chemicalpi = getattr(i,'rhogm')
-            prhos.append(float(chemicalpi))
-            chemicalmwi = getattr(i,'MW')
-            mws.append(float(chemicalmwi/1000.0))
-            chemicalmug = getattr(i,'mug') 
-            pvis.append(float(chemicalmug))
-            chemicalkl = getattr(i,'kg')
-            kks.append(float(chemicalkl))
+    Casnum = getattr(i, 'CAS')
+    CAS.append(Casnum)
+    tb = getattr(i, 'Tb')
+    Tbl.append(float(tb))
+    chemicalpi = getattr(i, 'rhogm')
+    prhos.append(float(chemicalpi))
+    chemicalmwi = getattr(i, 'MW')
+    mws.append(float(chemicalmwi/1000.0))
+    chemicalmug = getattr(i, 'mug')
+    pvis.append(float(chemicalmug))
+    chemicalkl = getattr(i, 'kg')
+    kks.append(float(chemicalkl))
 prhot = sum(prhos)
 mfracs = [i/prhot for i in prhos]
-ys = tc.utils.zs_to_ws(mfracs,mws)
-zvar = np.linspace(0,L,int(L/Ls))
+ys = tc.utils.zs_to_ws(mfracs, mws)
+zvar = np.linspace(0, L, int(L/Ls))
 cons1a = [5.228861948970217258E06, 4.573981356040483661E04, 2.392702360656382751E11]
 z1 = sp.symbols('z1')
 t0 = 0
@@ -925,7 +947,7 @@ ysv.append(sp.symbols('T0'))
 ysv.append(sp.symbols('T1'))
 yblank = []
 Twalls = []
-iterlist = [i for i in range(0,iternum,1)]
+iterlist = [i for i in range(0, iternum, 1)]
 rtolval = 1E-7
 rtolvalj = 1E-7
 atolval = 1E-7
@@ -947,7 +969,9 @@ tau4 = intvols/u_z
 taui = 1.0/u_z
 taui2 = 1.0
 
-for il in tqdm(range(iternum)):
+iterslist = [int(i) for i in range(0, iternum, 1)]
+
+for il in tqdm(iterslist):
 # for il in range(iternum):
     change = il*(chngamnt/1000.0)
     amount_new = 342.0 - change
@@ -955,23 +979,23 @@ for il in tqdm(range(iternum)):
     Twalls.append(Temp_K)
     EDC = [float(initedc)]
     EDCj = [float(initedc)]
-    Eab = [amount_new,7,42,45,34,48,13,12,4,6,15,0,56,31,30,61,84,90,70,20,70] #[kJ/mol]
+    Eab = [amount_new,  7.0,  42.0,  45.0,  34.0,  48.0,  13.0,  12.0,  4.0,  6.0,  15.0,  0.0,  56.0,  31.0,  30.0,  61.0,  84.0,  90.0,  70.0,  20.0,  70]  # [kJ/mol]
     Ea = [float(x*1000.0) for x in Eab]
     ks = [5.9E15, 1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11, 1.0E13, 1.0E13, 1.7E13, 1.2E13, 1.7E13, 9.1E10, 1.2E14, 5.0E11, 2.0E10, 3.0E11, 2.1E14, 5.0E14, 2.0E13, 1.0E14, 1.6E14]
     ns = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-    k_0 = [float(i/((1E6)**(j-1))) for i,j in zip(ks,ns)]
+    k_0 = [float(i/((1E6)**(j-1))) for i, j in zip(ks, ns)]
     # print("Iteration {} Activation Energy {}".format(il+1, amount_new))
     for x2 in dist_c:
     # for x2 in tqdm(dist_c):
         cross_area = math.pi*(ri**2)
-        alistb2 = alistfun(float(T0[-1]),float(PascalP))
+        alistb2 = alistfun(float(T0[-1]), float(PascalP))
         Y0b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], VCM[-1]]
         Y0bfa = [float(i) for i in Y0b]
-        aaij = [x*0.0 for x in range(0,len(alistb2),1)]
-        Aaij = [aaij[:] for x in range(0,len(alistb2),1)]
-        Ctotal = sum(Y0b) #float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float( Coke[-1]) + float( CP[-1]) + float( Di[-1]) + float( C4H6Cl2[-1]) + float( C6H6[-1]) + float( C2H2[-1]) + float( C11[-1]) + float( C112[-1]) + float( R1[-1]) + float( R2[-1]) + float( R3[-1]) + float( R4[-1]) + float( R5[-1]) + float( R6[-1]) + float( VCM[-1])
+        aaij = [x*0.0 for x in range(0, len(alistb2), 1)]
+        Aaij = [aaij[:] for x in range(0, len(alistb2), 1)]
+        Ctotal = sum(Y0b)  # float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float( Coke[-1]) + float( CP[-1]) + float( Di[-1]) + float( C4H6Cl2[-1]) + float( C6H6[-1]) + float( C2H2[-1]) + float( C11[-1]) + float( C112[-1]) + float( R1[-1]) + float( R2[-1]) + float( R3[-1]) + float( R4[-1]) + float( R5[-1]) + float( R6[-1]) + float( VCM[-1])
         C_ii = [float(i)/float(Ctotal) for i in Y0b]
-        C_im = tc.utils.zs_to_ws(C_ii,mws)
+        C_im = tc.utils.zs_to_ws(C_ii, mws)
         mfracnf = [i for i in C_im if i != 0.0]
         molfrac = [i for i in C_ii if i != 0.0]
         MWis1 = mw(alistb2)
@@ -992,50 +1016,50 @@ for il in tqdm(range(iternum)):
         cass = []
         TG = []
         VS = []
-        for i in  Y0bfa:
+        for i in Y0bfa:
             if i > 0.0:
-                    k = Y0bfa.index(i)
-                    i2 = alistb2[k]
-                    C_i2.append(float(i)/float(Ctotal))
-                    chemicalcpi = getattr(i2,'Cpgm') #[J/mol*K] 
-                    Cpi_list2.append(float(chemicalcpi))
-                    chemicalmwi = getattr(i2,'MW') #[g/mol] 
-                    MWgi_list2.append(float(chemicalmwi)) #[g/mol]
-                    MWi_list2.append(float(chemicalmwi/1000.0)) #[kg/mol]
-                    chemicalpi = getattr(i2,'rhogm') #[mol/m^3] 
-                    Rhoi_list2.append(float(chemicalpi))
-                    chemicalkl = getattr(i2,'kg') #[mol/m^3] 
-                    klval_i2.append(float(chemicalkl))
-                    chemicalmug= getattr(i2,'mu') #  [Pa*s] 
-                    mu_i2.append(float(chemicalmug))
-                    chemicaltb= getattr(i2,'Tb') # [K] 
-                    TB_i2.append(float(chemicaltb))
-                    chemicalvm = getattr(i2,'Vmg')
-                    Vm2.append(float(chemicalvm/1E6))
-                    chemicalna = getattr(i2,'IUPAC_name')
-                    names2b.append(chemicalna)
-                    chemicalcas = getattr(i2,'CAS')
-                    cass.append(chemicalcas)
-                    thermo = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
-                    TG.append(thermo.ThermalConductivityGas)
-                    thermov = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
-                    VS.append(thermov.ViscosityGas)
+                k = Y0bfa.index(i)
+                i2 = alistb2[k]
+                C_i2.append(float(i)/float(Ctotal))
+                chemicalcpi = getattr(i2, 'Cpgm')  # [J/mol*K]
+                Cpi_list2.append(float(chemicalcpi))
+                chemicalmwi = getattr(i2, 'MW')  # [g/mol]
+                MWgi_list2.append(float(chemicalmwi))  # [g/mol]
+                MWi_list2.append(float(chemicalmwi/1000.0))  # [kg/mol]
+                chemicalpi = getattr(i2, 'rhogm')  # [mol/m^3]
+                Rhoi_list2.append(float(chemicalpi))
+                chemicalkl = getattr(i2, 'kg')  # [mol/m^3]
+                klval_i2.append(float(chemicalkl))
+                chemicalmug = getattr(i2, 'mu')  # [Pa*s]
+                mu_i2.append(float(chemicalmug))
+                chemicaltb = getattr(i2, 'Tb')  # [K]
+                TB_i2.append(float(chemicaltb))
+                chemicalvm = getattr(i2, 'Vmg')
+                Vm2.append(float(chemicalvm/1E6))
+                chemicalna = getattr(i2, 'IUPAC_name')
+                names2b.append(chemicalna)
+                chemicalcas = getattr(i2, 'CAS')
+                cass.append(chemicalcas)
+                thermo = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                TG.append(thermo.ThermalConductivityGas)
+                thermov = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                VS.append(thermov.ViscosityGas)
             else:
                 pass
         cpavg = mean(Cpi_list2)
         rhoavg = mean(Rhoi_list2)
-        rhovm = [i*j for i,j in zip(Vm2,Rhoi_list2)]
+        rhovm = [i*j for i, j in zip(Vm2, Rhoi_list2)]
         rhoend = float(PascalP/(Rval*float(T0[-1])))
         rhotot2 = sum(Rhoi_list2)
         Massfrac2b = [float(i/rhotot2) for i in Rhoi_list2]
-        Massfrac = [float(i*j) for i,j in zip(C_i2,MWgi_list2)]
+        Massfrac = [float(i*j) for i, j in zip(C_i2, MWgi_list2)]
         Mavg = sum(Massfrac)
-        wsl = [float((i*j)/Mavg) for i,j in zip(C_i2,MWgi_list2)]
-        wsl2 = tc.utils.zs_to_ws(C_i2,MWgi_list2)
-        Rho_Cp = [i*j for i,j in zip(Cpi_list2,Rhoi_list2)]
+        wsl = [float((i*j)/Mavg) for i, j in zip(C_i2, MWgi_list2)]
+        wsl2 = tc.utils.zs_to_ws(C_i2, MWgi_list2)
+        Rho_Cp = [i*j for i, j in zip(Cpi_list2, Rhoi_list2)]
         RCPavg = mean(Rho_Cp)
         Cpglist = []
-        gmix = tc.Mixture(IDs = names2b, zs=C_i2, T=float(T0[-1]), P=PascalP)
+        gmix = tc.Mixture(IDs=names2b, zs=C_i2, T=float(T0[-1]), P=PascalP)
         viss = gmix.mugs
         tbss = gmix.Tbs
         mwss = gmix.MWs
@@ -1043,32 +1067,32 @@ for il in tqdm(range(iternum)):
         CPs = gmix.Cpgms
         CVs = gmix.Cvgms
         Kval1a = gmix.kg
-        kval2 = kmix(float(T0[-1]),C_i2,ksss, viss, tbss, mwss,CPs,CVs) #[W/m*K]
+        kval2 = kmix(float(T0[-1]), C_i2, ksss, viss, tbss, mwss, CPs, CVs)  # [W/m*K]
         Molew = gmix.MWs
         sigma = gmix.molecular_diameters
         stemix = gmix.Stockmayers
-        cpmmix = gmix.Cpgm # [J/mol*K]
-        cpkgmix = gmix.Cpg # [J/kg*K]
-        viscosityb = gmix.mug # [Pa*s] or [kg/m*s^2]
+        cpmmix = gmix.Cpgm   # [J/mol*K]
+        cpkgmix = gmix.Cpg   # [J/kg*K]
+        viscosityb = gmix.mug   # [Pa*s] or [kg/m*s^2]
         vislist = gmix.mugs
-        viscosityc = viscosityb # [kg/m*s^2]
-        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*s]
-        rhob = gmix.rhog #[mol/m^3]
-        rhoc = gmix.rhogm #[mol/m^3]
-        rhocpgm1 = rhoc*cpmmix # [J/m^3*K]
+        viscosityc = viscosityb   # [kg/m*s^2]
+        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]), ys=C_i2, mus=viss, MWs=mwss, molecular_diameters=sigma, Stockmayers=stemix)  # [Pa*s]
+        rhob = gmix.rhog  # [mol/m^3]
+        rhoc = gmix.rhogm  # [mol/m^3]
+        rhocpgm1 = rhoc*cpmmix   # [J/m^3*K]
 #        surface_area = math.pi*2*ri*Ls
-        distancesb = Ls #m
-        distances = Ls # m
-        velocityb = u_z #m/s
-        velocity = velocityb #m/s
+        distancesb = Ls  # m
+        distances = Ls  # m
+        velocityb = u_z  # m/s
+        velocity = velocityb  # m/s
 #        total_volume = math.pi*Ls*(ri**2)
 #        alpha = surface_area/total_volume
-        Tgas = float(T0[-1]) #T = K
-        diameter = di #cm
+        Tgas = float(T0[-1])  # T = K
+        diameter = di  # cm
         tclist = gmix.Tcs
         Vclist = gmix.Vcs
         Zcmix = gmix.Zg
-        TC = tc.critical.modified_Wilson_Tc(zs=C_i2, Tcs=tclist,Aijs=Aaij)
+        TC = tc.critical.modified_Wilson_Tc(zs=C_i2, Tcs=tclist, Aijs=Aaij)
         TCb = tc.critical.Li(zs=C_i2, Tcs=tclist, Vcs=Vclist)
         ek = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TC)
         ek2 = tc.lennard_jones.epsilon_Bird_Stewart_Lightfoot_critical(TCb)
@@ -1079,36 +1103,36 @@ for il in tqdm(range(iternum)):
         Tstar3 = tc.lennard_jones.Tstar(T=float(T0[-1]), epsilon_k=ek3, epsilon=None)
         Tstar4 = tc.lennard_jones.Tstar(T=float(T0[-1]), epsilon_k=ek4, epsilon=None)
         colint1 = tc.lennard_jones.collision_integral_Kim_Monroe(Tstar, l=1, s=1)
-        gmixw2 = tc.Mixture(IDs = names2b, zs=C_i2, T=float(Twalls[-1]), P=PascalP)
-        vsb = gmixw2.mug # [Pa*s]
-        vslist = gmixw2.mugs # [Pa*s]
-        vs = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*S]
-        pr = Pr(cpkgmix,viscosity,kval2)
-        re = reynolds(rhob,u_z,Ls,viscosity)
-        nuval = Nus(velocity,rhoc,Ls,diameter,kval2,viscosity,vs,float(Twalls[-1]),float(T0[-1]),pr,re)
-        gash = hterm(nuval,Ls,kval2)
+        gmixw2 = tc.Mixture(IDs=names2b, zs=C_i2, T=float(Twalls[-1]), P=PascalP)
+        vsb = gmixw2.mug   # [Pa*s]
+        vslist = gmixw2.mugs   # [Pa*s]
+        vs = tc.viscosity.Brokaw(T=float(Twalls[-1]),  ys=C_i2,  mus=viss,  MWs=mwss,  molecular_diameters=sigma,  Stockmayers=stemix)   # [Pa*S]
+        pr = Pr(cpkgmix, viscosity, kval2)
+        re = reynolds(rhob, u_z, Ls, viscosity)
+        nuval = Nus(velocity, rhoc, Ls, diameter, kval2, viscosity, vs, float(Twalls[-1]), float(T0[-1]), pr, re)
+        gash = hterm(nuval, Ls, kval2)
         h20 = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cp = h20.Cpgm
-        h20rhob = h20.rhogm #[mol/m^3]
-        h20rho = h20rhob #[mol/m^3]
-        h20kb = h20.kg # [W/(m*K)]
-        h20k = h20kb # [W/m*k]
-        h20visb = h20.mug # [Pa*s]
-        h20vis = h20visb # [g/m*s^2]
-        prh20 = Pr(h20cp,h20vis,h20k)
-        reh20 = reynolds(h20rho,velocity,Ls,h20vis)
+        h20rhob = h20.rhogm  # [mol/m^3]
+        h20rho = h20rhob  # [mol/m^3]
+        h20kb = h20.kg   # [W/(m*K)]
+        h20k = h20kb   # [W/m*k]
+        h20visb = h20.mug   # [Pa*s]
+        h20vis = h20visb   # [g/m*s^2]
+        prh20 = Pr(h20cp, h20vis, h20k)
+        reh20 = reynolds(h20rho, velocity, Ls, h20vis)
         h20wall = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
-        h20vsb = h20wall.mug # [Pa*s]
-        h20vs = h20vsb # [g/m*s^2]
-        hnuval = Nus(velocity,h20rho,Ls,diameter,h20k,h20vis,h20vs,float(Twalls[-1]),float(Twalls[-1]),prh20,reh20)
-        h20h = hterm(hnuval,Ls,h20k)
-        U_coeffb = Uvalue(diameter,do,gash,h20h,ksteel) # [W/m^2*k]
-        U_coeff = U_coeffb # [W/m^2*k]
-        delhm = 71000.0 #J/mol
+        h20vsb = h20wall.mug   # [Pa*s]
+        h20vs = h20vsb   # [g/m*s^2]
+        hnuval = Nus(velocity, h20rho, Ls, diameter, h20k, h20vis, h20vs, float(Twalls[-1]), float(Twalls[-1]), prh20, reh20)
+        h20h = hterm(hnuval, Ls, h20k)
+        U_coeffb = Uvalue(diameter, do, gash, h20h, ksteel)   # [W/m^2*k]
+        U_coeff = U_coeffb   # [W/m^2*k]
+        delhm = 71000.0  # J/mol
         con1b = RCPavg/kval2
-        con1 = (u_z*rhocpgm1)/kval2 # [1/m] -> [1/cm]
-        con2 = (alpha*U_coeff)/kval2 # [m] (Sa) 
-        con3 = delhm/kval2 # -> [m] 
+        con1 = (u_z*rhocpgm1)/kval2   # [1/m] -> [1/cm]
+        con2 = (alpha*U_coeff)/kval2   # [m] (Sa)
+        con3 = delhm/kval2  # -> [m]
         RE_vals.append(re)
         U_coeffs.append(U_coeff)
         h_vals.append(gash)
@@ -1129,7 +1153,7 @@ for il in tqdm(range(iternum)):
         Y0j = [float(i) for i in Y0bj]
         Ctotalj = sum(Y0j)
         C_iij = [float(jj)/float(Ctotalj) for jj in Y0bj]
-        alistb2j = alistfun(float(T0j[-1]),float(PascalP))
+        alistb2j = alistfun(float(T0j[-1]), float(PascalP))
         MWis1j = mw(alistb2j)
         MWis2j = [float(j/1000) for j in MWis1j]
         Vm2j = []
@@ -1145,44 +1169,44 @@ for il in tqdm(range(iternum)):
         klval_i2j = []
         TB_i2j = []
         C_i2j = []
-        for ij in  Y0j:
+        for ij in Y0j:
             if ij > 0.0:
-                    kj = Y0j.index(ij)
-                    i2j = alistb2j[kj]
-                    C_i2j.append(float(ij)/float(Ctotalj))
-                    chemicalcpij = getattr(i2j,'Cpgm') #[J/mol*K] 
-                    Cpi_list2j.append(chemicalcpij)
-                    chemicalmwij = getattr(i2j,'MW') #[g/mol] 
-                    MWgi_list2j.append(chemicalmwij) #[g/mol]
-                    MWi_list2j.append(float(chemicalmwij/1000)) #[kg/mol]
-                    chemicalpij = getattr(i2j,'rhogm') #[mol/m^3] 
-                    Rhoi_list2j.append(chemicalpij) #[mol/cm^3]
-                    chemicalklj = getattr(i2j,'kg') #[W/m*K] 
-                    klval_i2j.append(chemicalklj) #[W/cm*K]
-                    chemicalmugj= getattr(i2j,'mug') #[Pa*s] 
-                    mu_i2j.append(chemicalmugj)
-                    chemicaltbj= getattr(i2j,'Tb') #[K]
-                    TB_i2j.append(chemicaltbj)
-                    chemicalvmj = getattr(i2j,'Vmg') #[mol/m^3]
-                    Vm2j.append(chemicalvmj) #[mol/cm^3]
-                    chemicalnaj = getattr(i2j,'IUPAC_name')
-                    names2bj.append(chemicalnaj)
+                kj = Y0j.index(ij)
+                i2j = alistb2j[kj]
+                C_i2j.append(float(ij)/float(Ctotalj))
+                chemicalcpij = getattr(i2j, 'Cpgm')    # [J/mol*K]
+                Cpi_list2j.append(chemicalcpij)
+                chemicalmwij = getattr(i2j, 'MW')    # [g/mol]
+                MWgi_list2j.append(chemicalmwij)    # [g/mol]
+                MWi_list2j.append(float(chemicalmwij/1000))    # [kg/mol]
+                chemicalpij = getattr(i2j, 'rhogm')    # [mol/m^3]
+                Rhoi_list2j.append(chemicalpij)    # [mol/cm^3]
+                chemicalklj = getattr(i2j, 'kg')    # [W/m*K]
+                klval_i2j.append(chemicalklj)    # [W/cm*K]
+                chemicalmugj = getattr(i2j, 'mug')    # [Pa*s]
+                mu_i2j.append(chemicalmugj)
+                chemicaltbj = getattr(i2j, 'Tb')    # [K]
+                TB_i2j.append(chemicaltbj)
+                chemicalvmj = getattr(i2j, 'Vmg')    # [mol/m^3]
+                Vm2j.append(chemicalvmj)    # [mol/cm^3]
+                chemicalnaj = getattr(i2j, 'IUPAC_name')
+                names2bj.append(chemicalnaj)
             else:
                 pass
         cpavgj = mean(Cpi_list2j)
         rhoavgj = mean(Rhoi_list2j)
-        rhovmj = [ij*jj for ij,jj in zip(Vm2j,Rhoi_list2j)]
+        rhovmj = [ij*jj for ij, jj in zip(Vm2j, Rhoi_list2j)]
         rhoendj = float(PascalP/(Rval*float(T0j[-1])))
         rhotot2j = sum(Rhoi_list2j)
         Massfrac2j = [float(ij/rhotot2j) for ij in Rhoi_list2j]
-        Rho_Cpj = [i*j for i,j in zip(Cpi_list2j,Rhoi_list2j)]
+        Rho_Cpj = [i*j for i, j in zip(Cpi_list2j, Rhoi_list2j)]
         RCPavgj = mean(Rho_Cpj)
         Cpglistj = []
-        Massfracj = [float(i*j) for i,j in zip(C_i2j,MWgi_list2j)]
+        Massfracj = [float(i*j) for i, j in zip(C_i2j, MWgi_list2j)]
         Mavgj = sum(Massfracj)
-        wslj = [float((i*j)/Mavgj) for i,j in zip(C_i2j,MWgi_list2j)]
-        gmixj = tc.Mixture(IDs = names2bj, zs=C_i2j, T=float(T0j[-1]), P=PascalP)
-        Rho_Cp = [i*j for i,j in zip(Cpi_list2,Rhoi_list2)]
+        wslj = [float((i*j)/Mavgj) for i, j in zip(C_i2j, MWgi_list2j)]
+        gmixj = tc.Mixture(IDs=names2bj, zs=C_i2j, T=float(T0j[-1]), P=PascalP)
+        Rho_Cp = [i*j for i, j in zip(Cpi_list2, Rhoi_list2)]
         RCPavg = mean(Rho_Cp)
         Cpglist = []
         vissj = gmixj.mugs
@@ -1192,26 +1216,26 @@ for il in tqdm(range(iternum)):
         Molewj = gmixj.MWs
         CPsj = gmixj.Cpgms
         CVsj = gmixj.Cvgms
-        kval2j = kmix(float(T0j[-1]),C_i2j,ksssj, vissj, tbssj, mwssj,CPsj,CVsj) #[W/m*K]
+        kval2j = kmix(float(T0j[-1]), C_i2j, ksssj, vissj, tbssj, mwssj, CPsj, CVsj)  # [W/m*K]
         sigmaj = gmixj.molecular_diameters
         stemixj = gmixj.Stockmayers
-        cpgmmixj = gmixj.Cpgm  #[J/mol*K]
-        viscosityj = gmixj.mug # [g/cm*s^2]
-        vislistj= gmixj.mugs # [g/cm*s^2]
-        vs2 = tc.viscosity.Brokaw(T=float(T0j[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
-        rhoj = gmixj.rhogm #[mol/cm^3]
-        rhocpgm2 = rhoj*cpgmmixj # [J/cm^3*K]
+        cpgmmixj = gmixj.Cpgm  # [J/mol*K]
+        viscosityj = gmixj.mug   # [g/cm*s^2]
+        vislistj = gmixj.mugs   # [g/cm*s^2]
+        vs2 = tc.viscosity.Brokaw(T=float(T0j[-1]), ys=C_i2j, mus=vissj, MWs=mwssj, molecular_diameters=sigmaj, Stockmayers=stemixj)
+        rhoj = gmixj.rhogm  # [mol/cm^3]
+        rhocpgm2 = rhoj*cpgmmixj   # [J/cm^3*K]
         surface_area = math.pi*2*ri*Ls
-        distances = Ls #cm
-        velocityj = u_z #cm/s
+        distances = Ls  # cm
+        velocityj = u_z  # cm/s
         total_volume = math.pi*Ls*(ri**2)
         alpha = surface_area/total_volume
-        Tgasj = float(T0j[-1]) #T = K
-        diameterj = di #cm
+        Tgasj = float(T0j[-1])  # T = K
+        diameterj = di  # cm
         tclistj = gmixj.Tcs
         Vclistj = gmixj.Vcs
         Zcmixj = gmixj.Zg
-        TCj = tc.critical.modified_Wilson_Tc(zs=C_i2j, Tcs=tclistj,Aijs=Aaij)
+        TCj = tc.critical.modified_Wilson_Tc(zs=C_i2j, Tcs=tclistj, Aijs=Aaij)
         TCbj = tc.critical.Li(zs=C_i2j, Tcs=tclistj, Vcs=Vclistj)
         ekj = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TCj)
         ek1j = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TCbj)
@@ -1228,24 +1252,24 @@ for il in tqdm(range(iternum)):
         Tstarj = tc.lennard_jones.Tstar(T=float(T0j[-1]), epsilon_k=ekj, epsilon=None)
         colintj = tc.lennard_jones.collision_integral_Kim_Monroe(Tstarj, l=1, s=1)
         gmixw2j = tc.Mixture(IDs = names2bj, zs=C_i2j, T=float(Twalls[-1]), P=PascalP)
-        vsj = gmixw2j.mug # [g/cm*s^2]
-        vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
-        prj = Pr(cpgmmixj,vsj,kval2j)
-        rej = reynolds(rhoj,velocityj,distances,vsj)
-        nuvalj = Nus(velocity,rhoj,distances,diameter,kval2j,vsj,vs2j,float(Twalls[-1]),T0j[-1],prj,rej)
-        gashj = hterm(nuvalj,distances,kval2j)
+        vsj = gmixw2j.mug   # [g/cm*s^2]
+        vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]), ys=C_i2j, mus=vissj, MWs=mwssj, molecular_diameters=sigmaj, Stockmayers=stemixj)
+        prj = Pr(cpgmmixj, vsj, kval2j)
+        rej = reynolds(rhoj, velocityj, distances, vsj)
+        nuvalj = Nus(velocity, rhoj, distances, diameter, kval2j, vsj, vs2j, float(Twalls[-1]), T0j[-1], prj, rej)
+        gashj = hterm(nuvalj, distances, kval2j)
         h20j = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cpj = h20j.Cpgm
-        h20rhoj = h20j.rhogm #[mol/m^3]
-        h20kj = h20j.kg # [W/(m*K)]
-        h20visj = h20j.mug # [g/cm*s^2]
-        prh20j = Pr(h20cpj,h20visj,h20kj)
-        reh20j = reynolds(h20rhoj,velocityj,distances,h20visj)
+        h20rhoj = h20j.rhogm  # [mol/m^3]
+        h20kj = h20j.kg   # [W/(m*K)]
+        h20visj = h20j.mug   # [g/cm*s^2]
+        prh20j = Pr(h20cpj, h20visj, h20kj)
+        reh20j = reynolds(h20rhoj, velocityj, distances, h20visj)
         h20wallj = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
-        h20vsj = h20wallj.mug # [g/cm*s^2]
-        hnuvalj = Nus(velocityj,h20rhoj,distances,diameter,h20kj,h20visj,h20vsj,float(Twalls[-1]),float(Twalls[-1]),prh20j,reh20j)
-        h20hj = hterm(hnuvalj,distances,h20kj)
-        U_coeffj = Uvalue(diameter,do,gashj,h20hj,ksteel) #(W/(m2•K))
+        h20vsj = h20wallj.mug   # [g/cm*s^2]
+        hnuvalj = Nus(velocityj, h20rhoj, distances, diameter, h20kj, h20visj, h20vsj, float(Twalls[-1]), float(Twalls[-1]), prh20j, reh20j)
+        h20hj = hterm(hnuvalj, distances, h20kj)
+        U_coeffj = Uvalue(diameter, do, gashj, h20hj, ksteel)  # (W/(m2•K))
         delhm = 71000.0 #J/mol
         con1j = (u_z*rhocpgm2)/kval2j
         con2j = (alpha*U_coeffj)/kval2j
@@ -1261,10 +1285,10 @@ for il in tqdm(range(iternum)):
         t_start = x2
         t_end = x2 + Ls
         z2 = sp.symbols('z')
-        Y0 = [EDC[-1],EC[-1],HCl[-1],Coke[-1],CP[-1],Di[-1],C4H6Cl2[-1],C6H6[-1],C2H2[-1],C11[-1],C112[-1],R1[-1],R2[-1],R3[-1],R4[-1],R5[-1],R6[-1],VCM[-1],T0[-1],T1[-1]]
-        Y0j = [EDCj[-1],ECj[-1],HClj[-1],Cokej[-1],CPj[-1],Dij[-1],C4H6Cl2j[-1],C6H6j[-1],C2H2j[-1],C11j[-1],C112j[-1],R1j[-1],R2j[-1],R3j[-1],R4j[-1],R5j[-1],R6j[-1],VCMj[-1],T0j[-1],T1j[-1]]
-        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8,5E+8,2E+7, 100000000.0, 160000000.0, amount_new*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_vals[-1]),float(c2_vals[-1]),float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8,5E+8,2E+7, 100000000.0, 160000000.0, amount_new*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], VCM[-1], T0[-1], T1[-1]]
+        Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], VCMj[-1], T0j[-1], T1j[-1]]
+        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method='Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8, 5E+8, 2E+7, 100000000.0, 160000000.0, amount_new*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1E-2, max_step=1E-1)  # , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method='Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8, 5E+8, 2E+7, 100000000.0, 160000000.0, amount_new*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1E-2, max_step=1E-1)  # , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[17][-1]/edcint
@@ -1323,12 +1347,12 @@ for il in tqdm(range(iternum)):
         VCMj.append(float(resb.y[17][-1]))
         T0j.append(float(resb.y[18][-1]))
         T1j.append(float(resb.y[19][-1]))
-        Y1 = [resa.y[0][-1], resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
-        Y1j = [resb.y[0][-1], resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
-        P1 = [resa.y[1][-1],resa.y[2][-1],resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1],resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
-        P1j = [resb.y[1][-1],resb.y[2][-1],resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1],resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
-        D1 = [resa.y[2][-1],resa.y[17][-1]]
-        D1j = [resb.y[2][-1],resb.y[17][-1]]
+        Y1 = [resa.y[0][-1], resa.y[1][-1], resa.y[2][-1], resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1], resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
+        Y1j = [resb.y[0][-1], resb.y[1][-1], resb.y[2][-1], resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1], resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
+        P1 = [resa.y[1][-1], resa.y[2][-1], resa.y[3][-1], resa.y[4][-1], resa.y[5][-1], resa.y[6][-1], resa.y[7][-1], resa.y[8][-1], resa.y[9][-1], resa.y[10][-1], resa.y[11][-1], resa.y[12][-1], resa.y[13][-1], resa.y[14][-1], resa.y[15][-1], resa.y[16][-1], resa.y[17][-1]]
+        P1j = [resb.y[1][-1], resb.y[2][-1], resb.y[3][-1], resb.y[4][-1], resb.y[5][-1], resb.y[6][-1], resb.y[7][-1], resb.y[8][-1], resb.y[9][-1], resb.y[10][-1], resb.y[11][-1], resb.y[12][-1], resb.y[13][-1], resb.y[14][-1], resb.y[15][-1], resb.y[16][-1], resb.y[17][-1]]
+        D1 = [resa.y[2][-1], resa.y[17][-1]]
+        D1j = [resb.y[2][-1], resb.y[17][-1]]
         C_T0 = sum(Y1)
         C_Total.append(C_T0)
         C_T0j = sum(Y1j)
@@ -1339,11 +1363,11 @@ for il in tqdm(range(iternum)):
         des1j = sum(D1j)
         pur1 = (sum(D1)/sum(P1)) * 100
         pr1.append(pur1)
-        pur1j = (sum(D1j)/sum(P1j)) * 100 
+        pur1j = (sum(D1j)/sum(P1j)) * 100
         pr1j.append(pur1j)
-        prev_eval = J_eval[0] #This loads the previous number of jacobian calculations
-        j_eval = resb.nfev + prev_eval #This adds the previous to the most recent amount
-        J_eval[0] = j_eval #This stores them in the initial list from above
+        prev_eval = J_eval[0]  # This loads the previous number of jacobian calculations
+        j_eval = resb.nfev + prev_eval  # This adds the previous to the most recent amount
+        J_eval[0] = j_eval  # This stores them in the initial list from above
     EDCl.append([i for i in EDC])
     ECl.append([i for i in EC])
     HCll.append([i for i in HCl])
@@ -1405,7 +1429,7 @@ for il in tqdm(range(iternum)):
     c2_valsjl.append([float(i) for i in c2_valsj])
     c3_valsjl.append([float(i) for i in c3_valsj])
     conversion_EDC.append([float(i) for i in conversion_EDCb])
-    conversion_EDCj.append([float(i) for i in conversion_EDCjb]) 
+    conversion_EDCj.append([float(i) for i in conversion_EDCjb])
     pure.append(pr1[:])
     purej.append(pr1j[:])
     RE_vals.clear()
@@ -1425,7 +1449,7 @@ for il in tqdm(range(iternum)):
     EDC.clear()
     EC.clear()
     HCl.clear()
-    Coke.clear()    
+    Coke.clear()
     CP.clear()
     Di.clear()
     C4H6Cl2.clear()
@@ -1451,7 +1475,7 @@ for il in tqdm(range(iternum)):
     EDCj.clear()
     ECj.clear()
     HClj.clear()
-    Cokej.clear()    
+    Cokej.clear()
     CPj.clear()
     Dij.clear()
     C4H6Cl2j.clear()
@@ -1470,8 +1494,8 @@ for il in tqdm(range(iternum)):
     T1j.clear()
 #    EDC = [float(initedc)]
     EC = [float(0.0)]
-    HCl = [float(0.0)] 
-    Coke = [float(0.0)] 
+    HCl = [float(0.0)]
+    Coke = [float(0.0)]
     CP = [float(0.0)]
     Di = [float(0.0)]
     C4H6Cl2 = [float(0.0)]
@@ -1496,8 +1520,8 @@ for il in tqdm(range(iternum)):
     yield_vcmj = [1.0]
 #    EDCj = [float(initedc)]
     ECj = [float(0.0)]
-    HClj = [float(0.0)] 
-    Cokej = [float(0.0)] 
+    HClj = [float(0.0)]
+    Cokej = [float(0.0)]
     CPj = [float(0.0)]
     Dij = [float(0.0)]
     C4H6Cl2j = [float(0.0)]
@@ -1530,22 +1554,22 @@ for il in tqdm(range(iternum)):
     atolval = 1E-7
     atolvalj = 1E-7
     Ls2 = firststepval
-    
+
 eaconvf = []
 eaconvjf = []
-for i,j in enumerate(conversion_EDC):
+for i, j in enumerate(conversion_EDC):
     val1 = conversion_EDC[i]
     val2 = val1[-1]
     eaconvf.append(val2)
-    
-for i2,j2 in enumerate(conversion_EDCj):
+
+for i2, j2 in enumerate(conversion_EDCj):
     val1j = conversion_EDCj[i2]
     val2j = val1j[-1]
-    eaconvjf.append(val2j)    
-    
-totallist1 = [EDCl,ECl,HCll,Cokel,CPl,Dil,C4H6Cl2l,C6H6l,C2H2l,C11l,C112l,R1l,R2l,R3l,R4l,R5l,R6l,VCMl,T0l,T1l,pure]
-totallist2 = [EDClj,EClj,HCllj,Cokelj,CPlj,Dilj,C4H6Cl2lj,C6H6lj,C2H2lj,C11lj,C112lj,R1lj,R2lj,R3lj,R4lj,R5lj,R6lj,VCMlj,T0lj,T1lj,purej]
-for i,j in enumerate(totallist1):
+    eaconvjf.append(val2j)
+
+totallist1 = [EDCl, ECl, HCll, Cokel, CPl, Dil, C4H6Cl2l, C6H6l, C2H2l, C11l, C112l, R1l, R2l, R3l, R4l, R5l, R6l, VCMl, T0l, T1l, pure]
+totallist2 = [EDClj, EClj, HCllj, Cokelj, CPlj, Dilj, C4H6Cl2lj, C6H6lj, C2H2lj, C11lj, C112lj, R1lj, R2lj, R3lj, R4lj, R5lj, R6lj, VCMlj, T0lj, T1lj, purej]
+for i, j in enumerate(totallist1):
     namel = namespd[i]
     a1 = np.asarray(totallist1[i])
     a1j = np.asarray(totallist2[i])
@@ -1565,12 +1589,12 @@ for i,j in enumerate(totallist1):
     ad = [dist_b]
     adj = [dist_b]
     ad2 = [dist_b]
-    for jj,k in enumerate(lista):
+    for jj, k in enumerate(lista):
         ll = np.asarray(lista[jj])
         llf = ll.astype(np.longdouble)
         ad.append(llf)
         at.append(llf)
-    for jj,k in enumerate(listb):
+    for jj, k in enumerate(listb):
         llj = np.asarray(listb[jj])
         llfj = llj.astype(np.longdouble)
         adj.append(llfj)
@@ -1588,7 +1612,7 @@ for i,j in enumerate(totallist1):
     ddv2 = ["Velocity: {} [m/s]".format(u_z)]
     ddvd = ["Distance [m]"]
     ddv2d = ["Velocity: {} [m/s]".format(u_z)]
-    for i,j in enumerate(Ea_vals):
+    for i, j in enumerate(Ea_vals):
         eaf.append(eas[i])
         ttv.append(eas[i])
         ddv.append(eas[i])
@@ -1596,260 +1620,260 @@ for i,j in enumerate(totallist1):
         ttv2.append(Ea_vals[i])
         ddv2.append(Ea_vals[i])
         ddv2d.append(Ea_vals[i])
-    indexd = pd.Index(ddv,name='Units')
-    indext = pd.Index(ttv,name='Units')
-    indexdd = pd.Index(ddvd,name='Units')
+    indexd = pd.Index(ddv, name='Units')
+    indext = pd.Index(ttv, name='Units')
+    indexdd = pd.Index(ddvd, name='Units')
     eat = np.asarray(eet)
-    df = pd.DataFrame(ad,index=[*ddv])
+    df = pd.DataFrame(ad, index=[*ddv])
     df.index.name = 'Units'
-    edv = pd.DataFrame(ddv2,index=[*ddv])
+    edv = pd.DataFrame(ddv2, index=[*ddv])
     edv.index.name = 'Units'
-    frames = [edv,df]
-    result1 = pd.concat(frames,join='outer',axis=1, ignore_index=True)
-    dt = pd.DataFrame(at,index=[*ttv])
+    frames = [edv, df]
+    result1 = pd.concat(frames, join='outer', axis=1, ignore_index=True)
+    dt = pd.DataFrame(at, index=[*ttv])
     dt.index.name = 'Units'
-    etv = pd.DataFrame(ttv2,index=[*ttv])
+    etv = pd.DataFrame(ttv2, index=[*ttv])
     etv.index.name = 'Units'
-    framest = [etv,dt]
-    result2 = pd.concat(framest,join='outer',axis=1, ignore_index=True)
-    dfD = pd.DataFrame(ad2,index=[*ddv])
+    framest = [etv, dt]
+    result2 = pd.concat(framest, join='outer', axis=1, ignore_index=True)
+    dfD = pd.DataFrame(ad2, index=[*ddv])
     dfD.index.name = 'Units'
-    edvd = pd.DataFrame(ddv2d,index=[*ddvd])
+    edvd = pd.DataFrame(ddv2d, index=[*ddvd])
     edvd.index.name = 'Units'
-    result1.to_excel(r"{}\{} Data.xlsx".format(path_fol,namel), sheet_name="{} Data.xlsx".format(namel))
-    result2.to_excel(r"{}\{}-Ti Data.xlsx".format(path_fol,namel), sheet_name="{}-Ti Data.xlsx".format(namel))
-    dfj = pd.DataFrame(adj,index=[*ddv])
-    dtj = pd.DataFrame(atj,index=[*ttv])
-    dfDd = pd.DataFrame(ad2,index=[*ddvd])
-    edvj = pd.DataFrame(ddv2,index=[*ddv])
+    result1.to_excel(r"{}\{} Data.xlsx".format(path_fol, namel), sheet_name="{} Data.xlsx".format(namel))
+    result2.to_excel(r"{}\{}-Ti Data.xlsx".format(path_fol, namel), sheet_name="{}-Ti Data.xlsx".format(namel))
+    dfj = pd.DataFrame(adj, index=[*ddv])
+    dtj = pd.DataFrame(atj, index=[*ttv])
+    dfDd = pd.DataFrame(ad2, index=[*ddvd])
+    edvj = pd.DataFrame(ddv2, index=[*ddv])
     edvj.index.name = 'Units'
-    etvj = pd.DataFrame(ttv2,index=[*ttv])
+    etvj = pd.DataFrame(ttv2, index=[*ttv])
     etvj.index.name = 'Units'
-    framesj = [edvj,dfj]
-    framestj = [etvj,dtj]
-    ans1j = pd.concat(framesj,join='outer',axis=1, ignore_index=True)
-    ans2j = pd.concat(framestj,join='outer',axis=1, ignore_index=True)
-    ans1j.to_excel(r"{}\{}j Data.xlsx".format(path_fol,namel), sheet_name="{}-J Data.xlsx".format(namel))
-    ans2j.to_excel(r"{}\{}j-Ti Data.xlsx".format(path_fol,namel), sheet_name="{}-J-Ti Data.xlsx".format(namel))
+    framesj = [edvj, dfj]
+    framestj = [etvj, dtj]
+    ans1j = pd.concat(framesj, join='outer', axis=1, ignore_index=True)
+    ans2j = pd.concat(framestj, join='outer', axis=1, ignore_index=True)
+    ans1j.to_excel(r"{}\{}j Data.xlsx".format(path_fol, namel), sheet_name="{}-J Data.xlsx".format(namel))
+    ans2j.to_excel(r"{}\{}j-Ti Data.xlsx".format(path_fol, namel), sheet_name="{}-J-Ti Data.xlsx".format(namel))
 
-xD = np.linspace(0,u_z*desired_time,segment_num+1)
-timeD = np.linspace(0,desired_time,segment_num+1)
+xD = np.linspace(0, u_z*desired_time, segment_num + 1)
+timeD = np.linspace(0, desired_time, segment_num + 1)
 Ea_valsrev = Ea_vals.copy()
 Ea_valsrev.reverse()
 Ea_valsrev2 = Ea_vals2.copy()
 Ea_valsrev2.reverse()
 
 edc = np.array(EDCl)
-np.savetxt(r"{}\EDC.txt".format(path_fol),edc)
+np.savetxt(r"{}\EDC.txt".format(path_fol), edc)
 ec = np.array(ECl)
-np.savetxt(r"{}\EC.txt".format(path_fol),ec)
+np.savetxt(r"{}\EC.txt".format(path_fol), ec)
 hcl = np.array(HCll)
-np.savetxt(r"{}\HCl.txt".format(path_fol),hcl)
+np.savetxt(r"{}\HCl.txt".format(path_fol), hcl)
 cc = np.array(Cokel)
-np.savetxt(r"{}\Coke.txt".format(path_fol),cc)   
+np.savetxt(r"{}\Coke.txt".format(path_fol), cc)
 cp1 = np.array(CPl)
-np.savetxt(r"{}\cpb.txt".format(path_fol),cp1)
+np.savetxt(r"{}\cpb.txt".format(path_fol), cp1)
 di = np.array(Dil)
-np.savetxt(r"{}\Di.txt".format(path_fol),di)
+np.savetxt(r"{}\Di.txt".format(path_fol), di)
 c4h6cl2 = np.array(C4H6Cl2l)
-np.savetxt(r"{}\C4H6Cl2.txt".format(path_fol),c4h6cl2) 
+np.savetxt(r"{}\C4H6Cl2.txt".format(path_fol), c4h6cl2)
 c6h6 = np.array(C6H6l)
-np.savetxt(r"{}\C6H6.txt".format(path_fol),c6h6) 
+np.savetxt(r"{}\C6H6.txt".format(path_fol), c6h6)
 c2h2 = np.array(C2H2l)
-np.savetxt(r"{}\C2H2.txt".format(path_fol),c2h2)
+np.savetxt(r"{}\C2H2.txt".format(path_fol), c2h2)
 c11 = np.array(C11l)
-np.savetxt(r"{}\C11.txt".format(path_fol),c11)
+np.savetxt(r"{}\C11.txt".format(path_fol), c11)
 c112 = np.array(C112l)
-np.savetxt(r"{}\C112.txt".format(path_fol),c112)
+np.savetxt(r"{}\C112.txt".format(path_fol), c112)
 r1 = np.array(R1l)
-np.savetxt(r"{}\R1.txt".format(path_fol),r1) 
+np.savetxt(r"{}\R1.txt".format(path_fol), r1)
 r2 = np.array(R2l)
-np.savetxt(r"{}\R2.txt".format(path_fol),r2)
-r3 = np.array(R3l) 
-np.savetxt(r"{}\R3.txt".format(path_fol),r3)
+np.savetxt(r"{}\R2.txt".format(path_fol), r2)
+r3 = np.array(R3l)
+np.savetxt(r"{}\R3.txt".format(path_fol), r3)
 r4 = np.array(R4l)
-np.savetxt(r"{}\R4.txt".format(path_fol),r4) 
+np.savetxt(r"{}\R4.txt".format(path_fol), r4)
 r5 = np.array(R5l)
-np.savetxt(r"{}\R5.txt".format(path_fol),r5)
+np.savetxt(r"{}\R5.txt".format(path_fol), r5)
 r6 = np.array(R6l)
-np.savetxt(r"{}\R6.txt".format(path_fol),r6)
+np.savetxt(r"{}\R6.txt".format(path_fol), r6)
 vcm = np.array(VCMl)
-np.savetxt(r"{}\VCM.txt".format(path_fol),vcm)
+np.savetxt(r"{}\VCM.txt".format(path_fol), vcm)
 
 
 convedc = np.array(conversion_EDC)
-np.savetxt(r"{}\Conversion EDC.txt".format(path_fol),convedc)
+np.savetxt(r"{}\Conversion EDC.txt".format(path_fol),  convedc)
 edcj = np.array(EDClj)
-np.savetxt(r"{}\EDCj.txt".format(path_fol),edcj)
+np.savetxt(r"{}\EDCj.txt".format(path_fol), edcj)
 ecj = np.array(EClj)
-np.savetxt(r"{}\ECj.txt".format(path_fol),ecj)
+np.savetxt(r"{}\ECj.txt".format(path_fol), ecj)
 hclj = np.array(HCllj)
-np.savetxt(r"{}\HClj.txt".format(path_fol),hclj)
+np.savetxt(r"{}\HClj.txt".format(path_fol), hclj)
 ccj = np.array(Cokelj)
-np.savetxt(r"{}\Cokej.txt".format(path_fol),ccj)   
+np.savetxt(r"{}\Cokej.txt".format(path_fol), ccj)
 cp1j = np.array(CPlj)
-np.savetxt(r"{}\cpbj.txt".format(path_fol),cp1j)
+np.savetxt(r"{}\cpbj.txt".format(path_fol), cp1j)
 dij = np.array(Dilj)
-np.savetxt(r"{}\Dij.txt".format(path_fol),dij)
+np.savetxt(r"{}\Dij.txt".format(path_fol), dij)
 c4h6cl2j = np.array(C4H6Cl2lj)
-np.savetxt(r"{}\C4H6Cl2j.txt".format(path_fol),c4h6cl2j) 
+np.savetxt(r"{}\C4H6Cl2j.txt".format(path_fol), c4h6cl2j)
 c6h6j = np.array(C6H6lj)
-np.savetxt(r"{}\C6H6j.txt".format(path_fol),c6h6j) 
+np.savetxt(r"{}\C6H6j.txt".format(path_fol), c6h6j)
 c2h2j = np.array(C2H2lj)
-np.savetxt(r"{}\C2H2j.txt".format(path_fol),c2h2j)
+np.savetxt(r"{}\C2H2j.txt".format(path_fol), c2h2j)
 c11j = np.array(C11lj)
-np.savetxt(r"{}\C11j.txt".format(path_fol),c11j)
+np.savetxt(r"{}\C11j.txt".format(path_fol), c11j)
 c112j = np.array(C112lj)
-np.savetxt(r"{}\C112j.txt".format(path_fol),c112j)
+np.savetxt(r"{}\C112j.txt".format(path_fol), c112j)
 r1j = np.array(R1lj)
-np.savetxt(r"{}\R1j.txt".format(path_fol),r1j) 
+np.savetxt(r"{}\R1j.txt".format(path_fol), r1j)
 r2j = np.array(R2lj)
-np.savetxt(r"{}\R2j.txt".format(path_fol),r2j)
-r3j = np.array(R3lj) 
-np.savetxt(r"{}\R3j.txt".format(path_fol),r3j)
+np.savetxt(r"{}\R2j.txt".format(path_fol), r2j)
+r3j = np.array(R3lj)
+np.savetxt(r"{}\R3j.txt".format(path_fol), r3j)
 r4j = np.array(R4lj)
-np.savetxt(r"{}\R4j.txt".format(path_fol),r4j) 
+np.savetxt(r"{}\R4j.txt".format(path_fol), r4j)
 r5j = np.array(R5lj)
-np.savetxt(r"{}\R5j.txt".format(path_fol),r5j)
+np.savetxt(r"{}\R5j.txt".format(path_fol), r5j)
 r6j = np.array(R6lj)
-np.savetxt(r"{}\R6j.txt".format(path_fol),r6j)
+np.savetxt(r"{}\R6j.txt".format(path_fol), r6j)
 
 
 vcmj = np.array(VCMlj)
-np.savetxt(r"{}\VCMj.txt".format(path_fol),vcmj)
+np.savetxt(r"{}\VCMj.txt".format(path_fol), vcmj)
 convedcj = np.array(conversion_EDCj)
-np.savetxt(r"{}\Conversion_EDCJac.txt".format(path_fol),convedcj)
-total = np.array(C_Total,ndmin=1)
-np.savetxt(r"{}\Total.txt".format(path_fol),total)
-purel = np.array(pure,ndmin=1)
-np.savetxt(r"{}\Purity.txt".format(path_fol),purel)
+np.savetxt(r"{}\Conversion_EDCJac.txt".format(path_fol), convedcj)
+total = np.array(C_Total, ndmin=1)
+np.savetxt(r"{}\Total.txt".format(path_fol), total)
+purel = np.array(pure, ndmin=1)
+np.savetxt(r"{}\Purity.txt".format(path_fol), purel)
 distance = np.array(xD)
-np.savetxt(r"{}\Distance.txt".format(path_fol),distance)   
-t0 = np.array(T0l,ndmin=1)
-np.savetxt(r"{}\Temperature.txt".format(path_fol),t0)
-dT = np.array(T1l,ndmin=1)
-np.savetxt(r"{}\TemperatureDifferential.txt".format(path_fol),dT) 
-revals = np.array(RE_valsl,ndmin=1)
-np.savetxt(r"{}\Reynolds.txt".format(path_fol),revals)
-uvals = np.array(U_coeffsl,ndmin=1)
-np.savetxt(r"{}\Uvals.txt".format(path_fol),uvals)
-hvals = np.array(h_valsl,ndmin=1)
-np.savetxt(r"{}\Hvals.txt".format(path_fol),hvals)
-kvals = np.array(kmix_valsl,ndmin=1)
-np.savetxt(r"{}\Kvals.txt".format(path_fol),kvals)
-c1vals = np.array(c1_valsl,ndmin=1)
-np.savetxt(r"{}\Constant1.txt".format(path_fol),c1vals) 
-c2vals = np.array(c2_valsl,ndmin=1)
-np.savetxt(r"{}\Constant2.txt".format(path_fol),c2vals)
-c3vals = np.array(c3_valsl,ndmin=1)
-np.savetxt(r"{}\Constant3.txt".format(path_fol),c3vals) 
-revalsj = np.array(RE_valsjl,ndmin=1)
-np.savetxt(r"{}\ReynoldsJ.txt".format(path_fol),revalsj)
-uvalsj = np.array(U_coeffsjl,ndmin=1)
-np.savetxt(r"{}\Uvalsj.txt".format(path_fol),uvalsj)
-hvalsj = np.array(h_valsjl,ndmin=1)
-np.savetxt(r"{}\Hvalsj.txt".format(path_fol),hvalsj)
-kvalsj = np.array(kmix_valsjl,ndmin=1)
-np.savetxt(r"{}\Kvalsj.txt".format(path_fol),kvalsj)
-c1valsj = np.array(c1_valsjl,ndmin=1)
-np.savetxt(r"{}\Constant1j.txt".format(path_fol),c1valsj) 
-c2valsj = np.array(c2_valsjl,ndmin=1)
-np.savetxt(r"{}\Constant2j.txt".format(path_fol),c2valsj)
-c3valsj = np.array(c3_valsjl,ndmin=1)
-np.savetxt(r"{}\Constant3j.txt".format(path_fol),c3valsj) 
-totalj = np.array(C_Totalj,ndmin=1)
-np.savetxt(r"{}\Totalj.txt".format(path_fol),totalj)
-purejl = np.array(purej,ndmin=1)
-np.savetxt(r"{}\Purityj.txt".format(path_fol),purejl)
-t0j = np.array(T0lj,ndmin=1)
-np.savetxt(r"{}\TemperatureJac.txt".format(path_fol),t0j)
-dTj = np.array(T1lj,ndmin=1)
-np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol),dTj) 
-eavals = np.array(Ea_vals,ndmin=1)
-np.savetxt(r"{}\Eavals.txt".format(path_fol),eavals)
-eavals2 = np.array(Ea_vals2,ndmin=1)
-np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2) 
-eavalsr = np.array(Ea_valsrev,ndmin=1)
-np.savetxt(r"{}\Eavals.txt".format(path_fol),eavalsr)
-eavals2r = np.array(Ea_valsrev2,ndmin=1)
-np.savetxt(r"{}\Eavals2.txt".format(path_fol),eavals2r) 
-eaendc = np.array(eaconvf,ndmin=1)
-np.savetxt(r"{}\FinalConversion.txt".format(path_fol),eaendc) 
-eaendcj = np.array(eaconvjf,ndmin=1)
-np.savetxt(r"{}\FinalConversionJ.txt".format(path_fol),eaendcj) 
-d2tdz2 = np.array(T1lj,ndmin=1)
-np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol),dTj)
+np.savetxt(r"{}\Distance.txt".format(path_fol), distance)
+t0 = np.array(T0l, ndmin=1)
+np.savetxt(r"{}\Temperature.txt".format(path_fol), t0)
+dT = np.array(T1l, ndmin=1)
+np.savetxt(r"{}\TemperatureDifferential.txt".format(path_fol), dT)
+revals = np.array(RE_valsl, ndmin=1)
+np.savetxt(r"{}\Reynolds.txt".format(path_fol), revals)
+uvals = np.array(U_coeffsl, ndmin=1)
+np.savetxt(r"{}\Uvals.txt".format(path_fol), uvals)
+hvals = np.array(h_valsl, ndmin=1)
+np.savetxt(r"{}\Hvals.txt".format(path_fol), hvals)
+kvals = np.array(kmix_valsl, ndmin=1)
+np.savetxt(r"{}\Kvals.txt".format(path_fol), kvals)
+c1vals = np.array(c1_valsl, ndmin=1)
+np.savetxt(r"{}\Constant1.txt".format(path_fol), c1vals)
+c2vals = np.array(c2_valsl, ndmin=1)
+np.savetxt(r"{}\Constant2.txt".format(path_fol), c2vals)
+c3vals = np.array(c3_valsl, ndmin=1)
+np.savetxt(r"{}\Constant3.txt".format(path_fol), c3vals)
+revalsj = np.array(RE_valsjl, ndmin=1)
+np.savetxt(r"{}\ReynoldsJ.txt".format(path_fol), revalsj)
+uvalsj = np.array(U_coeffsjl, ndmin=1)
+np.savetxt(r"{}\Uvalsj.txt".format(path_fol), uvalsj)
+hvalsj = np.array(h_valsjl, ndmin=1)
+np.savetxt(r"{}\Hvalsj.txt".format(path_fol), hvalsj)
+kvalsj = np.array(kmix_valsjl, ndmin=1)
+np.savetxt(r"{}\Kvalsj.txt".format(path_fol), kvalsj)
+c1valsj = np.array(c1_valsjl, ndmin=1)
+np.savetxt(r"{}\Constant1j.txt".format(path_fol), c1valsj)
+c2valsj = np.array(c2_valsjl, ndmin=1)
+np.savetxt(r"{}\Constant2j.txt".format(path_fol), c2valsj)
+c3valsj = np.array(c3_valsjl, ndmin=1)
+np.savetxt(r"{}\Constant3j.txt".format(path_fol), c3valsj)
+totalj = np.array(C_Totalj, ndmin=1)
+np.savetxt(r"{}\Totalj.txt".format(path_fol), totalj)
+purejl = np.array(purej, ndmin=1)
+np.savetxt(r"{}\Purityj.txt".format(path_fol), purejl)
+t0j = np.array(T0lj, ndmin=1)
+np.savetxt(r"{}\TemperatureJac.txt".format(path_fol), t0j)
+dTj = np.array(T1lj, ndmin=1)
+np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol), dTj)
+eavals = np.array(Ea_vals, ndmin=1)
+np.savetxt(r"{}\Eavals.txt".format(path_fol), eavals)
+eavals2 = np.array(Ea_vals2, ndmin=1)
+np.savetxt(r"{}\Eavals2.txt".format(path_fol), eavals2)
+eavalsr = np.array(Ea_valsrev, ndmin=1)
+np.savetxt(r"{}\Eavals.txt".format(path_fol), eavalsr)
+eavals2r = np.array(Ea_valsrev2, ndmin=1)
+np.savetxt(r"{}\Eavals2.txt".format(path_fol), eavals2r)
+eaendc = np.array(eaconvf, ndmin=1)
+np.savetxt(r"{}\FinalConversion.txt".format(path_fol), eaendc)
+eaendcj = np.array(eaconvjf, ndmin=1)
+np.savetxt(r"{}\FinalConversionJ.txt".format(path_fol), eaendcj)
+d2tdz2 = np.array(T1lj, ndmin=1)
+np.savetxt(r"{}\TemperatureDifferentialJac.txt".format(path_fol), dTj)
 
 
-selectvcm = np.array(selectivityl,ndmin=1)
-np.savetxt(r"{}\selectivityvcm.txt".format(path_fol),selectvcm) 
-selecthcl = np.array(selectivity2l,ndmin=1)
-np.savetxt(r"{}\selectivityhcl.txt".format(path_fol),selecthcl) 
+selectvcm = np.array(selectivityl, ndmin=1)
+np.savetxt(r"{}\selectivityvcm.txt".format(path_fol), selectvcm)
+selecthcl = np.array(selectivity2l, ndmin=1)
+np.savetxt(r"{}\selectivityhcl.txt".format(path_fol), selecthcl)
 
 
-selectvcmj = np.array(selectivityjl,ndmin=1)
-np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),selectvcmj) 
-selecthclj = np.array(selectivity2jl,ndmin=1)
-np.savetxt(r"{}\selectivityhclj.txt".format(path_fol),selecthclj) 
+selectvcmj = np.array(selectivityjl, ndmin=1)
+np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol), selectvcmj)
+selecthclj = np.array(selectivity2jl, ndmin=1)
+np.savetxt(r"{}\selectivityhclj.txt".format(path_fol), selecthclj)
 
 
-yieldvcm = np.array(yield_vcml,ndmin=1)
-np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcm) 
-yieldvcmj = np.array(yield_vcmjl,ndmin=1)
-np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol),yieldvcmj)
+yieldvcm = np.array(yield_vcml, ndmin=1)
+np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol), yieldvcm)
+yieldvcmj = np.array(yield_vcmjl, ndmin=1)
+np.savetxt(r"{}\selectivityvcmj.txt".format(path_fol), yieldvcmj)
 
 
-viridis = cm.get_cmap('viridis', iternum+1)
+viridis = cm.get_cmap('viridis', iternum + 1)
 
-concl = [edc,ec,hcl,cc,cp1,di,c4h6cl2,c6h6,c2h2,c11,c112,r1,r2,r3,r4,r5,r6,vcm]
-concjl = [edcj,ecj,hclj,ccj,cp1j,dij,c4h6cl2j,c6h6j,c2h2j,c11j,c112j,r1j,r2j,r3j,r4j,r5j,r6j,vcmj]
+concl = [edc, ec, hcl, cc, cp1, di, c4h6cl2, c6h6, c2h2, c11, c112, r1, r2, r3, r4, r5, r6, vcm]
+concjl = [edcj, ecj, hclj, ccj, cp1j, dij, c4h6cl2j, c6h6j, c2h2j, c11j, c112j, r1j, r2j, r3j, r4j, r5j, r6j, vcmj]
 
 for i, j in enumerate(concl):
     cur_list = concl[i]
     nameD = namesb[i]
     nameD2 = namesb2[i]
-    for jj,j in enumerate(graph_nodes):
+    for jj, j in enumerate(graph_nodes):
         fig = plt.figure()
         cur_list2 = concl[i][j]
         eavalg = str(Ea_vals[j])
         index_jj = int(j)
-        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+        plt.plot(xD, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         plt.grid()
         plt.xlabel(r'Distance [$m$]')
         plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
         plt.title('{} Concentration'.format(nameD2))
-        fig.savefig(r"{}\{}-Concentration NoJ-{}.pdf".format(path_fol,nameD,eavalg))
-        fig.savefig(r"{}\{}-Concentration NoJ-{}.svg".format(path_fol,nameD,eavalg))
+        fig.savefig(r"{}\{}-Concentration NoJ-{}.pdf".format(path_fol, nameD, eavalg))
+        fig.savefig(r"{}\{}-Concentration NoJ-{}.svg".format(path_fol, nameD, eavalg))
         plt.close()
 
 for i, j in enumerate(concjl):
     cur_list = concjl[i]
     nameD = namesb[i]
     nameD2 = namesb2[i]
-    for jj,j in enumerate(graph_nodes):
+    for jj, j in enumerate(graph_nodes):
         fig = plt.figure()
         cur_list2 = concjl[i][j]
         eavalg = str(Ea_vals[j])
         index_jj = int(j)
-        plt.plot(xD, cur_list2, color=viridis.colors[index_jj,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+        plt.plot(xD, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         plt.grid()
         plt.xlabel(r'Distance [$m$]')
         plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
         plt.title('{} Concentration'.format(nameD2))
-        fig.savefig(r"{}\{}-Concentration J-{}.pdf".format(path_fol,nameD,eavalg))
-        fig.savefig(r"{}\{}-Concentration J-{}.svg".format(path_fol,nameD,eavalg))
+        fig.savefig(r"{}\{}-Concentration J-{}.pdf".format(path_fol, nameD, eavalg))
+        fig.savefig(r"{}\{}-Concentration J-{}.svg".format(path_fol, nameD, eavalg))
         plt.close()
 
 font = {'family': 'serif',
-        'color':  'black',
+        'color': 'black',
         'weight': 'normal',
         'size': 16,
         }
 
 font2 = {'family': 'serif',
-        'color':  'black',
+        'color': 'black',
         'weight': 'normal',
         'size': 30,
         'ha': 'center',
@@ -1857,7 +1881,7 @@ font2 = {'family': 'serif',
         }
 
 font3 = {'family': 'serif',
-        'color':  'black',
+        'color': 'black',
         'weight': 'normal',
         'size': 18,
         'ha': 'center',
@@ -1891,7 +1915,7 @@ plt1e = plt.plot(eavals, eaendc, 'b-')
 plt2e = plt.plot(eavals, eaendcj, 'g-')
 plt.ylabel('Conversion')
 plt.xlabel("Initial Activation Energy: {} {}".format(Ea_vals[0], r"[$\frac{kJ}{mol}$]"))
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title("Final Conversion")
 plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
 plt.grid()
@@ -1900,8 +1924,8 @@ fig.savefig(r"{}\Final Conversion.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
-    index_j = int(j) 
+for jj, j in enumerate(graph_nodes2):
+    index_j = int(j)
     plt.plot(xD, edc[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
@@ -1914,8 +1938,8 @@ fig.savefig(r"{}\EDC-NoJ.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
-    index_j = int(j) 
+for jj, j in enumerate(graph_nodes2):
+    index_j = int(j)
     plt.plot(xD, edcj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
@@ -1927,10 +1951,10 @@ fig.savefig(r"{}\EDC-J.pdf".format(path_fol))
 fig.savefig(r"{}\EDC-J.svg".format(path_fol))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
-      plt.plot(xD, edcj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+      plt.plot(xD, edcj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       TemperatureC = KtoC(Temp_K)
       plt.legend(loc='best')
       plt.grid()
@@ -1941,26 +1965,26 @@ for jj,j in enumerate(graph_nodes):
       fig.savefig(r"{}\EDC.svg".format(path_fol))
       plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
-      plt.plot(timeD, convedcj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+      plt.plot(timeD, convedcj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       TemperatureC = KtoC(Temp_K)
       plt.legend(loc='best')
       plt.axhline(y=100, color='k', linestyle='--')
       plt.grid()
       plt.xlabel('Times [s]')
       plt.ylabel('Conversion')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('EDC Jacobian Conversion')
       fig.savefig(r"{}\EDC-conv.pdf".format(path_fol))
       fig.savefig(r"{}\EDC-conv.svg".format(path_fol))
       plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, ecj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, ecj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -1972,9 +1996,9 @@ fig.savefig(r"{}\EC.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_j = int(j)
-      plt.plot(xD, hclj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+      plt.plot(xD, hclj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -1986,9 +2010,9 @@ fig.savefig(r"{}\HCl.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, ccj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, ccj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2000,9 +2024,9 @@ fig.savefig(r"{}\Coke.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, cp1j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, cp1j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2014,9 +2038,9 @@ fig.savefig(r"{}\CP.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, dij[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, dij[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2028,9 +2052,9 @@ fig.savefig(r"{}\Di.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, c4h6cl2j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, c4h6cl2j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2042,9 +2066,9 @@ fig.savefig(r"{}\C4H6Cl2.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, c6h6j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, c6h6j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2056,9 +2080,9 @@ fig.savefig(r"{}\C6H6.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, c2h2j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, c2h2j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2070,9 +2094,9 @@ fig.savefig(r"{}\C2H2.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, c11j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, c11j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2084,9 +2108,9 @@ fig.savefig(r"{}\C11.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
-    plt.plot(xD, c112j[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.plot(xD, c112j[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2098,9 +2122,9 @@ fig.savefig(r"{}\C112.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_j = int(j)
-      plt.plot(xD, vcmj[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+      plt.plot(xD, vcmj[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       TemperatureC = KtoC(Temp_K)
 plt.legend(loc='best')
 plt.grid()
@@ -2111,7 +2135,7 @@ fig.savefig(r"{}\VCM.pdf".format(path_fol))
 fig.savefig(r"{}\VCM.svg".format(path_fol))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_t = int(j)
       plt.plot(xD, t0[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
@@ -2121,11 +2145,11 @@ for jj,j in enumerate(graph_nodes):
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel("Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       plt.title('Activation Energy Profile')
-      fig.savefig(r"{}\T-Profile{}.pdf".format(path_fol,Ea_vals[j]))
-      fig.savefig(r"{}\T-Profile{}.svg".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile{}.pdf".format(path_fol, Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile{}.svg".format(path_fol, Ea_vals[j]))
       plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_t = int(j)
       plt.plot(xD, t0j[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
@@ -2135,11 +2159,11 @@ for jj,j in enumerate(graph_nodes):
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel("Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       plt.title('Activation Energy Profile')
-      fig.savefig(r"{}\T-Profile-J-kJ-{}.pdf".format(path_fol,Ea_vals[j]))
-      fig.savefig(r"{}\T-Profile-J-kJ-{}.svg".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile-J-kJ-{}.pdf".format(path_fol, Ea_vals[j]))
+      fig.savefig(r"{}\T-Profile-J-kJ-{}.svg".format(path_fol, Ea_vals[j]))
       plt.close()
-      
-# for jj,j in enumerate(graph_nodes):
+
+# for jj, j in enumerate(graph_nodes):
 #       fig = plt.figure()
 #       index_t = int(j)
 #       plt.plot(xD, dt0[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
@@ -2149,10 +2173,10 @@ for jj,j in enumerate(graph_nodes):
 #       plt.xlabel(r'Distance [$m$]')
 #       plt.ylabel("Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
 #       plt.title('Activation Energy Profile')
-#       fig.savefig(r"{}\T-Profile Diffusion{}.pdf".format(path_fol,Ea_vals[j]))
-#       fig.savefig(r"{}\T-Profile Diffusion{}.svg".format(path_fol,Ea_vals[j]))
+#       fig.savefig(r"{}\T-Profile Diffusion{}.pdf".format(path_fol, Ea_vals[j]))
+#       fig.savefig(r"{}\T-Profile Diffusion{}.svg".format(path_fol, Ea_vals[j]))
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     plt.plot(xD, r1j[j, :], 'b--', label=r'$R_{1}$')
@@ -2166,14 +2190,14 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"Radicals Concentration at {} K".format(Ea_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\RadicalT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\RadicalT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\RadicalT{}.pdf".format(path_fol, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\RadicalT{}.svg".format(path_fol, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
-    TemperatureC = KtoC(Temp_K)       
+    TemperatureC = KtoC(Temp_K)
     plt.plot(xD, ecj[j, :], 'g-', label='Ethylchloride')
     plt.plot(xD, ccj[j, :], 'r-', label='Soot/Coke')
     plt.plot(xD, cp1j[j, :], 'b-', label='1-/2-chloroprene')
@@ -2186,11 +2210,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"By-Product Concentration at {} K".format(Ea_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\By-ProductT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By-ProductT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-ProductT{}.pdf".format(path_fol, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-ProductT{}.svg".format(path_fol, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     TemperatureC = KtoC(Temp_K)
     index_j = int(j)
@@ -2202,11 +2226,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\ProductsNoJ-kJ-{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsNoJ-kJ-{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-kJ-{}.pdf".format(path_fol, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-kJ-{}.svg".format(path_fol, Ea_vals[j]), bbox_inches='tight')
     plt.close()
-    
-for jj,j in enumerate(graph_nodes):
+
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     TemperatureC = KtoC(Ea_vals[j])
     index_j = int(j)
@@ -2218,39 +2242,39 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\ProductsJ-kJ-{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsJ-kJ-{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight') 
+    fig.savefig(r"{}\ProductsJ-kJ-{}.pdf".format(path_fol, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsJ-kJ-{}.svg".format(path_fol, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
-      plt.plot(xD, purejl[j, :], color=viridis.colors[index_j,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
+      plt.plot(xD, purejl[j, :], color=viridis.colors[index_j, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
       plt.legend(loc='best')
       plt.grid()
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel('Product Purity')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('Product Purity - Jacobian')
-      fig.savefig(r"{}\Ea_vals-PurityJ-kJ-{}.pdf".format(path_fol,Ea_vals[j]))
-      fig.savefig(r"{}\Ea_vals-PurityJ-kJ-{}.svg".format(path_fol,Ea_vals[j]))
+      fig.savefig(r"{}\Ea_vals-PurityJ-kJ-{}.pdf".format(path_fol, Ea_vals[j]))
+      fig.savefig(r"{}\Ea_vals-PurityJ-kJ-{}.svg".format(path_fol, Ea_vals[j]))
       plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_t = int(j)
       plt.plot(xD, purejl[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
 plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
-fig.savefig(r"{}\OverallEa_vals-PurityJ-kJ-{}.pdf".format(path_fol,Ea_vals[j]))
-fig.savefig(r"{}\OverallEa_vals-PurityJ-kJ-{}.svg".format(path_fol,Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-PurityJ-kJ-{}.pdf".format(path_fol, Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-PurityJ-kJ-{}.svg".format(path_fol, Ea_vals[j]))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_t = int(j)
     plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
@@ -2258,56 +2282,56 @@ for jj,j in enumerate(graph_nodes):
     plt.grid()
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Product Purity')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.title('Product Purity')
-    fig.savefig(r"{}\Ea_vals-Purity{}.pdf".format(path_fol,Ea_vals[j]))
-    fig.savefig(r"{}\Ea_vals-Purity{}.svg".format(path_fol,Ea_vals[j]))
+    fig.savefig(r"{}\Ea_vals-Purity{}.pdf".format(path_fol, Ea_vals[j]))
+    fig.savefig(r"{}\Ea_vals-Purity{}.svg".format(path_fol, Ea_vals[j]))
     plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_t = int(j)
       plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
 plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
-fig.savefig(r"{}\OverallEa_vals-Purity{}.pdf".format(path_fol,Ea_vals[j]))
-fig.savefig(r"{}\OverallEa_vals-Purity{}.svg".format(path_fol,Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-Purity{}.pdf".format(path_fol, Ea_vals[j]))
+fig.savefig(r"{}\OverallEa_vals-Purity{}.svg".format(path_fol, Ea_vals[j]))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     plt.plot(xD, convedc[j, :], 'b-', label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionT{}.pdf".format(path_fol,Ea_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionT{}.svg".format(path_fol,Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionT{}.pdf".format(path_fol, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionT{}.svg".format(path_fol, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
     plt.plot(xD, convedcj[j, :], 'b-', label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionJ-kJ-{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionJ-kJ-{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-kJ-{}.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-kJ-{}.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2317,11 +2341,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Mixture Thermal Conductivity ($\kappa_{mix}$)')
     plt.grid()
-    fig.savefig(r"{}\KvalsJ-kJ-{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\KvalsJ-kJ-{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-kJ-{}.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-kJ-{}.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2331,11 +2355,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Overall Heat Transfer Coefficient ($\it{U}$)')
     plt.grid()
-    fig.savefig(r"{}\UvalsJ-kJ-{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\UvalsJ-kJ-{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-kJ-{}.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-kJ-{}.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2345,11 +2369,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Heat Transfer Coefficient ($\it{h}$)')
     plt.grid()
-    fig.savefig(r"{}\HvalsJ-kJ-{}.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\HvalsJ-kJ-{}.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-kJ-{}.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-kJ-{}.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2358,14 +2382,14 @@ for jj,j in enumerate(graph_nodes):
     plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Constant 1 [$\frac{}{}$]'.format(str('{1}'),str('{m}')), fontdict=font)
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 1', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant1J-kJ-{}.pdf".format(path_fol,eavalg))
-    fig.savefig(r"{}\Constant1J-kJ-{}.svg".format(path_fol,eavalg))
-    plt.close()    
+    fig.savefig(r"{}\Constant1J-kJ-{}.pdf".format(path_fol, eavalg))
+    fig.savefig(r"{}\Constant1J-kJ-{}.svg".format(path_fol, eavalg))
+    plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2374,14 +2398,14 @@ for jj,j in enumerate(graph_nodes):
     plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
     plt.xlabel(r'Distance [$\frac{1}{m^2}$]', fontdict=font)
     plt.ylabel(r'Constant 2 [$\frac{K}{m^2}$]', fontdict=font)
-    plt.legend([r"Activation Energy: {}".format(Cval) + r"[$\frac{kJ}{mol}$]",r"$\frac{\it{U}*\alpha}{\kappa}$"],loc='best',fontsize='large')
+    plt.legend([r"Activation Energy: {}".format(Cval) + r"[$\frac{kJ}{mol}$]", r"$\frac{\it{U}*\alpha}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 2', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant2J-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant2J-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2390,14 +2414,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Constant 3 [$\frac{s*m*K}{mol}$]', fontdict=font)
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\Delta{H_{rxn}}}{\kappa}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$\frac{\Delta{H_{rxn}}}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 3', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant3J-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant3J-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2406,14 +2430,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Reynolds Number $R_{e}$', fontdict=font)
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"], loc='best', fontsize='large')
     plt.title('Reynolds Number', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number {} kJ-mol.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number {} kJ-mol.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {} kJ-mol.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {} kJ-mol.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2422,14 +2446,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Reynolds Number [$R_{e}$]', fontdict=font)
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"], loc='best', fontsize='large')
     plt.title('Reynolds Number Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number J {} kJ-mol.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number J {} kJ-mol.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {} kJ-mol.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {} kJ-mol.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2439,14 +2463,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$S_{\frac{VCM}{HCl}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCM-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCM-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2456,14 +2480,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$S_{\frac{HCl}{VCM}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHCl-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHCl-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2473,14 +2497,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$S_{\frac{VCM}{HCl}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCMJ-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCMJ-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2490,14 +2514,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$S_{\frac{HCl}{VCM}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHClJ-kJ-{}.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHClJ-kJ-{}.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-kJ-{}.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-kJ-{}.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2507,15 +2531,15 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$Y_{VCM}$"], loc='best', fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM {} kJ-mol.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM {} kJ-mol.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {} kJ-mol.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {} kJ-mol.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Ea_vals[j])
@@ -2525,20 +2549,21 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
-    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
+    # plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
+    plt.legend(["Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"), r"$Y_{VCM}$"], loc='best', fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM J {} kJ-mol.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM J {} kJ-mol.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {} kJ-mol.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {} kJ-mol.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-print("The Jacobian was evaluated %d times." % J_eval[0])
+print("The Jacobian was evaluated {} times.\n".format(int(J_eval[0])))
 end = time.time() #Time when it finishes, this is real time
 
-def timer(start,end):
+def timer(start, end):
     hours, rem = divmod(end-start, 3600)
     minutes, seconds = divmod(rem, 60)
-    print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours),int(minutes),int(seconds)))
+    print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours), int(minutes), int(seconds)))
 
 timer(start,end) # Prints the amount of time passed since starting the program

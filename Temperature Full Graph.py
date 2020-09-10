@@ -9,12 +9,6 @@ Github: https://github.com/tjczec01
 E-mail: tjczec01@gmail.com
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 10 19:26:23 2020
-
-@author: tjcze
-"""
 from __future__ import division
 import time
 import math

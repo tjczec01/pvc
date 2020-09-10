@@ -31,7 +31,7 @@ try:
        os.mkdir(path_fol)
 except:
        pass
-sp.init_session(use_latex=False,quiet=True)
+sp.init_session(use_latex=False, quiet=True)
 plt.ioff()
 plt.rcParams.update({'figure.max_open_warning': 10})
 # Data for inital kinetics
@@ -598,51 +598,51 @@ def densitytovm(p,MW):
        vmval = 1/((1E3*p)/(MW))
        return vmval
 
-def alistfun(Temp,PascalP):
-    EDCp = tc.Chemical('107-06-2', T=Temp,P=PascalP)
-    ECp = tc.Chemical('75-00-3', T=Temp,P=PascalP)
-    HClp = tc.Chemical('7647-01-0', T=Temp,P=PascalP)
-    Cokep = tc.Chemical('Activated charcoal', T=Temp,P=PascalP)
-    CPp = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP)
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP)
-    C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
-    C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
+def alistfun(Temp, PascalP):
+    EDCp = tc.Chemical('107-06-2', T=Temp, P=PascalP)
+    ECp = tc.Chemical('75-00-3', T=Temp, P=PascalP)
+    HClp = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
+    Cokep = tc.Chemical('Activated charcoal', T=Temp, P=PascalP)
+    CPp = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    Dip = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp, P=PascalP)
+    C6H6p = tc.Chemical('71-43-2', T=Temp, P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp, P=PascalP)
+    C11p = tc.Chemical('75-34-3', T=Temp, P=PascalP)
+    C112p = tc.Chemical('79-00-5', T=Temp, P=PascalP)
     R1p = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
-    R2p = tc.Chemical('75-35-4', T=Temp,P=PascalP)
-    R3p = tc.Chemical('75-43-4', T=Temp,P=PascalP)
-    R4p = tc.Chemical('96-49-1', T=Temp,P=PascalP)
-    R5p = tc.Chemical('75-38-7', T=Temp,P=PascalP)
-    R6p = tc.Chemical('79-01-6', T=Temp,P=PascalP)
-    VCMp = tc.Chemical('75-01-4', T=Temp,P=PascalP)
-    alist = [EDCp,ECp,HClp,Cokep,CPp,Dip,C4H6Cl2p,C6H6p,C2H2p,C11p,C112p,R1p,R2p,R3p,R4p,R5p,R6p,VCMp]
+    R2p = tc.Chemical('75-35-4', T=Temp, P=PascalP)
+    R3p = tc.Chemical('75-43-4', T=Temp, P=PascalP)
+    R4p = tc.Chemical('96-49-1', T=Temp, P=PascalP)
+    R5p = tc.Chemical('75-38-7', T=Temp, P=PascalP)
+    R6p = tc.Chemical('79-01-6', T=Temp, P=PascalP)
+    VCMp = tc.Chemical('75-01-4', T=Temp, P=PascalP)
+    alist = [EDCp, ECp, HClp, Cokep, CPp, Dip, C4H6Cl2p, C6H6p, C2H2p, C11p, C112p, R1p, R2p, R3p, R4p, R5p, R6p, VCMp]
     return alist
 
-def alistfun2(Temp,PascalP):
-    EDCp = tc.Chemical('107-06-2', T=Temp,P=PascalP)
-    ECp = tc.Chemical('75-00-3', T=Temp,P=PascalP)
-    HClp = tc.Chemical('7647-01-0', T=Temp,P=PascalP)
-    Cokep = tc.Chemical('Activated charcoal', T=Temp,P=PascalP)
-    CPp = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    Dip = tc.Chemical('126-99-8', T=Temp,P=PascalP)
-    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp,P=PascalP)
-    C6H6p = tc.Chemical('71-43-2', T=Temp,P=PascalP)
-    C2H2p = tc.Chemical('74-86-2', T=Temp,P=PascalP)
-    C11p = tc.Chemical('75-34-3', T=Temp,P=PascalP)
-    C112p = tc.Chemical('79-00-5', T=Temp,P=PascalP)
+def alistfun2(Temp, PascalP):
+    EDCp = tc.Chemical('107-06-2', T=Temp, P=PascalP)
+    ECp = tc.Chemical('75-00-3', T=Temp, P=PascalP)
+    HClp = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
+    Cokep = tc.Chemical('Activated charcoal', T=Temp, P=PascalP)
+    CPp = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    Dip = tc.Chemical('126-99-8', T=Temp, P=PascalP)
+    C4H6Cl2p = tc.Chemical('760-23-6', T=Temp, P=PascalP)
+    C6H6p = tc.Chemical('71-43-2', T=Temp, P=PascalP)
+    C2H2p = tc.Chemical('74-86-2', T=Temp, P=PascalP)
+    C11p = tc.Chemical('75-34-3', T=Temp, P=PascalP)
+    C112p = tc.Chemical('79-00-5', T=Temp, P=PascalP)
     R1p = tc.Chemical('7647-01-0', T=Temp, P=PascalP)
-    R2p = tc.Chemical('75-35-4', T=Temp,P=PascalP)
-    R3p = tc.Chemical('75-43-4', T=Temp,P=PascalP)
-    R4p = tc.Chemical('96-49-1', T=Temp,P=PascalP)
-    R5p = tc.Chemical('75-38-7', T=Temp,P=PascalP)
-    R6p = tc.Chemical('79-01-6', T=Temp,P=PascalP)
-    VCMp = tc.Chemical('75-01-4', T=Temp,P=PascalP)
-    alist = [EDCp,ECp,HClp,Cokep,CPp,Dip,C4H6Cl2p,C6H6p,C2H2p,C11p,C112p,R1p,R2p,R3p,R4p,R5p,R6p,VCMp]
+    R2p = tc.Chemical('75-35-4', T=Temp, P=PascalP)
+    R3p = tc.Chemical('75-43-4', T=Temp, P=PascalP)
+    R4p = tc.Chemical('96-49-1', T=Temp, P=PascalP)
+    R5p = tc.Chemical('75-38-7', T=Temp, P=PascalP)
+    R6p = tc.Chemical('79-01-6', T=Temp, P=PascalP)
+    VCMp = tc.Chemical('75-01-4', T=Temp, P=PascalP)
+    alist = [EDCp, ECp, HClp, Cokep, CPp, Dip, C4H6Cl2p, C6H6p, C2H2p, C11p, C112p, R1p, R2p, R3p, R4p, R5p, R6p, VCMp]
     return alist
 
-Eabb = [342,230,7,34,42,45,48,56,63,13,12,4,6,15,17,14,0,56,61,30,31,84,90,70,70,33,33,33,13,20,70] #[kJ/mol]
+Eabb = [342.0, 230.0, 7.0, 34.0, 42.0, 45.0, 48.0, 56.0, 63.0, 13.0, 12.0, 4.0, 6.0, 15.0, 17.0, 14.0, 0.0, 56.0, 61.0, 30.0, 31.0, 84.0, 90.0, 70.0, 70.0, 33.0, 33.0, 33.0, 13.0, 20.0, 70.0] #[kJ/mol]
 Eab = [x*1000.0 for x in Eabb]
 Ea = [float(x) for x in Eab] #kJ/mol
 
@@ -695,7 +695,7 @@ inedc = rhoing/1E6
 initedcb = rhoing
 desired_time = 30 #int(input("Enter total reaction time [s] --> ")) #[s]
 end_dist = float(u_z*desired_time)
-dist_neat = round(end_dist,1)
+dist_neat = round(end_dist, 1)
 F_in = volume_flow*rhoc2 #[mol/s]
 L = int(u_z*desired_time) # [m]
 Surface_area = math.pi*2.0*ri*L
@@ -711,22 +711,22 @@ iternum = 250 #int(input('Enter total iterations --> '))
 graph_num = 1
 segment_num = desired_time*segment_second #Segments/Second
 time_nodes = int(iternum/gnodes)
-graph_nodes = [int(i*time_nodes) for i in range(0,gnodes,1)]
+graph_nodes = [int(i*time_nodes) for i in range(0, gnodes, 1)]
 time_nodesb = int(iternum/gnodes2)
-graph_nodes2 = [int(i*time_nodesb) for i in range(0,gnodes2,1)]
+graph_nodes2 = [int(i*time_nodesb) for i in range(0, gnodes2, 1)]
 endnum = int(L)
 distance = L
 segmentlength = dist_int = L/int(segment_num) #[m]
-total_distance = np.linspace(0,L,num=(segment_num))
+total_distance = np.linspace(0, L, num=(segment_num))
 reaction_time = L/u_z #reaction_time = L/u_z #[s]
 time_per_step = segmentlength/u_z #[s]
 time_int = 1/segment_second
-alistb = alistfun(Temp_K,PascalP)
+alistb = alistfun(Temp_K, PascalP)
 ksteel = 16.3 #[W/m*K]
-time_vals = [i*time_int for i in range(0,segment_num,1)]
+time_vals = [i*time_int for i in range(0, segment_num, 1)]
 vflow_cmf = volume_flowcm/segment_second #[cm^3/s]
 vflows = volume_flow/segment_second
-time_valsb = [i*time_int for i in range(0,segment_num+1,1)]
+time_valsb = [i*time_int for i in range(0, segment_num+1, 1)]
 tmvpd = np.asarray(time_valsb)
 dist_c = [i*u_z for i in time_vals]
 dist_cm = [i*u_z for i in time_vals]
@@ -739,7 +739,7 @@ vintflowcm = (Ls*100)*(math.pi)*((ri*100)**2) #[m^3/s]
 dist_int = Ls
 volume_flowcmf = (volume_flowcm)/segment_second #[m^3/s]
 vintflowf = vintflow/segment_second
-tn = np.linspace(0,L,desired_time)
+tn = np.linspace(0, L, desired_time)
 
 #Concentrations
 EDC = [float(initedcb)]
@@ -909,22 +909,22 @@ mws = []
 pvis = []
 kks = []
 for i in alistb:
-            Casnum = getattr(i,'CAS')
+            Casnum = getattr(i, 'CAS')
             CAS.append(Casnum)
-            tb = getattr(i,'Tb')
+            tb = getattr(i, 'Tb')
             Tbl.append(float(tb))
-            chemicalpi = getattr(i,'rhogm')
+            chemicalpi = getattr(i, 'rhogm')
             prhos.append(float(chemicalpi))
-            chemicalmwi = getattr(i,'MW')
+            chemicalmwi = getattr(i, 'MW')
             mws.append(float(chemicalmwi/1000.0))
-            chemicalmug = getattr(i,'mug')
+            chemicalmug = getattr(i, 'mug')
             pvis.append(float(chemicalmug))
-            chemicalkl = getattr(i,'kg')
+            chemicalkl = getattr(i, 'kg')
             kks.append(float(chemicalkl))
 prhot = sum(prhos)
 mfracs = [i/prhot for i in prhos]
 ys = tc.utils.zs_to_ws(mfracs,mws)
-zvar = np.linspace(0,L,int(L/Ls))
+zvar = np.linspace(0, L, int(L/Ls))
 cons1a = [5.228861948970217258E06, 4.573981356040483661E04, 2.392702360656382751E11]
 z1 = sp.symbols('z1')
 t0 = 0
@@ -934,7 +934,7 @@ ysv.append(sp.symbols('T0'))
 ysv.append(sp.symbols('T1'))
 yblank = []
 Twalls = []
-iterlist = [i for i in range(0,iternum,1)]
+iterlist = [i for i in range(0, iternum, 1)]
 rtolval = 1E-7
 rtolvalj = 1E-7
 atolval = 1E-7
@@ -956,7 +956,9 @@ tau4 = intvols/u_z
 taui = 1.0/u_z
 taui2 = 1.0
 
-for il in tqdm(range(iternum)):
+iterslist = [int(i) for i in range(0, iternum, 1)]
+
+for il in tqdm(iterslist):
 # for il in range(iternum):
     change = il*chngamnt
     amount_new = Temp_K - change
@@ -967,23 +969,23 @@ for il in tqdm(range(iternum)):
     T0j = [float(amount_new)]
     EDC = [float(initedc)]
     EDCj = [float(initedc)]
-    Eab = [342,7,42,45,34,48,13,12,4,6,15,0,56,31,30,61,84,90,70,20,70] #[kJ/mol]
+    Eab = [342.0, 7.0, 42.0, 45.0, 34.0, 48.0, 13.0, 12.0, 4.0, 6.0, 15.0, 0.0, 56.0, 31.0, 30.0, 61.0, 84.0, 90.0, 70.0, 20.0, 70.0] #[kJ/mol]
     Ea = [float(x*1000.0) for x in Eab]
     ks = [5.9E15, 1.3E13, 1.0E12, 5.0E11, 1.2E13, 2.0E11, 1.0E13, 1.0E13, 1.7E13, 1.2E13, 1.7E13, 9.1E10, 1.2E14, 5.0E11, 2.0E10, 3.0E11, 2.1E14, 5.0E14, 2.0E13, 1.0E14, 1.6E14]
     ns = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-    k_0 = [float(i/((1E6)**(j-1))) for i,j in zip(ks,ns)]
+    k_0 = [float(i/((1E6)**(j-1))) for i, j in zip(ks, ns)]
     # print("Iteration {} Activation Energy {}".format(il+1, amount_new))
     for x2 in dist_c:
     # for x2 in tqdm(dist_c):
         cross_area = math.pi*(ri**2)
-        alistb2 = alistfun(float(T0[-1]),float(PascalP))
+        alistb2 = alistfun(float(T0[-1]), float(PascalP))
         Y0b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], VCM[-1]]
         Y0bfa = [float(i) for i in Y0b]
-        aaij = [x*0.0 for x in range(0,len(alistb2),1)]
-        Aaij = [aaij[:] for x in range(0,len(alistb2),1)]
+        aaij = [x*0.0 for x in range(0, len(alistb2), 1)]
+        Aaij = [aaij[:] for x in range(0, len(alistb2), 1)]
         Ctotal = sum(Y0b) #float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float( Coke[-1]) + float( CP[-1]) + float( Di[-1]) + float( C4H6Cl2[-1]) + float( C6H6[-1]) + float( C2H2[-1]) + float( C11[-1]) + float( C112[-1]) + float( R1[-1]) + float( R2[-1]) + float( R3[-1]) + float( R4[-1]) + float( R5[-1]) + float( R6[-1]) + float( VCM[-1])
         C_ii = [float(i)/float(Ctotal) for i in Y0b]
-        C_im = tc.utils.zs_to_ws(C_ii,mws)
+        C_im = tc.utils.zs_to_ws(C_ii, mws)
         mfracnf = [i for i in C_im if i != 0.0]
         molfrac = [i for i in C_ii if i != 0.0]
         MWis1 = mw(alistb2)
@@ -1009,45 +1011,45 @@ for il in tqdm(range(iternum)):
                     k = Y0bfa.index(i)
                     i2 = alistb2[k]
                     C_i2.append(float(i)/float(Ctotal))
-                    chemicalcpi = getattr(i2,'Cpgm') #[J/mol*K]
+                    chemicalcpi = getattr(i2, 'Cpgm') #[J/mol*K]
                     Cpi_list2.append(float(chemicalcpi))
-                    chemicalmwi = getattr(i2,'MW') #[g/mol]
+                    chemicalmwi = getattr(i2, 'MW') #[g/mol]
                     MWgi_list2.append(float(chemicalmwi)) #[g/mol]
                     MWi_list2.append(float(chemicalmwi/1000.0)) #[kg/mol]
-                    chemicalpi = getattr(i2,'rhogm') #[mol/m^3]
+                    chemicalpi = getattr(i2, 'rhogm') #[mol/m^3]
                     Rhoi_list2.append(float(chemicalpi))
-                    chemicalkl = getattr(i2,'kg') #[mol/m^3]
+                    chemicalkl = getattr(i2, 'kg') #[mol/m^3]
                     klval_i2.append(float(chemicalkl))
-                    chemicalmug= getattr(i2,'mu') #  [Pa*s]
+                    chemicalmug = getattr(i2, 'mu') #  [Pa*s]
                     mu_i2.append(float(chemicalmug))
-                    chemicaltb= getattr(i2,'Tb') # [K]
+                    chemicaltb = getattr(i2, 'Tb') # [K]
                     TB_i2.append(float(chemicaltb))
-                    chemicalvm = getattr(i2,'Vmg')
+                    chemicalvm = getattr(i2, 'Vmg')
                     Vm2.append(float(chemicalvm/1E6))
-                    chemicalna = getattr(i2,'IUPAC_name')
+                    chemicalna = getattr(i2, 'IUPAC_name')
                     names2b.append(chemicalna)
-                    chemicalcas = getattr(i2,'CAS')
+                    chemicalcas = getattr(i2, 'CAS')
                     cass.append(chemicalcas)
-                    thermo = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                    thermo = tc.chemical.Chemical(chemicalcas,  T=float(T0[-1]),  P=PascalP)
                     TG.append(thermo.ThermalConductivityGas)
-                    thermov = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                    thermov = tc.chemical.Chemical(chemicalcas,  T=float(T0[-1]),  P=PascalP)
                     VS.append(thermov.ViscosityGas)
             else:
                 pass
         cpavg = mean(Cpi_list2)
         rhoavg = mean(Rhoi_list2)
-        rhovm = [i*j for i,j in zip(Vm2,Rhoi_list2)]
+        rhovm = [i*j for i, j in zip(Vm2, Rhoi_list2)]
         rhoend = float(PascalP/(Rval*float(T0[-1])))
         rhotot2 = sum(Rhoi_list2)
         Massfrac2b = [float(i/rhotot2) for i in Rhoi_list2]
-        Massfrac = [float(i*j) for i,j in zip(C_i2,MWgi_list2)]
+        Massfrac = [float(i*j) for i, j in zip(C_i2, MWgi_list2)]
         Mavg = sum(Massfrac)
-        wsl = [float((i*j)/Mavg) for i,j in zip(C_i2,MWgi_list2)]
-        wsl2 = tc.utils.zs_to_ws(C_i2,MWgi_list2)
-        Rho_Cp = [i*j for i,j in zip(Cpi_list2,Rhoi_list2)]
+        wsl = [float((i*j)/Mavg) for i, j in zip(C_i2, MWgi_list2)]
+        wsl2 = tc.utils.zs_to_ws(C_i2, MWgi_list2)
+        Rho_Cp = [i*j for i, j in zip(Cpi_list2, Rhoi_list2)]
         RCPavg = mean(Rho_Cp)
         Cpglist = []
-        gmix = tc.Mixture(IDs = names2b, zs=C_i2, T=float(T0[-1]), P=PascalP)
+        gmix = tc.Mixture(IDs=names2b, zs=C_i2, T=float(T0[-1]), P=PascalP)
         viss = gmix.mugs
         tbss = gmix.Tbs
         mwss = gmix.MWs
@@ -1055,7 +1057,7 @@ for il in tqdm(range(iternum)):
         CPs = gmix.Cpgms
         CVs = gmix.Cvgms
         Kval1a = gmix.kg
-        kval2 = kmix(float(T0[-1]),C_i2,ksss, viss, tbss, mwss,CPs,CVs) #[W/m*K]
+        kval2 = kmix(float(T0[-1]), C_i2, ksss, viss, tbss, mwss, CPs, CVs) #[W/m*K]
         Molew = gmix.MWs
         sigma = gmix.molecular_diameters
         stemix = gmix.Stockmayers
@@ -1064,7 +1066,7 @@ for il in tqdm(range(iternum)):
         viscosityb = gmix.mug # [Pa*s] or [kg/m*s^2]
         vislist = gmix.mugs
         viscosityc = viscosityb # [kg/m*s^2]
-        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*s]
+        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]), ys=C_i2, mus=viss, MWs=mwss, molecular_diameters=sigma, Stockmayers=stemix) # [Pa*s]
         rhob = gmix.rhog #[mol/m^3]
         rhoc = gmix.rhogm #[mol/m^3]
         rhocpgm1 = rhoc*cpmmix # [J/m^3*K]
@@ -1080,7 +1082,7 @@ for il in tqdm(range(iternum)):
         tclist = gmix.Tcs
         Vclist = gmix.Vcs
         Zcmix = gmix.Zg
-        TC = tc.critical.modified_Wilson_Tc(zs=C_i2, Tcs=tclist,Aijs=Aaij)
+        TC = tc.critical.modified_Wilson_Tc(zs=C_i2, Tcs=tclist, Aijs=Aaij)
         TCb = tc.critical.Li(zs=C_i2, Tcs=tclist, Vcs=Vclist)
         ek = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TC)
         ek2 = tc.lennard_jones.epsilon_Bird_Stewart_Lightfoot_critical(TCb)
@@ -1094,11 +1096,11 @@ for il in tqdm(range(iternum)):
         gmixw2 = tc.Mixture(IDs = names2b, zs=C_i2, T=float(Twalls[-1]), P=PascalP)
         vsb = gmixw2.mug # [Pa*s]
         vslist = gmixw2.mugs # [Pa*s]
-        vs = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*S]
-        pr = Pr(cpkgmix,viscosity,kval2)
-        re = reynolds(rhob,u_z,Ls,viscosity)
-        nuval = Nus(velocity,rhoc,Ls,diameter,kval2,viscosity,vs,float(Twalls[-1]),float(T0[-1]),pr,re)
-        gash = hterm(nuval,Ls,kval2)
+        vs = tc.viscosity.Brokaw(T=float(Twalls[-1]), ys=C_i2, mus=viss, MWs=mwss, molecular_diameters=sigma, Stockmayers=stemix) # [Pa*S]
+        pr = Pr(cpkgmix, viscosity, kval2)
+        re = reynolds(rhob, u_z, Ls, viscosity)
+        nuval = Nus(velocity, rhoc, Ls, diameter, kval2, viscosity, vs, float(Twalls[-1]), float(T0[-1]), pr, re)
+        gash = hterm(nuval, Ls, kval2)
         h20 = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cp = h20.Cpgm
         h20rhob = h20.rhogm #[mol/m^3]
@@ -1112,9 +1114,9 @@ for il in tqdm(range(iternum)):
         h20wall = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20vsb = h20wall.mug # [Pa*s]
         h20vs = h20vsb # [g/m*s^2]
-        hnuval = Nus(velocity,h20rho,Ls,diameter,h20k,h20vis,h20vs,float(Twalls[-1]),float(Twalls[-1]),prh20,reh20)
-        h20h = hterm(hnuval,Ls,h20k)
-        U_coeffb = Uvalue(diameter,do,gash,h20h,ksteel) # [W/m^2*k]
+        hnuval = Nus(velocity, h20rho, Ls, diameter, h20k, h20vis, h20vs, float(Twalls[-1]), float(Twalls[-1]), prh20, reh20)
+        h20h = hterm(hnuval, Ls, h20k)
+        U_coeffb = Uvalue(diameter, do, gash, h20h, ksteel) # [W/m^2*k]
         U_coeff = U_coeffb # [W/m^2*k]
         delhm = 71000.0 #J/mol
         con1b = RCPavg/kval2
@@ -1141,7 +1143,7 @@ for il in tqdm(range(iternum)):
         Y0j = [float(i) for i in Y0bj]
         Ctotalj = sum(Y0j)
         C_iij = [float(jj)/float(Ctotalj) for jj in Y0bj]
-        alistb2j = alistfun(float(T0j[-1]),float(PascalP))
+        alistb2j = alistfun(float(T0j[-1]), float(PascalP))
         MWis1j = mw(alistb2j)
         MWis2j = [float(j/1000) for j in MWis1j]
         Vm2j = []
@@ -1162,39 +1164,39 @@ for il in tqdm(range(iternum)):
                     kj = Y0j.index(ij)
                     i2j = alistb2j[kj]
                     C_i2j.append(float(ij)/float(Ctotalj))
-                    chemicalcpij = getattr(i2j,'Cpgm') #[J/mol*K]
+                    chemicalcpij = getattr(i2j, 'Cpgm') #[J/mol*K]
                     Cpi_list2j.append(chemicalcpij)
-                    chemicalmwij = getattr(i2j,'MW') #[g/mol]
+                    chemicalmwij = getattr(i2j, 'MW') #[g/mol]
                     MWgi_list2j.append(chemicalmwij) #[g/mol]
                     MWi_list2j.append(float(chemicalmwij/1000)) #[kg/mol]
-                    chemicalpij = getattr(i2j,'rhogm') #[mol/m^3]
+                    chemicalpij = getattr(i2j, 'rhogm') #[mol/m^3]
                     Rhoi_list2j.append(chemicalpij) #[mol/cm^3]
-                    chemicalklj = getattr(i2j,'kg') #[W/m*K]
+                    chemicalklj = getattr(i2j, 'kg') #[W/m*K]
                     klval_i2j.append(chemicalklj) #[W/cm*K]
-                    chemicalmugj= getattr(i2j,'mug') #[Pa*s]
+                    chemicalmugj = getattr(i2j, 'mug') #[Pa*s]
                     mu_i2j.append(chemicalmugj)
-                    chemicaltbj= getattr(i2j,'Tb') #[K]
+                    chemicaltbj = getattr(i2j, 'Tb') #[K]
                     TB_i2j.append(chemicaltbj)
-                    chemicalvmj = getattr(i2j,'Vmg') #[mol/m^3]
+                    chemicalvmj = getattr(i2j, 'Vmg') #[mol/m^3]
                     Vm2j.append(chemicalvmj) #[mol/cm^3]
-                    chemicalnaj = getattr(i2j,'IUPAC_name')
+                    chemicalnaj = getattr(i2j, 'IUPAC_name')
                     names2bj.append(chemicalnaj)
             else:
                 pass
         cpavgj = mean(Cpi_list2j)
         rhoavgj = mean(Rhoi_list2j)
-        rhovmj = [ij*jj for ij,jj in zip(Vm2j,Rhoi_list2j)]
+        rhovmj = [ij*jj for ij, jj in zip(Vm2j, Rhoi_list2j)]
         rhoendj = float(PascalP/(Rval*float(T0j[-1])))
         rhotot2j = sum(Rhoi_list2j)
         Massfrac2j = [float(ij/rhotot2j) for ij in Rhoi_list2j]
-        Rho_Cpj = [i*j for i,j in zip(Cpi_list2j,Rhoi_list2j)]
+        Rho_Cpj = [i*j for i, j in zip(Cpi_list2j, Rhoi_list2j)]
         RCPavgj = mean(Rho_Cpj)
         Cpglistj = []
-        Massfracj = [float(i*j) for i,j in zip(C_i2j,MWgi_list2j)]
+        Massfracj = [float(i*j) for i, j in zip(C_i2j, MWgi_list2j)]
         Mavgj = sum(Massfracj)
-        wslj = [float((i*j)/Mavgj) for i,j in zip(C_i2j,MWgi_list2j)]
-        gmixj = tc.Mixture(IDs = names2bj, zs=C_i2j, T=float(T0j[-1]), P=PascalP)
-        Rho_Cp = [i*j for i,j in zip(Cpi_list2,Rhoi_list2)]
+        wslj = [float((i*j)/Mavgj) for i, j in zip(C_i2j, MWgi_list2j)]
+        gmixj = tc.Mixture(IDs = names2bj,  zs=C_i2j,  T=float(T0j[-1]),  P=PascalP)
+        Rho_Cp = [i*j for i, j in zip(Cpi_list2, Rhoi_list2)]
         RCPavg = mean(Rho_Cp)
         Cpglist = []
         vissj = gmixj.mugs
@@ -1210,7 +1212,7 @@ for il in tqdm(range(iternum)):
         cpgmmixj = gmixj.Cpgm  #[J/mol*K]
         viscosityj = gmixj.mug # [g/cm*s^2]
         vislistj= gmixj.mugs # [g/cm*s^2]
-        vs2 = tc.viscosity.Brokaw(T=float(T0j[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
+        vs2 = tc.viscosity.Brokaw(T=float(T0j[-1]), ys=C_i2j, mus=vissj, MWs=mwssj, molecular_diameters=sigmaj, Stockmayers=stemixj)
         rhoj = gmixj.rhogm #[mol/cm^3]
         rhocpgm2 = rhoj*cpgmmixj # [J/cm^3*K]
         surface_area = math.pi*2*ri*Ls
@@ -1223,7 +1225,7 @@ for il in tqdm(range(iternum)):
         tclistj = gmixj.Tcs
         Vclistj = gmixj.Vcs
         Zcmixj = gmixj.Zg
-        TCj = tc.critical.modified_Wilson_Tc(zs=C_i2j, Tcs=tclistj,Aijs=Aaij)
+        TCj = tc.critical.modified_Wilson_Tc(zs=C_i2j, Tcs=tclistj, Aijs=Aaij)
         TCbj = tc.critical.Li(zs=C_i2j, Tcs=tclistj, Vcs=Vclistj)
         ekj = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TCj)
         ek1j = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TCbj)
@@ -1241,23 +1243,23 @@ for il in tqdm(range(iternum)):
         colintj = tc.lennard_jones.collision_integral_Kim_Monroe(Tstarj, l=1, s=1)
         gmixw2j = tc.Mixture(IDs = names2bj, zs=C_i2j, T=float(Twalls[-1]), P=PascalP)
         vsj = gmixw2j.mug # [g/cm*s^2]
-        vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
-        prj = Pr(cpgmmixj,vsj,kval2j)
-        rej = reynolds(rhoj,velocityj,distances,vsj)
-        nuvalj = Nus(velocity,rhoj,distances,diameter,kval2j,vsj,vs2j,float(Twalls[-1]),T0j[-1],prj,rej)
-        gashj = hterm(nuvalj,distances,kval2j)
+        vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]), ys=C_i2j, mus=vissj, MWs=mwssj, molecular_diameters=sigmaj, Stockmayers=stemixj)
+        prj = Pr(cpgmmixj, vsj, kval2j)
+        rej = reynolds(rhoj, velocityj, distances, vsj)
+        nuvalj = Nus(velocity, rhoj, distances, diameter, kval2j, vsj, vs2j, float(Twalls[-1]), T0j[-1], prj, rej)
+        gashj = hterm(nuvalj, distances, kval2j)
         h20j = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cpj = h20j.Cpgm
         h20rhoj = h20j.rhogm #[mol/m^3]
         h20kj = h20j.kg # [W/(m*K)]
         h20visj = h20j.mug # [g/cm*s^2]
-        prh20j = Pr(h20cpj,h20visj,h20kj)
-        reh20j = reynolds(h20rhoj,velocityj,distances,h20visj)
+        prh20j = Pr(h20cpj, h20visj, h20kj)
+        reh20j = reynolds(h20rhoj, velocityj, distances, h20visj)
         h20wallj = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20vsj = h20wallj.mug # [g/cm*s^2]
-        hnuvalj = Nus(velocityj,h20rhoj,distances,diameter,h20kj,h20visj,h20vsj,float(Twalls[-1]),float(Twalls[-1]),prh20j,reh20j)
-        h20hj = hterm(hnuvalj,distances,h20kj)
-        U_coeffj = Uvalue(diameter,do,gashj,h20hj,ksteel) #(W/(m2•K))
+        hnuvalj = Nus(velocityj, h20rhoj, distances, diameter, h20kj, h20visj, h20vsj, float(Twalls[-1]), float(Twalls[-1]), prh20j, reh20j)
+        h20hj = hterm(hnuvalj, distances, h20kj)
+        U_coeffj = Uvalue(diameter, do, gashj, h20hj, ksteel) #(W/(m2•K))
         delhm = 71000.0 #J/mol
         con1j = (u_z*rhocpgm2)/kval2j
         con2j = (alpha*U_coeffj)/kval2j
@@ -1273,10 +1275,10 @@ for il in tqdm(range(iternum)):
         t_start = x2
         t_end = x2 + Ls
         z2 = sp.symbols('z')
-        Y0 = [EDC[-1],EC[-1],HCl[-1],Coke[-1],CP[-1],Di[-1],C4H6Cl2[-1],C6H6[-1],C2H2[-1],C11[-1],C112[-1],R1[-1],R2[-1],R3[-1],R4[-1],R5[-1],R6[-1],VCM[-1],T0[-1],T1[-1]]
-        Y0j = [EDCj[-1],ECj[-1],HClj[-1],Cokej[-1],CPj[-1],Dij[-1],C4H6Cl2j[-1],C6H6j[-1],C2H2j[-1],C11j[-1],C112j[-1],R1j[-1],R2j[-1],R3j[-1],R4j[-1],R5j[-1],R6j[-1],VCMj[-1],T0j[-1],T1j[-1]]
-        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8,5E+8,2E+7, 100000000.0, 160000000.0, 342.0*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_vals[-1]),float(c2_vals[-1]),float(c3_vals[-1]), float(amount_new)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8,5E+8,2E+7, 100000000.0, 160000000.0, 342.0*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(amount_new)), jac=jacob, first_step=1.0/segment_second, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], VCM[-1], T0[-1], T1[-1]]
+        Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], VCMj[-1], T0j[-1], T1j[-1]]
+        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method='Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8, 5E+8, 2E+7, 100000000.0, 160000000.0, 342.0*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(amount_new)), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method='Radau',  args=(8.314, 5.9E15, 13000000.0, 1000000.0, 500000.0, 12000000.0, 200000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 91000.0, 120000000.0, 500000.0, 20000.0, 300000.0, 2.1E+8, 5E+8, 2E+7, 100000000.0, 160000000.0, 342.0*1000.0, 7000.0, 42000.0, 45000.0, 34000.0, 48000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 0.0, 56000.0, 31000.0, 30000.0, 61000.0, 84000.0, 90000.0, 70000.0, 20000.0, 70000.0, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(amount_new)), jac=jacob, first_step=1E-2, max_step=1E-1) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[17][-1]/edcint
@@ -1674,17 +1676,17 @@ np.savetxt(r"{}\C11.txt".format(path_fol),c11)
 c112 = np.array(C112l)
 np.savetxt(r"{}\C112.txt".format(path_fol),c112)
 r1 = np.array(R1l)
-np.savetxt(r"{}\R1.txt".format(path_fol),r1)
+np.savetxt(r"{}\R1.txt".format(path_fol), r1)
 r2 = np.array(R2l)
-np.savetxt(r"{}\R2.txt".format(path_fol),r2)
+np.savetxt(r"{}\R2.txt".format(path_fol), r2)
 r3 = np.array(R3l)
-np.savetxt(r"{}\R3.txt".format(path_fol),r3)
+np.savetxt(r"{}\R3.txt".format(path_fol), r3)
 r4 = np.array(R4l)
-np.savetxt(r"{}\R4.txt".format(path_fol),r4)
+np.savetxt(r"{}\R4.txt".format(path_fol), r4)
 r5 = np.array(R5l)
-np.savetxt(r"{}\R5.txt".format(path_fol),r5)
+np.savetxt(r"{}\R5.txt".format(path_fol), r5)
 r6 = np.array(R6l)
-np.savetxt(r"{}\R6.txt".format(path_fol),r6)
+np.savetxt(r"{}\R6.txt".format(path_fol), r6)
 vcm = np.array(VCMl)
 np.savetxt(r"{}\VCM.txt".format(path_fol),vcm)
 
@@ -1714,17 +1716,17 @@ np.savetxt(r"{}\C11j.txt".format(path_fol),c11j)
 c112j = np.array(C112lj)
 np.savetxt(r"{}\C112j.txt".format(path_fol),c112j)
 r1j = np.array(R1lj)
-np.savetxt(r"{}\R1j.txt".format(path_fol),r1j)
+np.savetxt(r"{}\R1j.txt".format(path_fol), r1j)
 r2j = np.array(R2lj)
-np.savetxt(r"{}\R2j.txt".format(path_fol),r2j)
+np.savetxt(r"{}\R2j.txt".format(path_fol), r2j)
 r3j = np.array(R3lj)
-np.savetxt(r"{}\R3j.txt".format(path_fol),r3j)
+np.savetxt(r"{}\R3j.txt".format(path_fol), r3j)
 r4j = np.array(R4lj)
-np.savetxt(r"{}\R4j.txt".format(path_fol),r4j)
+np.savetxt(r"{}\R4j.txt".format(path_fol), r4j)
 r5j = np.array(R5lj)
-np.savetxt(r"{}\R5j.txt".format(path_fol),r5j)
+np.savetxt(r"{}\R5j.txt".format(path_fol), r5j)
 r6j = np.array(R6lj)
-np.savetxt(r"{}\R6j.txt".format(path_fol),r6j)
+np.savetxt(r"{}\R6j.txt".format(path_fol), r6j)
 
 
 vcmj = np.array(VCMlj)
@@ -1742,7 +1744,7 @@ np.savetxt(r"{}\Temperature.txt".format(path_fol),t0)
 dT = np.array(T1l,ndmin=1)
 np.savetxt(r"{}\TemperatureDifferential.txt".format(path_fol),dT)
 revals = np.array(RE_valsl,ndmin=1)
-np.savetxt(r"{}\Reynolds.txt".format(path_fol),revals)
+np.savetxt(r"{}\Reynolds.txt".format(path_fol), revals)
 uvals = np.array(U_coeffsl,ndmin=1)
 np.savetxt(r"{}\Uvals.txt".format(path_fol),uvals)
 hvals = np.array(h_valsl,ndmin=1)
@@ -1756,7 +1758,7 @@ np.savetxt(r"{}\Constant2.txt".format(path_fol),c2vals)
 c3vals = np.array(c3_valsl,ndmin=1)
 np.savetxt(r"{}\Constant3.txt".format(path_fol),c3vals)
 revalsj = np.array(RE_valsjl,ndmin=1)
-np.savetxt(r"{}\ReynoldsJ.txt".format(path_fol),revalsj)
+np.savetxt(r"{}\ReynoldsJ.txt".format(path_fol), revalsj)
 uvalsj = np.array(U_coeffsjl,ndmin=1)
 np.savetxt(r"{}\Uvalsj.txt".format(path_fol),uvalsj)
 hvalsj = np.array(h_valsjl,ndmin=1)
@@ -1820,7 +1822,7 @@ for i, j in enumerate(concl):
     cur_list = concl[i]
     nameD = namesb[i]
     nameD2 = namesb2[i]
-    for jj,j in enumerate(graph_nodes):
+    for jj, j in enumerate(graph_nodes):
         fig = plt.figure()
         cur_list2 = concl[i][j]
         eavalg = str(Temp_vals[j])
@@ -1839,7 +1841,7 @@ for i, j in enumerate(concjl):
     cur_list = concjl[i]
     nameD = namesb[i]
     nameD2 = namesb2[i]
-    for jj,j in enumerate(graph_nodes):
+    for jj, j in enumerate(graph_nodes):
         fig = plt.figure()
         cur_list2 = concjl[i][j]
         eavalg = str(Temp_vals[j])
@@ -1905,14 +1907,14 @@ plt.ylabel('Conversion')
 plt.xlabel("Initial Temperature [K]")
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title("Final Conversion")
-plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
+plt.legend(['Conversion','Conversion With Jacobian'], loc="best")
 plt.grid()
 fig.savefig(r"{}\Final Conversion.png".format(path_fol)) #Saves the graph
 fig.savefig(r"{}\Final Conversion.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, edc[j, :], color=viridis.colors[index_j, :], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -1926,7 +1928,7 @@ fig.savefig(r"{}\EDC-NoJ.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, edcj[j, :], color=viridis.colors[index_j, :], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -1939,7 +1941,7 @@ fig.savefig(r"{}\EDC-J.pdf".format(path_fol))
 fig.savefig(r"{}\EDC-J.svg".format(path_fol))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
       plt.plot(xD, edcj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -1953,7 +1955,7 @@ for jj,j in enumerate(graph_nodes):
       fig.savefig(r"{}\EDC.svg".format(path_fol))
       plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
       plt.plot(timeD, convedcj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -1970,7 +1972,7 @@ for jj,j in enumerate(graph_nodes):
       plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, ecj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -1984,7 +1986,7 @@ fig.savefig(r"{}\EC.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_j = int(j)
       plt.plot(xD, hclj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
       TemperatureC = KtoC(Temp_K)
@@ -1998,7 +2000,7 @@ fig.savefig(r"{}\HCl.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, ccj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2012,7 +2014,7 @@ fig.savefig(r"{}\Coke.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, cp1j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2026,7 +2028,7 @@ fig.savefig(r"{}\CP.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, dij[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2040,7 +2042,7 @@ fig.savefig(r"{}\Di.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, c4h6cl2j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2054,7 +2056,7 @@ fig.savefig(r"{}\C4H6Cl2.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, c6h6j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2068,7 +2070,7 @@ fig.savefig(r"{}\C6H6.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, c2h2j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2082,7 +2084,7 @@ fig.savefig(r"{}\C2H2.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, c11j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2096,7 +2098,7 @@ fig.savefig(r"{}\C11.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
     index_j = int(j)
     plt.plot(xD, c112j[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     TemperatureC = KtoC(Temp_K)
@@ -2110,7 +2112,7 @@ fig.savefig(r"{}\C112.svg".format(path_fol))
 plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_j = int(j)
       plt.plot(xD, vcmj[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
       TemperatureC = KtoC(Temp_K)
@@ -2123,7 +2125,7 @@ fig.savefig(r"{}\VCM.pdf".format(path_fol))
 fig.savefig(r"{}\VCM.svg".format(path_fol))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_t = int(j)
       plt.plot(xD, t0[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2133,11 +2135,11 @@ for jj,j in enumerate(graph_nodes):
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel(r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
       plt.title('Activation Energy Profile')
-      fig.savefig(r"{}\T-Profile{} K.pdf".format(path_fol,Temp_vals[j]))
-      fig.savefig(r"{}\T-Profile{} K.svg".format(path_fol,Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile{} K.pdf".format(path_fol, Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile{} K.svg".format(path_fol, Temp_vals[j]))
       plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_t = int(j)
       plt.plot(xD, t0j[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2147,11 +2149,11 @@ for jj,j in enumerate(graph_nodes):
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel(r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
       plt.title('Activation Energy Profile')
-      fig.savefig(r"{}\T-Profile-J-{} K.pdf".format(path_fol,Temp_vals[j]))
-      fig.savefig(r"{}\T-Profile-J-{} K.svg".format(path_fol,Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile-J-{} K.pdf".format(path_fol, Temp_vals[j]))
+      fig.savefig(r"{}\T-Profile-J-{} K.svg".format(path_fol, Temp_vals[j]))
       plt.close()
 
-# for jj,j in enumerate(graph_nodes):
+# for jj, j in enumerate(graph_nodes):
 #       fig = plt.figure()
 #       index_t = int(j)
 #       plt.plot(xD, dt0[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2161,10 +2163,10 @@ for jj,j in enumerate(graph_nodes):
 #       plt.xlabel(r'Distance [$m$]')
 #       plt.ylabel(r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
 #       plt.title('Activation Energy Profile')
-#       fig.savefig(r"{}\T-Profile Diffusion{}.pdf".format(path_fol,Temp_vals[j]))
-#       fig.savefig(r"{}\T-Profile Diffusion{} K.svg".format(path_fol,Temp_vals[j]))
+#       fig.savefig(r"{}\T-Profile Diffusion{}.pdf".format(path_fol, Temp_vals[j]))
+#       fig.savefig(r"{}\T-Profile Diffusion{} K.svg".format(path_fol, Temp_vals[j]))
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     plt.plot(xD, r1j[j, :], 'b--', label=r'$R_{1}$')
@@ -2178,11 +2180,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"Radicals Concentration at {} K".format(Temp_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\RadicalT{}.pdf".format(path_fol,Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\RadicalT{} K.svg".format(path_fol,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\RadicalT{}.pdf".format(path_fol, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\RadicalT{} K.svg".format(path_fol, Temp_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     TemperatureC = KtoC(Temp_K)
@@ -2198,11 +2200,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(r"By-Product Concentration at {} K".format(Temp_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\By-ProductT{}.pdf".format(path_fol,Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By-ProductT{} K.svg".format(path_fol,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-ProductT{}.pdf".format(path_fol, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By-ProductT{} K.svg".format(path_fol, Temp_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     TemperatureC = KtoC(Temp_K)
     index_j = int(j)
@@ -2214,11 +2216,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\ProductsNoJ-{} K.pdf".format(path_fol,Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsNoJ-{} K.svg".format(path_fol,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-{} K.pdf".format(path_fol, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsNoJ-{} K.svg".format(path_fol, Temp_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     TemperatureC = KtoC(Temp_vals[j])
     index_j = int(j)
@@ -2230,11 +2232,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title(label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
     plt.grid()
-    fig.savefig(r"{}\ProductsJ-{} K.pdf".format(path_fol,Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ProductsJ-{} K.svg".format(path_fol,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsJ-{} K.pdf".format(path_fol, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ProductsJ-{} K.svg".format(path_fol, Temp_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
       fig = plt.figure()
       index_j = int(j)
       plt.plot(xD, purejl[j, :], color=viridis.colors[index_j,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2244,12 +2246,12 @@ for jj,j in enumerate(graph_nodes):
       plt.ylabel('Product Purity')
       plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('Product Purity - Jacobian')
-      fig.savefig(r"{}\Temp_vals-PurityJ-{} K.pdf".format(path_fol,Temp_vals[j]))
-      fig.savefig(r"{}\Temp_vals-PurityJ-{} K.svg".format(path_fol,Temp_vals[j]))
+      fig.savefig(r"{}\Temp_vals-PurityJ-{} K.pdf".format(path_fol, Temp_vals[j]))
+      fig.savefig(r"{}\Temp_vals-PurityJ-{} K.svg".format(path_fol, Temp_vals[j]))
       plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_t = int(j)
       plt.plot(xD, purejl[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
 plt.legend(loc='best')
@@ -2258,11 +2260,11 @@ plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
-fig.savefig(r"{}\OverallTemp_vals-PurityJ-{} K.pdf".format(path_fol,Temp_vals[j]))
-fig.savefig(r"{}\OverallTemp_vals-PurityJ-{} K.svg".format(path_fol,Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-PurityJ-{} K.pdf".format(path_fol, Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-PurityJ-{} K.svg".format(path_fol, Temp_vals[j]))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_t = int(j)
     plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2272,12 +2274,12 @@ for jj,j in enumerate(graph_nodes):
     plt.ylabel('Product Purity')
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.title('Product Purity')
-    fig.savefig(r"{}\Temp_vals-Purity{}.pdf".format(path_fol,Temp_vals[j]))
-    fig.savefig(r"{}\Temp_vals-Purity{} K.svg".format(path_fol,Temp_vals[j]))
+    fig.savefig(r"{}\Temp_vals-Purity{}.pdf".format(path_fol, Temp_vals[j]))
+    fig.savefig(r"{}\Temp_vals-Purity{} K.svg".format(path_fol, Temp_vals[j]))
     plt.close()
 
 fig = plt.figure()
-for jj,j in enumerate(graph_nodes2):
+for jj, j in enumerate(graph_nodes2):
       index_t = int(j)
       plt.plot(xD, purel[j, :], color=viridis.colors[index_t,:], label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
 plt.legend(loc='best')
@@ -2286,11 +2288,11 @@ plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
 plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
-fig.savefig(r"{}\OverallTemp_vals-Purity{}.pdf".format(path_fol,Temp_vals[j]))
-fig.savefig(r"{}\OverallTemp_vals-Purity{} K.svg".format(path_fol,Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-Purity{}.pdf".format(path_fol, Temp_vals[j]))
+fig.savefig(r"{}\OverallTemp_vals-Purity{} K.svg".format(path_fol, Temp_vals[j]))
 plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     plt.plot(xD, convedc[j, :], 'b-', label=r"Temperature: {}$^\circ$C".format(Temp_vals[j]))
@@ -2300,11 +2302,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionT{}.pdf".format(path_fol,Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionT{} K.svg".format(path_fol,Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionT{}.pdf".format(path_fol, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionT{} K.svg".format(path_fol, Temp_vals[j]), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2315,11 +2317,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
-    fig.savefig(r"{}\ConversionJ-{} K.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\ConversionJ-{} K.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-{} K.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\ConversionJ-{} K.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2329,11 +2331,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Mixture Thermal Conductivity ($\kappa_{mix}$)')
     plt.grid()
-    fig.savefig(r"{}\KvalsJ-{} K.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\KvalsJ-{} K.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-{} K.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\KvalsJ-{} K.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2343,11 +2345,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Overall Heat Transfer Coefficient ($\it{U}$)')
     plt.grid()
-    fig.savefig(r"{}\UvalsJ-{} K.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\UvalsJ-{} K.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-{} K.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\UvalsJ-{} K.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2357,11 +2359,11 @@ for jj,j in enumerate(graph_nodes):
     plt.legend(loc='best')
     plt.title('Heat Transfer Coefficient ($\it{h}$)')
     plt.grid()
-    fig.savefig(r"{}\HvalsJ-{} K.pdf".format(path_fol,eavalg), bbox_inches='tight')
-    fig.savefig(r"{}\HvalsJ-{} K.svg".format(path_fol,eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-{} K.pdf".format(path_fol, eavalg), bbox_inches='tight')
+    fig.savefig(r"{}\HvalsJ-{} K.svg".format(path_fol, eavalg), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2369,15 +2371,15 @@ for jj,j in enumerate(graph_nodes):
     Cval = KtoC(Temp_vals[j])
     plt1 = plt.plot(xD[0:-1], c1valsj[j][:], 'b-')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
-    plt.ylabel(r'Constant 1 [$\frac{}{}$]'.format(str('{1}'),str('{m}')), fontdict=font)
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"],loc='best',fontsize='large')
+    plt.ylabel(r'Constant 1 [$\frac{}{}$]'.format(str('{1}'), str('{m}')), fontdict=font)
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$\frac{\it{u_{z}}*\rho*C_{p}}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 1', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant1J-{} K.pdf".format(path_fol,eavalg))
-    fig.savefig(r"{}\Constant1J-{} K.svg".format(path_fol,eavalg))
+    fig.savefig(r"{}\Constant1J-{} K.pdf".format(path_fol, eavalg))
+    fig.savefig(r"{}\Constant1J-{} K.svg".format(path_fol, eavalg))
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2386,14 +2388,14 @@ for jj,j in enumerate(graph_nodes):
     plt2 = plt.plot(xD[0:-1], c2valsj[j][:], 'b-', label='Constant 2')
     plt.xlabel(r'Distance [$\frac{1}{m^2}$]', fontdict=font)
     plt.ylabel(r'Constant 2 [$\frac{K}{m^2}$]', fontdict=font)
-    plt.legend([r"Activation Energy: {}".format(Cval) + r"[$\frac{kJ}{mol}$]",r"$\frac{\it{U}*\alpha}{\kappa}$"],loc='best',fontsize='large')
+    plt.legend([r"Activation Energy: {}".format(Cval) + r"[$\frac{kJ}{mol}$]", r"$\frac{\it{U}*\alpha}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 2', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant2J-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant2J-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant2J-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2402,14 +2404,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], c3valsj[j][:], 'b-', label='Constant 3')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Constant 3 [$\frac{s*m*K}{mol}$]', fontdict=font)
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\Delta{H_{rxn}}}{\kappa}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$\frac{\Delta{H_{rxn}}}{\kappa}$"], loc='best', fontsize='large')
     plt.title('Constant 3', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Constant3J-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Constant3J-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Constant3J-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2418,14 +2420,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], revals[j][:], 'b-', label='Reynolds')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Reynolds Number $R_{e}$', fontdict=font)
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"], loc='best', fontsize='large')
     plt.title('Reynolds Number', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number {} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number {} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number {} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2434,14 +2436,14 @@ for jj,j in enumerate(graph_nodes):
     plt3 = plt.plot(xD[0:-1], revalsj[j][:], 'b-', label='Reynolds')
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Reynolds Number [$R_{e}$]', fontdict=font)
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$\frac{\it{\rho}*\it{u_{z}}*L_{s}}{\it{\mu}}$"], loc='best', fontsize='large')
     plt.title('Reynolds Number Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Reynolds Number J {} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Reynolds Number J {} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Reynolds Number J {} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2451,14 +2453,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$S_{\frac{VCM}{HCl}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCM-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCM-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCM-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2468,14 +2470,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$S_{\frac{HCl}{VCM}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHCl-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHCl-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHCl-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2485,14 +2487,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{VCM}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{VCM}{HCl}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$S_{\frac{VCM}{HCl}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityVCMJ-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityVCMJ-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityVCMJ-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2502,14 +2504,14 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Selectivity [$S_{HCl}$]', fontdict=font)
     plt.axhline(y=float(1.0), color='k', linestyle='--')
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$S_{\frac{HCl}{VCM}}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$S_{\frac{HCl}{VCM}}$"], loc='best', fontsize='large')
     plt.title('Selectivity of Hydrogen Chloride Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\SelectivityHClJ-{} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\SelectivityHClJ-{} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-{} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\SelectivityHClJ-{} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2520,14 +2522,14 @@ for jj,j in enumerate(graph_nodes):
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$Y_{VCM}$"], loc='best', fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM {} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM {} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM {} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
-for jj,j in enumerate(graph_nodes):
+for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
     index_j = int(j)
     eavalg = str(Temp_vals[j])
@@ -2538,11 +2540,11 @@ for jj,j in enumerate(graph_nodes):
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
     plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
-    plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
+    plt.legend([r"Temperature: {}$^\circ$C".format(Cval), r"$Y_{VCM}$"], loc='best', fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()
-    fig.savefig(r"{}\Yield VCM J {} K.pdf".format(path_fol,float(eavalg)), bbox_inches='tight')
-    fig.savefig(r"{}\Yield VCM J {} K.svg".format(path_fol,float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {} K.pdf".format(path_fol, float(eavalg)), bbox_inches='tight')
+    fig.savefig(r"{}\Yield VCM J {} K.svg".format(path_fol, float(eavalg)), bbox_inches='tight')
     plt.close()
 
 print("The Jacobian was evaluated {} times.".format(J_eval[0]))
@@ -2551,6 +2553,6 @@ end = time.time() #Time when it finishes, this is real time
 def timer(start, end):
     hours, rem = divmod(end-start, 3600)
     minutes, seconds = divmod(rem, 60)
-    print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours),int(minutes),int(seconds)))
+    print("Completion Time: {} Hours {} Minutes {} Seconds".format(int(hours), int(minutes), int(seconds)))
 
 timer(start,end) # Prints the amount of time passed since starting the program

@@ -2,12 +2,24 @@
 """
 Created on Tue Mar 10 19:26:23 2020
 
+Github: https://github.com/tjczec01
+
+@author: Travis J Czechorski 
+
+E-mail: tjczec01@gmail.com
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 10 19:26:23 2020
+
 @author: tjcze
 """
 from __future__ import division
 import time
 import math
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import numpy as np
 import sympy as sp
 import mpmath as mp
@@ -222,7 +234,7 @@ namespd = ['EDC','EC','HCl','Coke', 'CP','Di','Tri','C4H6Cl2','C6H6','C2H2','C11
 Tc = 500.0
 Tk = Tc + 273.15
 
-#Cas ['107-06-2','75-00-3','7647-01-0','126-99-8','1,2-dichloroethylene','760-23-6','71-43-2','74-86-2','75-34-3','79-00-5','Cl','75-35-4','75-43-4','96-49-1','75-38-7','79-01-6','75-01-4']
+#Cas ['107-06-2','75-00-3','7647-01-0','126-99-8','1,2-dichloroethylene','760-23-6','71-4JUdGzvrMFDWrUUwY3toJATSeNwjn54LkCnKBPRzDuhzi5vSepHfUckJNxRL2gjkNrSqtCoRUrEDAgRwsQvVCjZbRyFTLRNyDmT1a1boZV01-4']
 
 start = time.time() #Real time when the program starts to run
 
@@ -1462,8 +1474,8 @@ for il in tqdm(range(iternum)):
         Y02b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
         Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1],T0[-1],T1[-1]]
         Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1],T0j[-1],T1j[-1]] 
-        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(amount_new)), jac=jacob, first_step=1/segment_second, max_step=10/segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(amount_new)), jac=jacob, first_step=1/segment_second, max_step=10/segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resa = solve_ivp(RHS, [0.0,  Ls], Y0, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0*1000.0, 230000.0, 7000.0, 34000.0, 4JUdGzvrMFDWrUUwY3toJATSeNwjn54LkCnKBPRzDuhzi5vSepHfUckJNxRL2gjkNrSqtCoRUrEDAgRwsQvVCjZbRyFTLRNyDmT1a1boZV, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(amount_new)), jac=jacob, first_step=1/segment_second, max_step=10/segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0,  Ls], Y0j, method = 'Radau',  args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0*1000.0, 230000.0, 7000.0, 34000.0, 4JUdGzvrMFDWrUUwY3toJATSeNwjn54LkCnKBPRzDuhzi5vSepHfUckJNxRL2gjkNrSqtCoRUrEDAgRwsQvVCjZbRyFTLRNyDmT1a1boZV, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(amount_new)), jac=jacob, first_step=1/segment_second, max_step=10/segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[23][-1]/edcint
@@ -2211,7 +2223,7 @@ plt1e = plt.plot(tvals, tendc, 'b-')
 plt2e = plt.plot(tvals, tendcj, 'g-')
 plt.ylabel('Conversion')
 plt.xlabel("Initial Temperature [K]")
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title("Final Conversion")
 plt.legend(['Conversion','Conversion With Jacobian'],loc="best")
 plt.grid()
@@ -2275,7 +2287,7 @@ for jj,j in enumerate(graph_nodes):
       plt.grid()
       plt.xlabel('Times [s]')
       plt.ylabel('Conversion')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('EDC Jacobian Conversion')
       fig.savefig(r"{}\EDC-conv.pdf".format(path_fol))
       fig.savefig(r"{}\EDC-conv.svg".format(path_fol))
@@ -2569,7 +2581,7 @@ for jj,j in enumerate(graph_nodes):
       plt.grid()
       plt.xlabel(r'Distance [$m$]')
       plt.ylabel('Product Purity')
-      plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+      plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
       plt.title('Product Purity - Jacobian')
       fig.savefig(r"{}\Temp_vals-PurityJ {} K.pdf".format(path_fol,Temp_vals[j]))
       fig.savefig(r"{}\Temp_vals-PurityJ {} K.svg".format(path_fol,Temp_vals[j]))
@@ -2584,7 +2596,7 @@ plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False)) 
 plt.title('Product Purity - Jacobian')
 fig.savefig(r"{}\OverallTemp_vals-PurityJ {} K.pdf".format(path_fol,Temp_vals[j]))
 fig.savefig(r"{}\OverallTemp_vals-PurityJ {} K.svg".format(path_fol,Temp_vals[j]))
@@ -2599,7 +2611,7 @@ for jj,j in enumerate(graph_nodes):
     plt.grid()
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Product Purity')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.title('Product Purity')
     fig.savefig(r"{}\Temp_vals-Purity{}.pdf".format(path_fol,Temp_vals[j]))
     fig.savefig(r"{}\Temp_vals-Purity{}.svg".format(path_fol,Temp_vals[j]))
@@ -2614,7 +2626,7 @@ plt.legend(loc='best')
 plt.grid()
 plt.xlabel(r'Distance [$m$]')
 plt.ylabel('Product Purity')
-plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
 plt.title('Product Purity - Jacobian')
 fig.savefig(r"{}\OverallTemp_vals-Purity{}.pdf".format(path_fol,Temp_vals[j]))
 fig.savefig(r"{}\OverallTemp_vals-Purity{}.svg".format(path_fol,Temp_vals[j]))
@@ -2627,7 +2639,7 @@ for jj,j in enumerate(graph_nodes):
     plt.plot(xD, convedc[j, :], 'b-', label=r"Temperature: {}$^\circ$C".format(Cval))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()])  
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False)) 
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
@@ -2643,7 +2655,7 @@ for jj,j in enumerate(graph_nodes):
     plt.plot(xD, convedcj[j, :], 'b-', label=r"Temperature: {}$^\circ$C".format(Cval))
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel('Conversion')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend(loc='best')
     plt.title("Conversion of EDC")
     plt.grid()
@@ -2854,7 +2866,7 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer', fontdict=font)
     plt.grid()
@@ -2872,7 +2884,7 @@ for jj,j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]', fontdict=font)
     plt.ylabel(r'Yield [$Y_{VCM}$]', fontdict=font)
     plt.axhline(y=float(100.0), color='k', linestyle='--')
-    plt.gca().set_yticklabels(['{:d}%'.format(int(x)) for x in plt.gca().get_yticks()]) 
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(1.0, decimals=None, symbol="%", is_latex=False))
     plt.legend([r"Temperature: {}$^\circ$C".format(Cval),r"$Y_{VCM}$"],loc='best',fontsize='large')
     plt.title('Yield of Vinyl Chloride Monomer Jacobian', fontdict=font)
     plt.grid()

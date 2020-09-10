@@ -720,7 +720,7 @@ segment_second = 10  # int(input('Enter iterations per second --> '))
 gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
 gnodes2 = 1
 chngamnt = 100.0  # float(input('Enter Activation Energy change per iteration [J/mol] --> '))
-iternum = 20  # int(input('Enter total iterations --> '))
+iternum = 200  # int(input('Enter total iterations --> '))
 graph_num = 1
 segment_num = desired_time*segment_second  # Segments/Second
 time_nodes = int(iternum/gnodes)

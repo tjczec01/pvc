@@ -34,9 +34,10 @@ except:
 sp.init_session(use_latex=False,quiet=True)
 plt.ioff()
 plt.rcParams.update({'figure.max_open_warning': 10})
-#Data for inital kinetics
-#https://doi.org/10.1021/ie8006903
-    
+# Data for inital kinetics
+# https://doi.org/10.1021/ie8006903
+# Thesis: https://ir.library.louisville.edu/etd/3359/
+
 mp.pretty = True
 # Dictionary for all relevent forward and reverse reactions
 Initreactionsf = [
@@ -537,10 +538,12 @@ def Uab(ka,kb,cpa,cpb,cva,cvb):
     uab = float(kk*cab*rr)
     return uab
         
-#rhs (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
-#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T,dT)
-#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L) 
+#RHS (right hand side) is a function that returns the system of differential equations as a list/array to be used with the solve_ivp method
+#There are 20 equations in total, one for each compound (listed in the order from the list excel/word file, 18), and two equations for temperature (T, dT)
+#Steady-State 1-D Heat Balance: (d^2T)/(dz^2) = (U_coeff*α*(T_wall - T) + ∑r_i*∆H_rxn)/(k_mix); α = (Surface Area / Volume) or (2*π*r*L/π*r^2*L)
 #Each equation is used to solve for the concentration of each compound and it is the exact same order that the compound lists are defined shortly below
+#There is a program that calculates both the Jacobian and RHS equation systems (both symbolically and with certain numerical values plugged in) and saves them in the exact necessary format at in a txt file at https://github.com/tjczec01/chemicalsystem
+#It will also outpus the necessary Latex equations for printing purposes
 
 
 def RHS(z, C, R, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_13, K_14, K_15, K_16, K_17, K_18, K_19, K_20, K_21, K_22, K_23, K_24, K_25, K_26, K_27, K_28, K_29, K_30, K_31, Ea_1, Ea_2, Ea_3, Ea_4, Ea_5, Ea_6, Ea_7, Ea_8, Ea_9, Ea_10, Ea_11, Ea_12, Ea_13, Ea_14, Ea_15, Ea_16, Ea_17, Ea_18, Ea_19, Ea_20, Ea_21, Ea_22, Ea_23, Ea_24, Ea_25, Ea_26, Ea_27, Ea_28, Ea_29, Ea_30, Ea_31, Constant_1, Constant_2, Constant_3, TwallT):

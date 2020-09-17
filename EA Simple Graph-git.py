@@ -180,7 +180,7 @@ prodeqs = []
 reacteqs2 = []
 prodeqs2 = []
 namesb = ['EDC', 'EC', 'HCl', 'Coke', 'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM']
-namesb2 = ['1, 2-dichloroethane', 'Ethylchloride', 'Hydrogen Chloride', 'Coke', '1- / 2-chloroprene', '1, 1- / cis- / trans-dichloroethylene', r'$C_{4}H_{6}Cl_{2}$', r'$C_{6}H_{6}$', r'$C_{2}H_{2}$', '1, 1-dichloroethane', '1, 1, 2-trichloroethane', r'$R_{1}$', r'$R_{2}$', r'$R_{3}$', r'$R_{4}$', r'$R_{5}$', r'$R_{6}$', 'Vinyl Chloride Monomer']
+namesb2 = ['1,2-dichloroethane', 'Ethylchloride', 'Hydrogen Chloride', 'Coke', '1-/2-chloroprene', '1,1-/cis-/trans-dichloroethylene', r'$C_{4}H_{6}Cl_{2}$', r'$C_{6}H_{6}$', r'$C_{2}H_{2}$', '1, 1-dichloroethane', '1,1,2-trichloroethane', r'$R_{1}$', r'$R_{2}$', r'$R_{3}$', r'$R_{4}$', r'$R_{5}$', r'$R_{6}$', 'Vinyl Chloride Monomer']
 namespd = ['EDC', 'EC', 'HCl', 'Coke', 'CP', 'Di', 'C4H6Cl2', 'C6H6', 'C2H2', 'C11', 'C112', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'VCM', 'T0', 'T1', 'Pure', 'Selectivity VCM', 'Selectivity HCl', 'Yield VCM', 'Constant 1', 'Constant 2', 'Constant 3', 'h Coefficient', 'U Coefficient', 'k value', 'Reynolds']
 
 Tc = 500.0
@@ -339,12 +339,9 @@ def hterm(Nu, distance, k):
 
 
 def Pr(cp, viscosity, k):
-    # cp = [J / kg-K]
-    # u = [Pa * s] = [N * s / m^2]
-    # k = [W / m-K]
-    Cp = cp
-    µ = viscosity
-    pr = (Cp * µ) / k
+    Cp = cp  # [J / kg-K]
+    µ = viscosity  # [Pa * s] = [N * s / m^2]
+    pr = (Cp * µ) / k  # [W / m-K]
     return pr
 
 
@@ -732,18 +729,18 @@ density = (1E6 * 1.253) / 1E3  # kg / m^3
 mwedc = 98.95  # g / mol
 mwedckg = 98.95 / 1E3  # kg / mol
 delhm = 71000  # [J / mol]
-Temperature = 500.0  # [°C]
+Temperature = float(input('Enter starting temperature [°C] --> '))  # [°C]
 Temp_K = 273.15 + Temperature  # [K]
 Twall_c = Temperature  # [°C]
 Twalls = Twall_c + 273.15
 Pbar = 12.159  # [bar]
-Pstart_atm = 12.0  # [atm]
+Pstart_atm = float(input("Enter starting pressure [atm] --> "))
 PascalP = Pstart_atm * 101325.0  # [Pa]
 Patm = PascalP / 101325
-volume_flow = 1.5  # [m^3 / s]
+volume_flow = float(input("Enter volumetric flow rate [m^3/s] --> "))  # 1.5 [m^3 / s]
 volume_flowcm = volume_flow * 1E6  # [cm^3 / s]
-pipe_thickness = 0.025  # [m]
-do = 0.5  # Outer diameter [m]
+pipe_thickness = float(input("Enter pipe thickness [m] --> "))  # 0.025  # [m]
+do = float(input("Enter total pipe diameter [m] --> "))  # 0.5  #Outer diameter [m]
 ro = do / 2.0   # Outer radius [m]
 di = do - 2 * pipe_thickness  # Inner diameter [m]
 ri = di / 2.0  # Inner radius [m]
@@ -768,7 +765,7 @@ rhoc = rhoin / mws
 rhoc2 = (PascalP / (Temp_K * 8.314)) / 1E6  # [mol / m^3]
 inedc = rhoing / 1E6
 initedcb = rhoing
-desired_time = 30  # [s]
+desired_time = int(input("Enter total reaction time [s] --> "))  # [s]
 end_dist = float(u_z * desired_time)
 dist_neat = round(end_dist, 1)
 F_in = volume_flow * rhoc2  # [mol / s]
@@ -778,12 +775,12 @@ alpha = (math.pi * 2.0 * ri * L) / (Ac * L)
 patm = PascalP / 101325.0  # [atm]
 Ratm = 8.20573660809596E-5  # [m^3 * atm / K * mol]
 Rkcal = 1.98720425864083E-3  # [kcal / K * mol]
-segment_second = 10  # Iterations per second
+segment_second = int(input('Enter iterations per second --> '))
 gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200 / 10 = 20 iterations or 2000J / 2kJ
 gnodes2 = 1
-chngamnt = 100.0  # [J / mol]
-iternum = 200  # Total iterations
-# print("Total Ea change: {} [kJ / mol]".format(int(iternum * chngamnt) / 1000))
+chngamnt = float(input('Enter Activation Energy change per iteration [J/mol] --> '))
+iternum = int(input('Enter total iterations --> '))
+# print("Total Ea change: {} kJ".format(int(iternum * chngamnt) / 1000))
 graph_num = 1
 segment_num = desired_time * segment_second  # Segments / Second
 time_nodes = int(iternum / gnodes)

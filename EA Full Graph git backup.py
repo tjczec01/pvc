@@ -549,8 +549,8 @@ def Uab(ka,kb,cpa,cpb,cva,cvb):
     y2 = cpb/cvb
     kk = ka/kb
     cab = cpb/cpa
-    r1 = (9.0 -(5.0/y2))
-    r2 = (9.0 -(5.0/y1))
+    r1 = (9.0 - (5.0/y2))
+    r2 = (9.0 - (5.0/y1))
     rr = r1/r2
     uab = float(kk*cab*rr)
     return uab
@@ -929,7 +929,7 @@ CHCl3 = [float(0.0)]
 VCM = [float(0.0)]
 T0 = [float(Temp_K)]
 T1 = [float(0.0)]
-Ctotal = float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float( Coke[-1]) + float( CP[-1]) + float( Di[-1]) + float( Tri[-1]) + float( C4H6Cl2[-1]) + float( C6H6[-1]) + float( C2H2[-1]) + float( C11[-1]) + float( C112[-1])  + float( C1112[-1]) + float( R1[-1]) + float( R2[-1]) + float( R3[-1]) + float( R4[-1]) + float( R5[-1]) + float( R6[-1]) +  float( R7[-1]) + float( R8[-1]) + float( CCl4[-1]) + float( CHCl3[-1]) + float( VCM[-1])
+Ctotal = float(EDC[-1]) + float(EC[-1]) + float(HCl[-1]) + float(Coke[-1]) + float(CP[-1]) + float(Di[-1]) + float(Tri[-1]) + float(C4H6Cl2[-1]) + float(C6H6[-1]) + float(C2H2[-1]) + float(C11[-1]) + float(C112[-1]) + float(C1112[-1]) + float(R1[-1]) + float(R2[-1]) + float(R3[-1]) + float(R4[-1]) + float(R5[-1]) + float(R6[-1]) + float(R7[-1]) + float(R8[-1]) + float(CCl4[-1]) + float(CHCl3[-1]) + float(VCM[-1])
 J_eval = [0]
 J_evalt = [0]
 EDCj = [float(initedc)]
@@ -958,7 +958,7 @@ CHCl3j = [float(0.0)]
 VCMj = [float(0.0)]
 T0j = [float(Temp_K)]
 T1j = [float(0.0)]
-Ctotalj = float(EDCj[-1]) + float(ECj[-1]) + float(HClj[-1]) + float( Cokej[-1]) + float( CPj[-1]) + float( Dij[-1]) + float( Trij[-1]) + float( C4H6Cl2j[-1]) + float( C6H6j[-1]) + float( C2H2j[-1]) + float( C11j[-1]) + float( C112j[-1])  + float( C1112j[-1]) + float( R1j[-1]) + float( R2j[-1]) + float( R3j[-1]) + float( R4j[-1]) + float( R5j[-1]) + float( R6j[-1]) +  float( R7j[-1]) + float( R8j[-1]) + float( CCl4j[-1]) + float( CHCl3j[-1]) + float( VCMj[-1])
+Ctotalj = float(EDCj[-1]) + float(ECj[-1]) + float(HClj[-1]) + float(Cokej[-1]) + float(CPj[-1]) + float(Dij[-1]) + float(Trij[-1]) + float(C4H6Cl2j[-1]) + float(C6H6j[-1]) + float(C2H2j[-1]) + float(C11j[-1]) + float(C112j[-1]) + float(C1112j[-1]) + float(R1j[-1]) + float(R2j[-1]) + float(R3j[-1]) + float(R4j[-1]) + float(R5j[-1]) + float(R6j[-1]) + float(R7j[-1]) + float(R8j[-1]) + float(CCl4j[-1]) + float(CHCl3j[-1]) + float(VCMj[-1])
 C_Total = [Ctotal]
 C_Totalj = [Ctotalj]
 initial_edc = float(initedc)
@@ -1109,13 +1109,13 @@ purej = []
 dpure = []
 
 for i in alistb:
-    chemicalt = getattr(i,'IUPAC_name')
+    chemicalt = getattr(i, 'IUPAC_name')
     names.append(chemicalt)
 
 dist_end = endnum #Final position
 J_eval = [0]
 J_evalt = [0]
-dist_value= [0.0]
+dist_value = [0.0]
 Tbl = []
 CAS = []
 prhos = []
@@ -1123,32 +1123,32 @@ mws = []
 pvis = []
 kks = []
 for i in alistb:
-            Casnum = getattr(i,'CAS')
-            CAS.append(Casnum)
-            tb = getattr(i,'Tb')
-            Tbl.append(float(tb))
-            chemicalpi = getattr(i,'rhogm')
-            prhos.append(float(chemicalpi))
-            chemicalmwi = getattr(i,'MW')
-            mws.append(float(chemicalmwi/1000.0))
-            chemicalmug = getattr(i,'mug')
-            pvis.append(float(chemicalmug))
-            chemicalkl = getattr(i,'kg')
-            kks.append(float(chemicalkl))
+    Casnum = getattr(i, 'CAS')
+    CAS.append(Casnum)
+    tb = getattr(i, 'Tb')
+    Tbl.append(float(tb))
+    chemicalpi = getattr(i, 'rhogm')
+    prhos.append(float(chemicalpi))
+    chemicalmwi = getattr(i, 'MW')
+    mws.append(float(chemicalmwi/1000.0))
+    chemicalmug = getattr(i, 'mug')
+    pvis.append(float(chemicalmug))
+    chemicalkl = getattr(i, 'kg')
+    kks.append(float(chemicalkl))
 prhot = sum(prhos)
 mfracs = [i/prhot for i in prhos]
-ys = tc.utils.zs_to_ws(mfracs,mws)
-zvar = np.linspace(0,L,int(L/Ls))
-cons1a = [5.228861948970217258E06, 4.573981356040483661E04, 2.392702360656382751E11]
+ys = tc.utils.zs_to_ws(mfracs, mws)
+zvar = np.linspace(0, L, int(L/Ls))
+cons1a = [5.228861948970217258E06,  4.573981356040483661E04,  2.392702360656382751E11]
 z1 = sp.symbols('z1')
 t0 = 0
 rxnnum = len(Ea)
-ysv, Ks, EAs, Ts = symfunc(namesj, rxnnum)
+ysv,  Ks,  EAs,  Ts = symfunc(namesj,  rxnnum)
 ysv.append(sp.symbols('T0'))
 ysv.append(sp.symbols('T1'))
 yblank = []
 Twalls = []
-iterlist = [i for i in range(0,iternum,1)]
+iterlist = [i for i in range(0, iternum, 1)]
 rtolval = 1E-7
 rtolvalj = 1E-7
 atolval = 1E-7
@@ -1186,20 +1186,20 @@ for il in tqdm(iterslist):
     ks = [5.9E+15, 2.2E+12, 1.3E+13, 1.2E+13, 1E+12, 5E+11, 2E+11, 1E+11, 1E+12, 1E+13, 1E+13, 1.7E+13, 1.2E+13, 1.7E+13, 1.7E+13, 1.6E+13, 91000000000, 1.2E+14, 3E+11, 20000000000, 5E+11, 2.1E+14, 5E+14, 2E+13, 2.5E+13, 1E+12, 5E+11, 5E+11, 1E+13, 1E+14, 1.6E+14]
 #    n = [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,2,2]
     n = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-    k_0b = [i/((1E6)**(j-1)) for i,j in zip(ks,n)]
+    k_0b = [i/((1E6)**(j-1)) for i, j in zip(ks, n)]
     k_0 = [float(i) for i in k_0b]
-    # print("Iteration {} Activation Energy {}".format(il+1, amount_new))
+    # print("Iteration {} Activation Energy {}".format(il+1,  amount_new))
     for x2 in dist_c:
     # for x2 in tqdm(dist_c):
         cross_area = math.pi*(ri**2)
-        alistb2 = alistfun(float(T0[-1]),float(PascalP))
-        Y0b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
+        alistb2 = alistfun(float(T0[-1]),  float(PascalP))
+        Y0b = [EDC[-1],  EC[-1],  HCl[-1],  Coke[-1],  CP[-1],  Di[-1],  Tri[-1],  C4H6Cl2[-1],  C6H6[-1],  C2H2[-1],  C11[-1],  C112[-1],  C1112[-1],  R1[-1],  R2[-1],  R3[-1],  R4[-1],  R5[-1],  R6[-1],  R7[-1],  R8[-1],  CCl4[-1],  CHCl3[-1],  VCM[-1]]
         Y0bfa = [float(i) for i in Y0b]
-        aaij = [x*0.0 for x in range(0,len(alistb2),1)]
-        Aaij = [aaij[:] for x in range(0,len(alistb2),1)]
+        aaij = [x*0.0 for x in range(0, len(alistb2), 1)]
+        Aaij = [aaij[:] for x in range(0, len(alistb2), 1)]
         Ctotal = sum(Y0b) #Decimal(EDC[-1]) + Decimal(EC[-1]) + Decimal(HCl[-1]) + Decimal( Coke[-1]) + Decimal( CP[-1]) + Decimal( Di[-1]) + Decimal( C4H6Cl2[-1]) + Decimal( C6H6[-1]) + Decimal( C2H2[-1]) + Decimal( C11[-1]) + Decimal( C112[-1]) + Decimal( R1[-1]) + Decimal( R2[-1]) + Decimal( R3[-1]) + Decimal( R4[-1]) + Decimal( R5[-1]) + Decimal( R6[-1]) + Decimal( VCM[-1])
         C_ii = [float(i)/float(Ctotal) for i in Y0b]
-        C_im = tc.utils.zs_to_ws(C_ii,mws)
+        C_im = tc.utils.zs_to_ws(C_ii, mws)
         mfracnf = [i for i in C_im if i != 0.0]
         molfrac = [i for i in C_ii if i != 0.0]
         MWis1 = mw(alistb2)
@@ -1220,50 +1220,50 @@ for il in tqdm(iterslist):
         cass = []
         TG = []
         VS = []
-        for i in  Y0bfa:
+        for i in Y0bfa:
             if i > 0.0:
-                    k = Y0bfa.index(i)
-                    i2 = alistb2[k]
-                    C_i2.append(float(i)/float(Ctotal))
-                    chemicalcpi = getattr(i2,'Cpgm')  # [J/mol*K]
-                    Cpi_list2.append(float(chemicalcpi))
-                    chemicalmwi = getattr(i2,'MW')  # [g/mol]
-                    MWgi_list2.append(float(chemicalmwi))  # [g/mol]
-                    MWi_list2.append(float(chemicalmwi/1000.0))  # [kg/mol]
-                    chemicalpi = getattr(i2,'rhogm')  # [mol/m^3]
-                    Rhoi_list2.append(float(chemicalpi))
-                    chemicalkl = getattr(i2,'kg')  # [mol/m^3]
-                    klval_i2.append(float(chemicalkl))
-                    chemicalmug= getattr(i2,'mu') #  [Pa*s]
-                    mu_i2.append(float(chemicalmug))
-                    chemicaltb= getattr(i2,'Tb') # [K]
-                    TB_i2.append(float(chemicaltb))
-                    chemicalvm = getattr(i2,'Vmg')
-                    Vm2.append(float(chemicalvm/1E6))
-                    chemicalna = getattr(i2,'IUPAC_name')
-                    names2b.append(chemicalna)
-                    chemicalcas = getattr(i2,'CAS')
-                    cass.append(chemicalcas)
-                    thermo = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
-                    TG.append(thermo.ThermalConductivityGas)
-                    thermov = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
-                    VS.append(thermov.ViscosityGas)
+                k = Y0bfa.index(i)
+                i2 = alistb2[k]
+                C_i2.append(float(i)/float(Ctotal))
+                chemicalcpi = getattr(i2, 'Cpgm')  # [J/mol*K]
+                Cpi_list2.append(float(chemicalcpi))
+                chemicalmwi = getattr(i2, 'MW')  # [g/mol]
+                MWgi_list2.append(float(chemicalmwi))  # [g/mol]
+                MWi_list2.append(float(chemicalmwi/1000.0))  # [kg/mol]
+                chemicalpi = getattr(i2, 'rhogm')  # [mol/m^3]
+                Rhoi_list2.append(float(chemicalpi))
+                chemicalkl = getattr(i2, 'kg')  # [mol/m^3]
+                klval_i2.append(float(chemicalkl))
+                chemicalmug= getattr(i2, 'mu') #  [Pa*s]
+                mu_i2.append(float(chemicalmug))
+                chemicaltb= getattr(i2, 'Tb') # [K]
+                TB_i2.append(float(chemicaltb))
+                chemicalvm = getattr(i2, 'Vmg')
+                Vm2.append(float(chemicalvm/1E6))
+                chemicalna = getattr(i2, 'IUPAC_name')
+                names2b.append(chemicalna)
+                chemicalcas = getattr(i2, 'CAS')
+                cass.append(chemicalcas)
+                thermo = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                TG.append(thermo.ThermalConductivityGas)
+                thermov = tc.chemical.Chemical(chemicalcas, T=float(T0[-1]), P=PascalP)
+                VS.append(thermov.ViscosityGas)
             else:
                 pass
         cpavg = mean(Cpi_list2)
         rhoavg = mean(Rhoi_list2)
-        rhovm = [i*j for i,j in zip(Vm2, Rhoi_list2)]
+        rhovm = [i*j for i, j in zip(Vm2,  Rhoi_list2)]
         rhoend = float(PascalP/(Rval*float(T0[-1])))
         rhotot2 = sum(Rhoi_list2)
         Massfrac2b = [float(i/rhotot2) for i in Rhoi_list2]
-        Massfrac = [float(i*j) for i,j in zip(C_i2, MWgi_list2)]
+        Massfrac = [float(i*j) for i, j in zip(C_i2,  MWgi_list2)]
         Mavg = sum(Massfrac)
-        wsl = [float((i*j)/Mavg) for i,j in zip(C_i2, MWgi_list2)]
-        wsl2 = tc.utils.zs_to_ws(C_i2,MWgi_list2)
-        Rho_Cp = [i*j for i,j in zip(Cpi_list2, Rhoi_list2)]
+        wsl = [float((i*j)/Mavg) for i, j in zip(C_i2,  MWgi_list2)]
+        wsl2 = tc.utils.zs_to_ws(C_i2, MWgi_list2)
+        Rho_Cp = [i*j for i, j in zip(Cpi_list2,  Rhoi_list2)]
         RCPavg = mean(Rho_Cp)
         Cpglist = []
-        gmix = tc.Mixture(IDs = names2b, zs=C_i2, T=float(T0[-1]), P=PascalP)
+        gmix = tc.Mixture(IDs = names2b,  zs=C_i2,  T=float(T0[-1]),  P=PascalP)
         viss = gmix.mugs
         tbss = gmix.Tbs
         mwss = gmix.MWs
@@ -1271,7 +1271,7 @@ for il in tqdm(iterslist):
         CPs = gmix.Cpgms
         CVs = gmix.Cvgms
         Kval1a = gmix.kg
-        kval2 = kmix(float(T0[-1]),C_i2,ksss, viss, tbss, mwss,CPs,CVs)  # [W/m*K]
+        kval2 = kmix(float(T0[-1]), C_i2, ksss,  viss,  tbss,  mwss, CPs, CVs)  # [W/m*K]
         Molew = gmix.MWs
         sigma = gmix.molecular_diameters
         stemix = gmix.Stockmayers
@@ -1280,7 +1280,7 @@ for il in tqdm(iterslist):
         viscosityb = gmix.mug # [Pa*s] or [kg/m*s^2]
         vislist = gmix.mugs
         viscosityc = viscosityb # [kg/m*s^2]
-        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*s]
+        viscosity = tc.viscosity.Brokaw(T=float(T0[-1]), ys=C_i2, mus=viss, MWs=mwss, molecular_diameters=sigma, Stockmayers=stemix) # [Pa*s]
         rhob = gmix.rhog  # [mol/m^3]
         rhoc = gmix.rhogm  # [mol/m^3]
         rhocpgm1 = rhoc*cpmmix # [J/m^3*K]
@@ -1296,8 +1296,8 @@ for il in tqdm(iterslist):
         tclist = gmix.Tcs
         Vclist = gmix.Vcs
         Zcmix = gmix.Zg
-        TC = tc.critical.modified_Wilson_Tc(zs=C_i2, Tcs=tclist,Aijs=Aaij)
-        TCb = tc.critical.Li(zs=C_i2, Tcs=tclist, Vcs=Vclist)
+        TC = tc.critical.modified_Wilson_Tc(zs=C_i2,  Tcs=tclist, Aijs=Aaij)
+        TCb = tc.critical.Li(zs=C_i2,  Tcs=tclist,  Vcs=Vclist)
         ek = tc.lennard_jones.epsilon_Tee_Gotoh_Steward_1(TC)
         ek2 = tc.lennard_jones.epsilon_Bird_Stewart_Lightfoot_critical(TCb)
         ek3 = tc.lennard_jones.epsilon_Flynn(TCb)
@@ -1313,7 +1313,7 @@ for il in tqdm(iterslist):
         vs = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2,mus=viss,MWs=mwss,molecular_diameters=sigma,Stockmayers=stemix) # [Pa*S]
         pr = Pr(cpkgmix,viscosity,kval2)
         re = reynolds(rhob,u_z,Ls,viscosity)
-        nuval = Nus(velocity, rhoc,Ls,diameter,kval2,viscosity,vs,float(Twalls[-1]),float(T0[-1]),pr, re)
+        nuval = Nus(velocity, rhoc,Ls,diameter,kval2,viscosity,vs, float(Twalls[-1]), float(T0[-1]),pr, re)
         gash = hterm(nuval,Ls,kval2)
         h20 = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cp = h20.Cpgm
@@ -1328,7 +1328,7 @@ for il in tqdm(iterslist):
         h20wall = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20vsb = h20wall.mug # [Pa*s]
         h20vs = h20vsb # [g/m*s^2]
-        hnuval = Nus(velocity,h20rho,Ls,diameter,h20k,h20vis,h20vs,float(Twalls[-1]),float(Twalls[-1]),prh20, reh20)
+        hnuval = Nus(velocity,h20rho,Ls,diameter,h20k,h20vis,h20vs, float(Twalls[-1]), float(Twalls[-1]),prh20, reh20)
         h20h = hterm(hnuval,Ls,h20k)
         U_coeffb = Uvalue(diameter,do,gash,h20h,ksteel) # [W/m^2*k]
         U_coeff = U_coeffb # [W/m^2*k]
@@ -1357,7 +1357,7 @@ for il in tqdm(iterslist):
         Y0bjf = [float(i) for i in Y0bj]
         Ctotalj = sum(Y0bjf)
         C_iij = [float(jj)/float(Ctotalj) for jj in Y0bj]
-        alistb2j = alistfun(float(T0j[-1]),float(PascalP))
+        alistb2j = alistfun(float(T0j[-1]), float(PascalP))
         MWis1j = mw(alistb2j)
         MWis2j = [float(j/1000) for j in MWis1j]
         Vm2j = []
@@ -1460,7 +1460,7 @@ for il in tqdm(iterslist):
         vs2j = tc.viscosity.Brokaw(T=float(Twalls[-1]),ys=C_i2j,mus=vissj,MWs=mwssj,molecular_diameters=sigmaj,Stockmayers=stemixj)
         prj = Pr(cpgmmixj,vsj,kval2j)
         rej = reynolds(rhoj,velocityj,distances,vsj)
-        nuvalj = Nus(velocity, rhoj,distances,diameter,kval2j,vsj,vs2j,float(Twalls[-1]),T0j[-1],prj, rej)
+        nuvalj = Nus(velocity, rhoj,distances,diameter,kval2j,vsj,vs2j, float(Twalls[-1]),T0j[-1],prj, rej)
         gashj = hterm(nuvalj,distances,kval2j)
         h20j = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20cpj = h20j.Cpgm
@@ -1471,7 +1471,7 @@ for il in tqdm(iterslist):
         reh20j = reynolds(h20rhoj,velocityj,distances,h20visj)
         h20wallj = tc.Chemical('7732-18-5', T=float(Twalls[-1]), P=PascalP)
         h20vsj = h20wallj.mug # [g/cm*s^2]
-        hnuvalj = Nus(velocityj,h20rhoj,distances,diameter,h20kj,h20visj,h20vsj,float(Twalls[-1]),float(Twalls[-1]),prh20j, reh20j)
+        hnuvalj = Nus(velocityj,h20rhoj,distances,diameter,h20kj,h20visj,h20vsj, float(Twalls[-1]), float(Twalls[-1]),prh20j, reh20j)
         h20hj = hterm(hnuvalj,distances,h20kj)
         U_coeffj = Uvalue(diameter,do,gashj,h20hj,ksteel) #(W/(m2•K))
         delhm = 71000.0 #J/mol
@@ -1492,8 +1492,8 @@ for il in tqdm(iterslist):
         Y02b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
         Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1],T0[-1],T1[-1]]
         Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1],T0j[-1],T1j[-1]]
-        resa = solve_ivp(RHS, [0.0, Ls], Y0, method = 'Radau', args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1 / segment_second, max_step=10 / segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0, Ls], Y0j, method = 'Radau', args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new*1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]),float(c2_valsj[-1]),float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1 / segment_second, max_step=10 / segment_second) #  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resa = solve_ivp(RHS, [0.0, Ls], Y0, method='Radau', args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Temp_K)), jac=jacob, first_step=1 / segment_second, max_step=segment_second / 2)  # rtol=1E-3, atol=1E-6  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0, Ls], Y0j, method='Radau', args=(8.314, 5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(Temp_K)), jac=jacob, first_step=1 / segment_second, max_step=segment_second / 2)  # first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[23][-1]/edcint
@@ -2477,7 +2477,7 @@ for jj, j in enumerate(graph_nodes):
     plt.grid()
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel("Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
-    plt.title('Activation Energy Profile')
+    plt.title('Temperature Profile')
     fig.savefig(r"{}\T-Profile-J {} kJ.pdf".format(path_fol, Ea_vals[j]))
     fig.savefig(r"{}\T-Profile-J {} kJ.svg".format(path_fol, Ea_vals[j]))
     plt.close()

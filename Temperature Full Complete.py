@@ -27,7 +27,7 @@ import os
 clear = os.system('cls')
 cwd = os.getcwd()
 dir_path = os.path.dirname(os.path.realpath(__file__))
-path_fol = r"{}\Temperature - Full".format(dir_path)
+path_fol = r"{}\Activation Energy - Full".format(dir_path)
 # print("\n")
 # print("Current working directory:\n")
 # print("{}\n".format(cwd))
@@ -634,7 +634,7 @@ def RHS(t, y, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_10, K_11, K_12, K_1
     EQ_CHCl3 = -C_CHCl3*C_R1*K_16*math.exp(-Ea_16/(R*T)) + C_EDC*C_R8*K_9*math.exp(-Ea_9/(R*T))
     EQ_VCM = C_EDC*C_R5*K_6*math.exp(-Ea_6/(R*T)) + C_R1*C_R2*K_10*math.exp(-Ea_10/(R*T)) - C_R1*C_VCM*K_17*math.exp(-Ea_17/(R*T)) - C_R1*C_VCM*K_18*math.exp(-Ea_18/(R*T)) - C_R1*C_VCM*K_22*math.exp(-Ea_22/(R*T)) - C_R2*C_VCM*K_19*math.exp(-Ea_19/(R*T)) + C_R3*K_22*math.exp(-Ea_22/(R*T)) - C_R4*C_VCM*K_20*math.exp(-Ea_20/(R*T)) - C_R5*C_VCM*K_21*math.exp(-Ea_21/(R*T))
     EQ_T = T1
-    EQ_dT = Constant_1*T1 - Constant_2*(-T + Twall) - Constant_3*(-C_EDC*C_R1*K_3*math.exp(-Ea_3/(R*T)) - C_EDC*C_R2*K_5*math.exp(-Ea_5/(R*T)) - C_EDC*C_R4*K_6*math.exp(-Ea_6/(R*T)) - C_EDC*C_R5*K_4*math.exp(-Ea_4/(R*T)) - C_EDC*C_R6*K_7*math.exp(-Ea_7/(R*T)) - C_EDC*C_R7*K_8*math.exp(-Ea_8/(R*T)) - C_EDC*C_R8*K_9*math.exp(-Ea_9/(R*T)) - C_EDC*K_1*math.exp(-Ea_1/(R*T)))
+    EQ_dT = C_EDC*C_R1*Constant_3*K_3*math.exp(-Ea_3/(R*T)) + C_EDC*C_R2*Constant_3*K_5*math.exp(-Ea_5/(R*T)) + C_EDC*C_R4*Constant_3*K_6*math.exp(-Ea_6/(R*T)) + C_EDC*C_R5*Constant_3*K_4*math.exp(-Ea_4/(R*T)) + C_EDC*C_R6*Constant_3*K_7*math.exp(-Ea_7/(R*T)) + C_EDC*C_R7*Constant_3*K_8*math.exp(-Ea_8/(R*T)) + C_EDC*C_R8*Constant_3*K_9*math.exp(-Ea_9/(R*T)) + C_EDC*Constant_3*K_1*math.exp(-Ea_1/(R*T)) + Constant_1*T1 + Constant_2*T - Constant_2*T_wallrhs
     return [taurhs*EQ_EDC, taurhs*EQ_EC, taurhs*EQ_HCl, taurhs*EQ_Coke, taurhs*EQ_CP, taurhs*EQ_Di, taurhs*EQ_Tri, taurhs*EQ_C4H6Cl2, taurhs*EQ_C6H6, taurhs*EQ_C2H2, taurhs*EQ_C11, taurhs*EQ_C112, taurhs*EQ_C1112, taurhs*EQ_R1, taurhs*EQ_R2, taurhs*EQ_R3, taurhs*EQ_R4, taurhs*EQ_R5, taurhs*EQ_R6, taurhs*EQ_R7, taurhs*EQ_R8, taurhs*EQ_CCl4, taurhs*EQ_CHCl3, taurhs*EQ_VCM, EQ_T, EQ_dT]
 
 
@@ -665,13 +665,11 @@ def Jacob(t, y, k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k
            [C_R8*k_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -C_CHCl3*k_16*math.exp(-Ea_16/(R*T)), 0, 0, 0, 0, 0, 0, C_EDC*k_9*math.exp(-Ea_9/(R*T)), 0, -C_R1*k_16*math.exp(-Ea_16/(R*T)), 0, -C_CHCl3*C_R1*Ea_16*k_16*math.exp(-Ea_16/(R*T))/(R*T**2) + C_EDC*C_R8*Ea_9*k_9*math.exp(-Ea_9/(R*T))/(R*T**2), 0],
            [C_R5*k_6*math.exp(-Ea_6/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*k_10*math.exp(-Ea_10/(R*T)) - C_VCM*k_17*math.exp(-Ea_17/(R*T)) - C_VCM*k_18*math.exp(-Ea_18/(R*T)) - C_VCM*k_22*math.exp(-Ea_22/(R*T)), C_R1*k_10*math.exp(-Ea_10/(R*T)) - C_VCM*k_19*math.exp(-Ea_19/(R*T)), k_22*math.exp(-Ea_22/(R*T)), -C_VCM*k_20*math.exp(-Ea_20/(R*T)), C_EDC*k_6*math.exp(-Ea_6/(R*T)) - C_VCM*k_21*math.exp(-Ea_21/(R*T)), 0, 0, 0, 0, 0, -C_R1*k_17*math.exp(-Ea_17/(R*T)) - C_R1*k_18*math.exp(-Ea_18/(R*T)) - C_R1*k_22*math.exp(-Ea_22/(R*T)) - C_R2*k_19*math.exp(-Ea_19/(R*T)) - C_R4*k_20*math.exp(-Ea_20/(R*T)) - C_R5*k_21*math.exp(-Ea_21/(R*T)), C_EDC*C_R5*Ea_6*k_6*math.exp(-Ea_6/(R*T))/(R*T**2) + C_R1*C_R2*Ea_10*k_10*math.exp(-Ea_10/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_17*k_17*math.exp(-Ea_17/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_18*k_18*math.exp(-Ea_18/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_22*k_22*math.exp(-Ea_22/(R*T))/(R*T**2) - C_R2*C_VCM*Ea_19*k_19*math.exp(-Ea_19/(R*T))/(R*T**2) + C_R3*Ea_22*k_22*math.exp(-Ea_22/(R*T))/(R*T**2) - C_R4*C_VCM*Ea_20*k_20*math.exp(-Ea_20/(R*T))/(R*T**2) - C_R5*C_VCM*Ea_21*k_21*math.exp(-Ea_21/(R*T))/(R*T**2), 0],
            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-           [-Constant_3*(-C_R1*k_3*math.exp(-Ea_3/(R*T)) - C_R2*k_5*math.exp(-Ea_5/(R*T)) - C_R4*k_6*math.exp(-Ea_6/(R*T)) - C_R5*k_4*math.exp(-Ea_4/(R*T)) - C_R6*k_7*math.exp(-Ea_7/(R*T)) - C_R7*k_8*math.exp(-Ea_8/(R*T)) - C_R8*k_9*math.exp(-Ea_9/(R*T)) - k_1*math.exp(-Ea_1/(R*T))), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*k_3*math.exp(-Ea_3/(R*T)), C_EDC*Constant_3*k_5*math.exp(-Ea_5/(R*T)), 0, C_EDC*Constant_3*k_6*math.exp(-Ea_6/(R*T)), C_EDC*Constant_3*k_4*math.exp(-Ea_4/(R*T)), C_EDC*Constant_3*k_7*math.exp(-Ea_7/(R*T)), C_EDC*Constant_3*k_8*math.exp(-Ea_8/(R*T)), C_EDC*Constant_3*k_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, Constant_2 - Constant_3*(C_EDC*C_R1*-Ea_3*k_3*math.exp(-Ea_3/(R*T))/(R*T**2) + C_EDC*C_R2*-Ea_5*k_5*math.exp(-Ea_5/(R*T))/(R*T**2) + C_EDC*C_R4*-Ea_6*k_6*math.exp(-Ea_6/(R*T))/(R*T**2) + C_EDC*C_R5*-Ea_4*k_4*math.exp(-Ea_4/(R*T))/(R*T**2) + C_EDC*C_R6*-Ea_7*k_7*math.exp(-Ea_7/(R*T))/(R*T**2) + C_EDC*C_R7*-Ea_8*k_8*math.exp(-Ea_8/(R*T))/(R*T**2) + C_EDC*C_R8*-Ea_9*k_9*math.exp(-Ea_9/(R*T))/(R*T**2) + C_EDC*-Ea_1*k_1*math.exp(-Ea_1/(R*T))/(R*T**2)), Constant_1]]
+           [C_R1*Constant_3*k_3*math.exp(-Ea_3/(R*T)) + C_R2*Constant_3*k_5*math.exp(-Ea_5/(R*T)) + C_R4*Constant_3*k_6*math.exp(-Ea_6/(R*T)) + C_R5*Constant_3*k_4*math.exp(-Ea_4/(R*T)) + C_R6*Constant_3*k_7*math.exp(-Ea_7/(R*T)) + C_R7*Constant_3*k_8*math.exp(-Ea_8/(R*T)) + C_R8*Constant_3*k_9*math.exp(-Ea_9/(R*T)) + Constant_3*k_1*math.exp(-Ea_1/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*k_3*math.exp(-Ea_3/(R*T)), C_EDC*Constant_3*k_5*math.exp(-Ea_5/(R*T)), 0, C_EDC*Constant_3*k_6*math.exp(-Ea_6/(R*T)), C_EDC*Constant_3*k_4*math.exp(-Ea_4/(R*T)), C_EDC*Constant_3*k_7*math.exp(-Ea_7/(R*T)), C_EDC*Constant_3*k_8*math.exp(-Ea_8/(R*T)), C_EDC*Constant_3*k_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, C_EDC*C_R1*Constant_3*Ea_3*k_3*math.exp(-Ea_3/(R*T))/(R*T**2) + C_EDC*C_R2*Constant_3*Ea_5*k_5*math.exp(-Ea_5/(R*T))/(R*T**2) + C_EDC*C_R4*Constant_3*Ea_6*k_6*math.exp(-Ea_6/(R*T))/(R*T**2) + C_EDC*C_R5*Constant_3*Ea_4*k_4*math.exp(-Ea_4/(R*T))/(R*T**2) + C_EDC*C_R6*Constant_3*Ea_7*k_7*math.exp(-Ea_7/(R*T))/(R*T**2) + C_EDC*C_R7*Constant_3*Ea_8*k_8*math.exp(-Ea_8/(R*T))/(R*T**2) + C_EDC*C_R8*Constant_3*Ea_9*k_9*math.exp(-Ea_9/(R*T))/(R*T**2) + C_EDC*Constant_3*Ea_1*k_1*math.exp(-Ea_1/(R*T))/(R*T**2) + Constant_2, Constant_1]]
     JacF = [[float(Jac[i][j]*tau) for j in range(len(Jac[0]))] for i in range(len(Jac) - 2)]
     JacF.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
     JacF.append(Jac[-1][:])
     return JacF # These are mostly functions used to calculate the unused diffusion coefficients
-
-# These are mostly functions used to calculate the unused diffusion coefficients
 
 
 def Bviral(T, Tc, pc, omega):
@@ -786,13 +784,14 @@ def alistfun2(Temp, PascalP):
     return alist
 
 
+
 Eab = [342, 230, 7, 34, 42, 45, 48, 56, 63, 13, 12, 4, 6, 15, 17, 14, 0, 56, 61, 30, 31, 84, 90, 70, 70, 33, 33, 33, 13, 20, 70]  # [kJ/mol]
 Ea = [float(x * 1000.0) for x in Eab]  # [J/mol]
 
 names = []
 
 # Fluid physical and thermal properties
-Tc = 650.0  # [°C]
+Tc = 500.0  # [°C]
 Tk = CtoK(Tc)  # [K]
 omegaedc = 0.28600000000000003
 Tcedc = 563
@@ -802,7 +801,7 @@ density = (1E6*1.253)/1E3  # [kg/m^3]
 mwedc = 98.95 # [g/mol]
 mwedckg = 98.95/1E3 # kg/mol
 delhm = 71000  # [J/mol]
-Temperature = 650.0  # float(input('Enter starting temperature [°C] --> '))  # [°C]
+Temperature = 500.0  # float(input('Enter starting temperature [°C] --> '))  # [°C]
 Temp_K = CtoK(Temperature)  # [K]
 Twall_c = CtoK(Temperature)  # [K]
 Twallsi = Twall_c
@@ -833,8 +832,8 @@ rhoin = rhoino*(1E3)*(1E-6)
 rhoin2 = rhoin/edcmw
 rhoing = begmix.rhogm  # [mol/m^3]
 rhoingb = begmix.rhogm/1E6  # [mol/cm^3]
-Temp_vals = []
-Temp_vals2 = []
+Ea_vals = []
+Ea_vals2 = []
 mws = begmix.MW  # [g/mol]
 mwskg = mws/1E3  # [kg/mol]
 Rval = Rvalc*mwskg
@@ -854,10 +853,10 @@ patm = PascalP/101325.0  # [atm]
 Ratm = 8.20573660809596E-5  # [m^3*atm/K*mol]
 Rkcal = 1.98720425864083E-3  # [kcal/K*mol]
 segment_second = 10 #int(input('Enter iterations per second --> '))
-gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 250 / 10 = 25 iterations or 25 Kelvin. i.e. 25 individual graphs
+gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
 gnodes2 = 10  # Same but this variable controls how many lines will be on a single graph i.e. 10 different temperature will be graphed for a single species
-chngamnt = 1.0  # float(input('Enter Activation Energy change per iteration [J / mol] --> '))
-iternum = 250  # int(input('Enter total iterations --> '))
+chngamnt = 100.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
+iternum = 300 #int(input('Enter total iterations --> '))
 segment_num = desired_time*segment_second  # Segments/Second
 time_nodes = int(iternum/gnodes)
 graph_nodes = [int(i*time_nodes) for i in range(0, gnodes, 1)]
@@ -1162,21 +1161,18 @@ Taun = 1.0/(volume_flow/cross_area)  # [s/m]
 iterslist = [int(i) for i in range(0, iternum, 1)]
 # for il in iterslist:
 for il in tqdm(iterslist):
-    change = il * chngamnt
-    amount_new = Temp_K - change
-    Temp_vals.append(amount_new)
-    Twall = amount_new
-    Twalls.append(amount_new)
+    change = il*(chngamnt/1000.0)
+    amount_new = 342.0 - change
+    Ea_vals.append(amount_new)
+    Twalli = Twallsi
+    Twalls.append(Twalli)
     EDC = [float(initedc)]
     EDCj = [float(initedc)]
-    Eabb = [342, 230, 7, 34, 42, 45, 48, 56, 63, 13, 12, 4, 6, 15, 17, 14, 0, 56, 61, 30, 31, 84, 90, 70, 70, 33, 33, 33, 13, 20, 70]  # [kJ/mol]
-    Eab = [x * 1000.0 for x in Eabb]
-    Ea = [float(x) for x in Eab]  # kJ/mol
+    Eab = [amount_new, 230, 7, 34, 42, 45, 48, 56, 63, 0, 56, 31, 30, 61, 84, 90, 70, 70, 4, 6, 15, 17, 14, 33, 33, 33, 13, 12, 13, 20, 70]  # [kJ/mol]
+    Ea = [x*1000.0 for x in Eab]
     ks = [5.9E15, 2.2E+12, 1.3E+13, 1.2E+13, 1E+12, 5E+11, 2E+11, 1E+11, 1E+12, 1E+13, 1E+13, 1.7E+13, 1.2E+13, 1.7E+13, 1.7E+13, 1.6E+13, 91000000000, 1.2E+14, 3E+11, 20000000000, 5E+11, 2.1E+14, 5E+14, 2E+13, 2.5E+13, 1E+12, 5E+11, 5E+11, 1E+13, 1E+14, 1.6E+14]
     n = [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
     k_0 = [float(i/((1E6)**(j - 1))) for i, j in zip(ks, n)]
-    T0 = [float(amount_new)]
-    T0j = [float(amount_new)]
     # print(k_0)
     # for x2 in tqdm(dist_c):
     for x2 in dist_c:
@@ -1325,7 +1321,7 @@ for il in tqdm(iterslist):
         con1b = RCPavg/kval2
         con1 = (u_z*rhocpgm1)/kval2  # [1/m] -> [1/cm]
         con2 = (alpha*U_coeff)/kval2  # [m] (Sa)
-        con3 = delhm/kval2  # -> [m]
+        con3 = delhm/(u_z*kval2)  # -> [m]
         RE_vals.append(re)
         U_coeffs.append(U_coeff)
         h_vals.append(gash)
@@ -1478,13 +1474,13 @@ for il in tqdm(iterslist):
         t_start = x2
         t_end = x2 + Ls
         z2 = sp.symbols('z')
-        # 0.0, Ls
         Y02b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
         Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1], T0[-1], T1[-1]]
         Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1], T0j[-1], T1j[-1]]
-        resa = solve_ivp(RHS, [t_start, t_end], Y0, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(amount_new), taui), first_step=1E-1, max_step=1 / segment_second)  # rtol=1E-3, atol=1E-6  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [t_start, t_end], Y0j, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(amount_new), taui), jac=Jacob, first_step=1E-1, max_step=1 / segment_second)  # first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resa = solve_ivp(RHS, [0.0, Ls], Y0, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Twalls[-1]), taui), first_step=1 / segment_second, max_step=1 / (segment_second / 2))  # rtol=1E-3, atol=1E-6  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [0.0, Ls], Y0j, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(Twalls[-1]), taui), jac=Jacob, first_step=1 / segment_second, max_step=1 / (segment_second / 2))  # first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
+        print(resa.y[0][-1], resb.y[0][-1])
         edcintj = initedc - resb.y[0][-1]
         yield1 = resa.y[23][-1]/edcint
         yield1j = resb.y[23][-1]/edcintj
@@ -1527,8 +1523,6 @@ for il in tqdm(iterslist):
         CHCl3.append(float(resa.y[22][-1]))
         VCM.append(float(resa.y[23][-1]))
         T0.append(float(resa.y[24][-1]))
-        # print(resa.y[24][-1], resa.y[25][-1])
-        # print(resb.y[24][-1], resb.y[25][-1])
         T1.append(float(resa.y[25][-1]))
         EDCj.append(float(resb.y[0][-1]))  # This is where all of the lists are appended with the last calculated value for each compound
         ECj.append(float(resb.y[1][-1]))
@@ -1734,46 +1728,6 @@ for il in tqdm(iterslist):
     selectivity2.clear()
     selectivityj.clear()
     selectivity2j.clear()
-    # EDC = [float(initedc)]
-    # EC = [float(0.0)]
-    # HCl = [float(0.0)]
-    # Coke = [float(0.0)]
-    # CP = [float(0.0)]
-    # Di = [float(0.0)]
-    # C4H6Cl2 = [float(0.0)]
-    # C6H6 = [float(0.0)]
-    # C2H2 = [float(0.0)]
-    # C11 = [float(0.0)]
-    # C112 = [float(0.0)]
-    # R1 = [float(0.0)]
-    # R2 = [float(0.0)]
-    # R3 = [float(0.0)]
-    # R4 = [float(0.0)]
-    # R5 = [float(0.0)]
-    # R6 = [float(0.0)]
-    # VCM = [float(0.0)]
-    # T0 = []
-    # T1 = [float(0.0)]
-    # EDCj = [float(initedc)]
-    # ECj = [float(0.0)]
-    # HClj = [float(0.0)]
-    # Cokej = [float(0.0)]
-    # CPj = [float(0.0)]
-    # Dij = [float(0.0)]
-    # C4H6Cl2j = [float(0.0)]
-    # C6H6j = [float(0.0)]
-    # C2H2j = [float(0.0)]
-    # C11j = [float(0.0)]
-    # C112j = [float(0.0)]
-    # R1j = [float(0.0)]
-    # R2j = [float(0.0)]
-    # R3j = [float(0.0)]
-    # R4j = [float(0.0)]
-    # R5j = [float(0.0)]
-    # R6j = [float(0.0)]
-    # VCMj = [float(0.0)]
-    # T0j = []
-    # T1j = [float(0.0)]
     selectivity = [1.0]
     selectivity2 = [1.0]
     selectivityj = [1.0]
@@ -1804,7 +1758,7 @@ for il in tqdm(iterslist):
     CCl4 = [float(initccl4)]
     CHCl3 = [float(0.0)]
     VCM = [float(0.0)]
-    T0 = []
+    T0 = [float(Temp_K)]
     T1 = [float(0.0)]
     EDCj = [float(initedc)]
     ECj = [float(0.0)]
@@ -1830,7 +1784,7 @@ for il in tqdm(iterslist):
     CCl4j = [float(initccl4)]
     CHCl3j = [float(0.0)]
     VCMj = [float(0.0)]
-    T0j = []
+    T0j = [float(Temp_K)]
     T1j = [float(0.0)]
     pr1.clear()
     pr1j.clear()
@@ -1856,10 +1810,10 @@ for i2, j2 in enumerate(conversion_EDCfj):
 
 xD = np.linspace(0, u_z*desired_time, segment_num+1)
 timeD = np.linspace(0, desired_time, segment_num+1)
-Temp_valsrev = Temp_vals.copy()
-Temp_valsrev.reverse()
-Temp_valsrev2 = Temp_vals2.copy()
-Temp_valsrev2.reverse()
+Ea_valsrev = Ea_vals.copy()
+Ea_valsrev.reverse()
+Ea_valsrev2 = Ea_vals2.copy()
+Ea_valsrev2.reverse()
 
 splist = ["Conversion", "Purity", 'Yield VCM']
 splistb = ["Conversion [%]", "Purity [%]", r'Yield [$Y_{VCM}$]']
@@ -1878,40 +1832,40 @@ edc, ec, hcl, cc, cp1, di, tri, c4h6cl2, c6h6, c2h2, c11, c112, c1112, r1, r2, r
 edcj, ecj, hclj, ccj, cp1j, dij, trij, c4h6cl2j, c6h6j, c2h2j, c11j, c112j, c1112j, r1j, r2j, r3j, r4j, r5j, r6j, r7j, r8j, chcl3lj, ccl4lj, vcmj, t0j, dTj, purejl, revalsj, uvalsj, hvalsj, kvalsj, c1valsj, c2valsj, c3valsj, convedcj, selectvcmj, selecthclj, yieldvcmj = [np.array(ib, ndmin=1) for ib in textlist2]
 concl = [edc, ec, hcl, cc, cp1, di, tri, c4h6cl2, c6h6, c2h2, c11, c112, c1112, r1, r2, r3, r4, r5, r6, r7, r8, chcl3l, ccl4l, vcm, t0, dt, purel, revals, uvals, hvals, kvals, c1vals, c2vals, c3vals, convedc, selectvcm, selecthcl, yieldvcm]
 concjl = [edcj, ecj, hclj, ccj, cp1j, dij, trij, c4h6cl2j, c6h6j, c2h2j, c11j, c112j, c1112j, r1j, r2j, r3j, r4j, r5j, r6j, r7j, r8j, chcl3lj, ccl4lj, vcmj, t0j, dTj, purejl, revalsj, uvalsj, hvalsj, kvalsj, c1valsj, c2valsj, c3valsj, convedcj, selectvcmj, selecthclj, yieldvcmj]
-eavals, eavalsr = np.array(Temp_vals, ndmin=1), np.array(Temp_valsrev, ndmin=1)
+eavals, eavalsr = np.array(Ea_vals, ndmin=1), np.array(Ea_valsrev, ndmin=1)
 
 convedcja = np.array(conversion_EDCfj)
 np.savetxt(r"{}\Conversion_EDC J.txt".format(path_fol), convedcja)
 convedc = np.array(conversion_EDCf)
 np.savetxt(r"{}\Conversion_EDC.txt".format(path_fol), convedc)
-eavals = np.array(Temp_vals, ndmin=1)
-np.savetxt(r"{}\Tvals.txt".format(path_fol), eavals)
+eavals = np.array(Ea_vals, ndmin=1)
+np.savetxt(r"{}\Eavals.txt".format(path_fol), eavals)
 eavalsr = np.array(eavalsr, ndmin=1)
-np.savetxt(r"{}\Tvals Reverse.txt".format(path_fol), eavalsr)
+np.savetxt(r"{}\Eavals Reverse.txt".format(path_fol), eavalsr)
 eaendc = np.array(eaconvf, ndmin=1)
 np.savetxt(r"{}\FinalConversion.txt".format(path_fol), eaendc)
 eaendcj = np.array(eaconvjf, ndmin=1)
 np.savetxt(r"{}\FinalConversion J.txt".format(path_fol), eaendcj)
-tvals = np.array(Temp_vals, ndmin=1)
-np.savetxt(r"{}\Temperature vals.txt".format(path_fol), tvals)
-tvalsr = np.array(Temp_valsrev, ndmin=1)
-np.savetxt(r"{}\Temperature vals Reverse.txt".format(path_fol), tvalsr)
+tvals = np.array(Ea_vals, ndmin=1)
+np.savetxt(r"{}\Activation Energy vals.txt".format(path_fol), tvals)
+tvalsr = np.array(Ea_valsrev, ndmin=1)
+np.savetxt(r"{}\Activation Energy vals Reverse.txt".format(path_fol), tvalsr)
 
 
 for i in range(len(namestxt)):
-    path_folna = r"{}\Temperature - Full\{}".format(dir_path, namessave[i])
+    path_folna = r"{}\Activation Energy - Full\{}".format(dir_path, namessave[i])
     try:
         os.mkdir(path_folna)
     except Exception:
         pass
-    path_folni = r"{}\{}".format(path_folna, namessave[i])
+    path_folni = r"{}\{}".format(path_folna, namestxt[i])
     try:
         os.mkdir(path_folni)
     except Exception:
         pass
     n1 = np.array(textlist1[i])
-    np.savetxt(r"{}\{}.txt".format(path_folni, namestxt[i]), n1, fmt='%s')
-    path_folnj = r"{}\{} - J".format(path_folna, namessave[i])
+    np.savetxt(r"{}\{}.txt".format(path_folni, namestxt[i]), n1)
+    path_folnj = r"{}\{} - J".format(path_folna, namestxt[i])
     try:
         os.mkdir(path_folnj)
     except Exception:
@@ -1922,7 +1876,7 @@ for i in range(len(namestxt)):
 for i, j in enumerate(textlist1):
     namel = namessave[i]
     namele = namestxte[i]
-    path_folnd = r"{}\Temperature - Full\{}".format(dir_path, namel)
+    path_folnd = r"{}\Activation Energy - Full\{}".format(dir_path, namel)
     try:
         os.mkdir(path_folnd)
     except Exception:
@@ -1955,12 +1909,12 @@ for i, j in enumerate(textlist1):
         llfj = llj.astype(np.longdouble)
         adj.append(llfj)
         atj.append(llfj)
-    eea = Temp_vals[:]
-    eet = Temp_vals[:]
-    eead = Temp_vals[:]
+    eea = Ea_vals[:]
+    eet = Ea_vals[:]
+    eead = Ea_vals[:]
     eav = np.asarray(eea)
-    eas = ["Temperature {} K".format(ij) for ij in Temp_vals]
-    eaf = ["Temperatures"]
+    eas = ["Activation Energy {} [kJ/mol]".format(ij) for ij in Ea_vals]
+    eaf = ["Activation Energies"]
     eaf.append(eas)
     ttv = ["Time [s]"]
     ttv2 = ["Time Interval: {} [s]".format(time_int)]
@@ -1968,14 +1922,14 @@ for i, j in enumerate(textlist1):
     ddv2 = ["Velocity: {} [m/s]".format(u_z)]
     ddvd = ["Distance [m]"]
     ddv2d = ["Velocity: {} [m/s]".format(u_z)]
-    for i, j in enumerate(Temp_vals):
+    for i, j in enumerate(Ea_vals):
         eaf.append(eas[i])
         ttv.append(eas[i])
         ddv.append(eas[i])
         ddvd.append(eas[i])
-        ttv2.append(Temp_vals[i])
-        ddv2.append(Temp_vals[i])
-        ddv2d.append(Temp_vals[i])
+        ttv2.append(Ea_vals[i])
+        ddv2.append(Ea_vals[i])
+        ddv2d.append(Ea_vals[i])
     indexd = pd.Index(ddv, name='Units')
     indext = pd.Index(ttv, name='Units')
     indexdd = pd.Index(ddvd, name='Units')
@@ -2036,7 +1990,7 @@ font = {'family': 'serif',
 for i, ja in enumerate(concl):
     nameD = namessave[i]
     nameD2 = namestxte[i]
-    path_folnn = r"{}\Temperature - Full\{}\{}".format(dir_path, namessave[i], namessave[i])
+    path_folnn = r"{}\Activation Energy - Full\{}\{}".format(dir_path, namessave[i], namessave[i])
     try:
         os.mkdir(path_folnn)
     except Exception:
@@ -2051,10 +2005,10 @@ for i, ja in enumerate(concl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[j])
+        tvalg = str(Ea_vals[j])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[j])
-        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+        Cval = KtoC(Ea_vals[j])
+        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         if nameD in splist:
             sp = splist.index(nameD)
@@ -2072,7 +2026,7 @@ for i, ja in enumerate(concl):
             ty = np.array(concl[i])
             plt.axhline(y=ty[j, 0], color='k', linestyle='--')
             plt.ylabel(tilist[tii])
-            plt.title(r'{} Profile'.format(nameD2), fontdict=font)
+            plt.title(r'{} Profile'.format(nameD), fontdict=font)
         elif nameD in cslist:
             ni = cslist.index(nameD)
             plt.ylabel(csunits[ni])
@@ -2082,11 +2036,10 @@ for i, ja in enumerate(concl):
             plt.title(r'{} Concentration'.format(nameD2), fontdict=font)
         plt.grid()
         plt.xlabel(r'Distance [$m$]')
-        fig.savefig(r"{}\{} Concentration {}.pdf".format(path_folnn, namessave[i], int(Temp_vals[j])))
-        fig.savefig(r"{}\{} Concentration {}.svg".format(path_folnn, namessave[i], int(Temp_vals[j])))
-        fig.savefig(r"{}\{} Concentration {}.png".format(path_folnn, namessave[i], int(Temp_vals[j])))
+        fig.savefig(r"{}\{} Concentration {}.pdf".format(path_folnn, namessave[i], int(Ea_vals[j])))
+        fig.savefig(r"{}\{} Concentration {}.svg".format(path_folnn, namessave[i], int(Ea_vals[j])))
         plt.close()
-    for jt, tjt in enumerate(graph_nodes):
+    for jt, tj in enumerate(graph_nodes):
         fig2 = plt.figure()
         cur_list2 = concl[i][jt]
         if len(xD) != len(cur_list2):
@@ -2095,10 +2048,10 @@ for i, ja in enumerate(concl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[jt])
+        tvalg = str(Ea_vals[jt])
         index_jj = int(jt)
-        Cval = KtoC(Temp_vals[jt])
-        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[tjt])))
+        Cval = KtoC(Ea_vals[jt])
+        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[tj], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         if nameD in splist:
             sp = splist.index(nameD)
@@ -2116,7 +2069,7 @@ for i, ja in enumerate(concl):
             ty = np.array(concl[i])
             plt.axhline(y=ty[j, 0], color='k', linestyle='--')
             plt.ylabel(tilist[tii])
-            plt.title(r'{} Profile'.format(nameD2), fontdict=font)
+            plt.title(r'{} Profile'.format(nameD), fontdict=font)
         elif nameD in cslist:
             ni = cslist.index(nameD)
             plt.ylabel(csunits[ni])
@@ -2126,9 +2079,8 @@ for i, ja in enumerate(concl):
             plt.title(r'{} Concentration'.format(nameD2), fontdict=font)
         plt.grid()
         plt.xlabel(r'Time [$\it{s}$]')
-        fig2.savefig(r"{}\{} Concentration Time {}.pdf".format(path_folnn, namessave[i], int(Temp_vals[tjt])))
-        fig2.savefig(r"{}\{} Concentration Time {}.svg".format(path_folnn, namessave[i], int(Temp_vals[tjt])))
-        fig2.savefig(r"{}\{} Concentration Time {}.png".format(path_folnn, namessave[i], int(Temp_vals[tjt])))
+        fig2.savefig(r"{}\{} Concentration Time {}.pdf".format(path_folnn, namessave[i], int(Ea_vals[tj])))
+        fig2.savefig(r"{}\{} Concentration Time {}.svg".format(path_folnn, namessave[i], int(Ea_vals[tj])))
         plt.close()
 
 print("Individual species graph loop complete.")
@@ -2138,7 +2090,7 @@ for i, jb in enumerate(concl):
     cur_list = concl[i]
     nameD = namessave[i]
     nameD2 = namestxte[i]
-    path_folnnb = r"{}\Temperature - Full\{}\{}".format(dir_path, namessave[i], namessave[i])
+    path_folnnb = r"{}\Activation Energy - Full\{}\{}".format(dir_path, namessave[i], namessave[i])
     try:
         os.mkdir(path_folnnb)
     except Exception:
@@ -2153,10 +2105,10 @@ for i, jb in enumerate(concl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[j])
+        tvalg = str(Ea_vals[j])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[j])
-        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+        Cval = KtoC(Ea_vals[j])
+        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.legend(loc='best')
     if nameD in splist:
         sp = splist.index(nameD)
@@ -2174,7 +2126,7 @@ for i, jb in enumerate(concl):
         ty = np.array(concl[i])
         plt.axhline(y=ty[j, 0], color='k', linestyle='--')
         plt.ylabel(tilist[tii])
-        plt.title(r'{} Profile'.format(nameD2), fontdict=font)
+        plt.title(r'{} Profile'.format(telist[telist.index(nameD)]), fontdict=font)
     elif nameD in cslist:
         ni = cslist.index(nameD)
         plt.ylabel(csunits[ni])
@@ -2186,10 +2138,9 @@ for i, jb in enumerate(concl):
     plt.xlabel(r'Distance [$m$]')
     fig.savefig(r"{}\{} Concentration.pdf".format(path_folnnb, namessave[i]))
     fig.savefig(r"{}\{} Concentration.svg".format(path_folnnb, namessave[i]))
-    fig.savefig(r"{}\{} Concentration.png".format(path_folnnb, namessave[i]))
     plt.close()
     fig2 = plt.figure()
-    for jt, tjt in enumerate(graph_nodes):
+    for jt, tj in enumerate(graph_nodes):
         cur_list2 = concl[i][jt]
         if len(xD) != len(cur_list2):
             dist = xD[0:-1]
@@ -2197,10 +2148,10 @@ for i, jb in enumerate(concl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[jt])
+        tvalg = str(Ea_vals[jt])
         index_jj = int(jt)
-        Cval = KtoC(Temp_vals[jt])
-        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[tjt])))
+        Cval = KtoC(Ea_vals[jt])
+        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[tj], r"[$\frac{kJ}{mol}$]"))
     plt.legend(loc='best')
     if nameD in splist:
         sp = splist.index(nameD)
@@ -2218,7 +2169,7 @@ for i, jb in enumerate(concl):
         ty = np.array(concl[i])
         plt.axhline(y=ty[j, 0], color='k', linestyle='--')
         plt.ylabel(tilist[tii])
-        plt.title(r'{} Profile'.format(nameD2), fontdict=font)
+        plt.title(r'{} Profile'.format(nameD), fontdict=font)
     elif nameD in cslist:
         ni = cslist.index(nameD)
         plt.ylabel(csunits[ni])
@@ -2228,9 +2179,8 @@ for i, jb in enumerate(concl):
         plt.title(r'{} Concentration'.format(nameD2), fontdict=font)
     plt.grid()
     plt.xlabel(r'Time [$\it{s}$]')
-    fig2.savefig(r"{}\{} Concentration Time {}.pdf".format(path_folnnb, namessave[i], int(Temp_vals[tjt])))
-    fig2.savefig(r"{}\{} Concentration Time {}.svg".format(path_folnnb, namessave[i], int(Temp_vals[tjt])))
-    fig2.savefig(r"{}\{} Concentration Time {}.png".format(path_folnnb, namessave[i], int(Temp_vals[tjt])))
+    fig2.savefig(r"{}\{} Concentration Time {}.pdf".format(path_folnnb, namessave[i], int(Ea_vals[tj])))
+    fig2.savefig(r"{}\{} Concentration Time {}.svg".format(path_folnnb, namessave[i], int(Ea_vals[tj])))
     plt.close()
 
 
@@ -2243,7 +2193,7 @@ for i, jc in enumerate(concjl):
     cur_list = concjl[i]
     nameDj = namessave[i]
     nameD2j = namestxte[i]
-    path_folnnj = r"{}\Temperature - Full\{}\{}".format(dir_path, namessave[i], "{} - J".format(nameDj))
+    path_folnnj = r"{}\Activation Energy - Full\{}\{}".format(dir_path, namessave[i], "{} - J".format(nameDj))
     try:
         os.mkdir(path_folnnj)
     except Exception:
@@ -2257,10 +2207,10 @@ for i, jc in enumerate(concjl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[j])
+        tvalg = str(Ea_vals[j])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[j])
-        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+        Cval = KtoC(Ea_vals[j])
+        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         if nameDj in splist:
             sp = splist.index(nameDj)
@@ -2278,7 +2228,7 @@ for i, jc in enumerate(concjl):
             ty = np.array(concl[i])
             plt.axhline(y=ty[j, 0], color='k', linestyle='--')
             plt.ylabel(tilist[tii])
-            plt.title(r'{} Profile'.format(nameD2j), fontdict=font)
+            plt.title(r'{} Profile'.format(nameDj), fontdict=font)
         elif nameDj in cslist:
             ni = cslist.index(nameDj)
             plt.ylabel(csunits[ni])
@@ -2288,9 +2238,8 @@ for i, jc in enumerate(concjl):
             plt.title(r'{} Concentration - Jacobian'.format(nameD2j), fontdict=font)
         plt.grid()
         plt.xlabel(r'Distance [$m$]')
-        fig.savefig(r"{}\{} Concentration J-{}.pdf".format(path_folnnj, namessave[i], int(Temp_vals[j])))
-        fig.savefig(r"{}\{} Concentration J-{}.svg".format(path_folnnj, namessave[i], int(Temp_vals[j])))
-        fig.savefig(r"{}\{} Concentration J-{}.png".format(path_folnnj, namessave[i], int(Temp_vals[j])))
+        fig.savefig(r"{}\{} Concentration J-{}.pdf".format(path_folnnj, namessave[i], int(Ea_vals[j])))
+        fig.savefig(r"{}\{} Concentration J-{}.svg".format(path_folnnj, namessave[i], int(Ea_vals[j])))
         plt.close()
     for jtj, tjt in enumerate(graph_nodes):
         fig2 = plt.figure()
@@ -2301,10 +2250,10 @@ for i, jc in enumerate(concjl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[tjt])
+        tvalg = str(Ea_vals[tjt])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[tjt])
-        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[tjt])))
+        Cval = KtoC(Ea_vals[tjt])
+        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[tjt], r"[$\frac{kJ}{mol}$]"))
         plt.legend(loc='best')
         if nameDj in splist:
             sp = splist.index(nameDj)
@@ -2322,7 +2271,7 @@ for i, jc in enumerate(concjl):
             ty = np.array(concl[i])
             plt.axhline(y=ty[j, 0], color='k', linestyle='--')
             plt.ylabel(tilist[tii])
-            plt.title(r'{} Profile'.format(nameD2j), fontdict=font)
+            plt.title(r'{} Profile'.format(nameDj), fontdict=font)
         elif nameDj in cslist:
             ni = cslist.index(nameDj)
             plt.ylabel(csunits[ni])
@@ -2332,9 +2281,8 @@ for i, jc in enumerate(concjl):
             plt.title(r'{} Concentration - Jacobian'.format(nameD2j), fontdict=font)
         plt.grid()
         plt.xlabel(r'Time [s]')
-        fig2.savefig(r"{}\{} Concentration Time J {}.pdf".format(path_folnnj, namessave[i], int(Temp_vals[tjt])))
-        fig2.savefig(r"{}\{} Concentration Time J {}.svg".format(path_folnnj, namessave[i], int(Temp_vals[tjt])))
-        fig2.savefig(r"{}\{} Concentration Time J {}.png".format(path_folnnj, namessave[i], int(Temp_vals[tjt])))
+        fig2.savefig(r"{}\{} Concentration Time J {}.pdf".format(path_folnnj, namessave[i], int(Ea_vals[tjt])))
+        fig2.savefig(r"{}\{} Concentration Time J {}.svg".format(path_folnnj, namessave[i], int(Ea_vals[tjt])))
         plt.close()
 
 print("Individual jacobian species graph loop complete.")
@@ -2344,7 +2292,7 @@ for i, jd in enumerate(concjl):
     cur_list = concjl[i]
     nameDj = namessave[i]
     nameD2j = namestxte[i]
-    path_folnnjb = r"{}\Temperature - Full\{}\{}".format(dir_path, namessave[i], "{} - J".format(nameDj))
+    path_folnnjb = r"{}\Activation Energy - Full\{}\{}".format(dir_path, namessave[i], "{} - J".format(nameDj))
     try:
         os.mkdir(path_folnnjb)
     except Exception:
@@ -2359,10 +2307,10 @@ for i, jd in enumerate(concjl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[j])
+        tvalg = str(Ea_vals[j])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[j])
-        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+        Cval = KtoC(Ea_vals[j])
+        plt.plot(dist, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.legend(loc='best')
     if nameDj in splist:
         sp = splist.index(nameDj)
@@ -2392,7 +2340,6 @@ for i, jd in enumerate(concjl):
     plt.xlabel(r'Distance [$m$]')
     fig.savefig(r"{}\{} J.pdf".format(path_folnnjb, namessave[i]))
     fig.savefig(r"{}\{} J.svg".format(path_folnnjb, namessave[i]))
-    fig.savefig(r"{}\{} J.png".format(path_folnnjb, namessave[i]))
     plt.close()
     fig2 = plt.figure()
     for jtj, tjt in enumerate(graph_nodes):
@@ -2403,10 +2350,10 @@ for i, jd in enumerate(concjl):
         elif len(xD) == len(cur_list2):
             dist = xD
             timel = timeD
-        tvalg = str(Temp_vals[tjt])
+        tvalg = str(Ea_vals[tjt])
         index_jj = int(j)
-        Cval = KtoC(Temp_vals[tjt])
-        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[tjt])))
+        Cval = KtoC(Ea_vals[tjt])
+        plt.plot(timel, cur_list2, color=viridis.colors[index_jj, :], label="Activation Energy: {} {}".format(Ea_vals[tjt], r"[$\frac{kJ}{mol}$]"))
     plt.legend(loc='best')
     if nameDj in splist:
         sp = splist.index(nameDj)
@@ -2434,15 +2381,15 @@ for i, jd in enumerate(concjl):
         plt.title(r'{} Concentration - Jacobian'.format(nameD2j), fontdict=font)
     plt.grid()
     plt.xlabel(r'Time [s]')
-    fig2.savefig(r"{}\{} Concentration Time J {}.pdf".format(path_folnnjb, namessave[i], int(Temp_vals[tjt])))
-    fig2.savefig(r"{}\{} Concentration Time J {}.svg".format(path_folnnjb, namessave[i], int(Temp_vals[tjt])))
-    fig2.savefig(r"{}\{} Concentration Time J {}.png".format(path_folnnjb, namessave[i], int(Temp_vals[tjt])))
+    fig2.savefig(r"{}\{} Concentration Time J {}.pdf".format(path_folnnjb, namessave[i], int(Ea_vals[tjt])))
+    fig2.savefig(r"{}\{} Concentration Time J {}.svg".format(path_folnnjb, namessave[i], int(Ea_vals[tjt])))
     plt.close()
+    fig = plt.figure()
 
 print("Overall species jacobian graph loop complete.")
 
 
-path_folrads = r"{}\Temperature - Full\{}".format(dir_path, "Radicals")
+path_folrads = r"{}\Activation Energy - Full\{}".format(dir_path, "Radicals")
 try:
     os.mkdir(path_folrads)
 except Exception:
@@ -2462,13 +2409,11 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(r"Radicals Concentration at {} {}".format(Temp_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.title(r"Radicals Concentration at {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\Radicals {} kJ.pdf".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Radicals {} kJ.svg".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Radicals {} kJ.png".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radicals {} kJ.pdf".format(path_folrads, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radicals {} kJ.svg".format(path_folrads, Ea_vals[j]), bbox_inches='tight')
     plt.close()
-
 
 for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
@@ -2484,15 +2429,13 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(r"Radicals Concentration at {} {}".format(Temp_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.title(r"Radicals Concentration at {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\Radicals J {} kJ.pdf".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Radicals J {} kJ.svg".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Radicals J {} kJ.png".format(path_folrads, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radicals J {} kJ.pdf".format(path_folrads, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Radicals J {} kJ.svg".format(path_folrads, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
-
-path_folby = r"{}\Temperature - Full\{}".format(dir_path, "By Products")
+path_folby = r"{}\Activation Energy - Full\{}".format(dir_path, "By Products")
 try:
     os.mkdir(path_folby)
 except Exception:
@@ -2513,11 +2456,10 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(r"By-Product Concentration at {} {}".format(Temp_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.title(r"By-Product Concentration at {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\By Products {} kJ.pdf".format(path_folby, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By Products {} kJ.svg".format(path_folby, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By Products {} kJ.png".format(path_folby, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By Products {} kJ.pdf".format(path_folby, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By Products {} kJ.svg".format(path_folby, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 
@@ -2536,15 +2478,14 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(r"By-Product Concentration at {} {}".format(Temp_vals[j], r"[$\frac{kJ}{mol}$]"))
+    plt.title(r"By-Product Concentration at {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\By Products J {} kJ.pdf".format(path_folby, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By Products J {} kJ.svg".format(path_folby, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\By Products J {} kJ.png".format(path_folby, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By Products J {} kJ.pdf".format(path_folby, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\By Products J {} kJ.svg".format(path_folby, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 
-path_folprod = r"{}\Temperature - Full\{}".format(dir_path, "Products")
+path_folprod = r"{}\Activation Energy - Full\{}".format(dir_path, "Products")
 try:
     os.mkdir(path_folprod)
 except Exception:
@@ -2561,17 +2502,15 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+    plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\Products {} kJ.pdf".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Products {} kJ.svg".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Products {} kJ.png".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Products {} kJ.pdf".format(path_folprod, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Products {} kJ.svg".format(path_folprod, Ea_vals[j]), bbox_inches='tight')
     plt.close()
-
 
 for jj, j in enumerate(graph_nodes):
     fig = plt.figure()
-    TemperatureC = KtoC(Temp_vals[j])
+    TemperatureC = KtoC(Ea_vals[j])
     index_j = int(j)
     plt.plot(xD, edcj[j, :], 'b-', label='EDC')
     plt.plot(xD, hclj[j, :], 'r-', label='HCl')
@@ -2579,11 +2518,10 @@ for jj, j in enumerate(graph_nodes):
     plt.xlabel(r'Distance [$m$]')
     plt.ylabel(r'Concentration [$\frac{mol}{m^3}$]')
     plt.legend(loc='best')
-    plt.title(label=r"Temperature: {}$^\circ$C".format(KtoC(Temp_vals[j])))
+    plt.title(label="Activation Energy: {} {}".format(Ea_vals[j], r"[$\frac{kJ}{mol}$]"))
     plt.grid()
-    fig.savefig(r"{}\Products J {} kJ.pdf".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Products J {} kJ.svg".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
-    fig.savefig(r"{}\Products J {} kJ.png".format(path_folprod, Temp_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Products J {} kJ.pdf".format(path_folprod, Ea_vals[j]), bbox_inches='tight')
+    fig.savefig(r"{}\Products J {} kJ.svg".format(path_folprod, Ea_vals[j]), bbox_inches='tight')
     plt.close()
 
 

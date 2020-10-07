@@ -1,8 +1,13 @@
-# -*- coding: utf-8 -*-
+# - * - coding: utf-8 - * -
 """
 Created on Tue Mar 10 19:26:23 2020
 
-@author: tjcze
+Github: https://github.com/tjczec01
+
+@author: Travis J Czechorski
+
+E-mail: tjczec01@gmail.com
+
 """
 from __future__ import division
 import time
@@ -18,6 +23,7 @@ from tqdm import tqdm
 from scipy.integrate import solve_ivp
 import pandas as pd
 import os
+
 
 clear = os.system('cls')
 cwd = os.getcwd()
@@ -35,7 +41,6 @@ except Exception:
     # print("Current working directory - Current Folder Path:\n")
     # print("{}\n".format(path_fol))
     pass
-sp.init_session(use_latex=False, quiet=True)
 plt.ioff()
 plt.rcParams.update({'figure.max_open_warning': 10})
 # Data for inital kinetics
@@ -661,10 +666,10 @@ def Jacob(t, y, k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k
            [C_R5*k_6*math.exp(-Ea_6/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_R2*k_10*math.exp(-Ea_10/(R*T)) - C_VCM*k_17*math.exp(-Ea_17/(R*T)) - C_VCM*k_18*math.exp(-Ea_18/(R*T)) - C_VCM*k_22*math.exp(-Ea_22/(R*T)), C_R1*k_10*math.exp(-Ea_10/(R*T)) - C_VCM*k_19*math.exp(-Ea_19/(R*T)), k_22*math.exp(-Ea_22/(R*T)), -C_VCM*k_20*math.exp(-Ea_20/(R*T)), C_EDC*k_6*math.exp(-Ea_6/(R*T)) - C_VCM*k_21*math.exp(-Ea_21/(R*T)), 0, 0, 0, 0, 0, -C_R1*k_17*math.exp(-Ea_17/(R*T)) - C_R1*k_18*math.exp(-Ea_18/(R*T)) - C_R1*k_22*math.exp(-Ea_22/(R*T)) - C_R2*k_19*math.exp(-Ea_19/(R*T)) - C_R4*k_20*math.exp(-Ea_20/(R*T)) - C_R5*k_21*math.exp(-Ea_21/(R*T)), C_EDC*C_R5*Ea_6*k_6*math.exp(-Ea_6/(R*T))/(R*T**2) + C_R1*C_R2*Ea_10*k_10*math.exp(-Ea_10/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_17*k_17*math.exp(-Ea_17/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_18*k_18*math.exp(-Ea_18/(R*T))/(R*T**2) - C_R1*C_VCM*Ea_22*k_22*math.exp(-Ea_22/(R*T))/(R*T**2) - C_R2*C_VCM*Ea_19*k_19*math.exp(-Ea_19/(R*T))/(R*T**2) + C_R3*Ea_22*k_22*math.exp(-Ea_22/(R*T))/(R*T**2) - C_R4*C_VCM*Ea_20*k_20*math.exp(-Ea_20/(R*T))/(R*T**2) - C_R5*C_VCM*Ea_21*k_21*math.exp(-Ea_21/(R*T))/(R*T**2), 0],
            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
            [C_R1*Constant_3*k_3*math.exp(-Ea_3/(R*T)) + C_R2*Constant_3*k_5*math.exp(-Ea_5/(R*T)) + C_R4*Constant_3*k_6*math.exp(-Ea_6/(R*T)) + C_R5*Constant_3*k_4*math.exp(-Ea_4/(R*T)) + C_R6*Constant_3*k_7*math.exp(-Ea_7/(R*T)) + C_R7*Constant_3*k_8*math.exp(-Ea_8/(R*T)) + C_R8*Constant_3*k_9*math.exp(-Ea_9/(R*T)) + Constant_3*k_1*math.exp(-Ea_1/(R*T)), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, C_EDC*Constant_3*k_3*math.exp(-Ea_3/(R*T)), C_EDC*Constant_3*k_5*math.exp(-Ea_5/(R*T)), 0, C_EDC*Constant_3*k_6*math.exp(-Ea_6/(R*T)), C_EDC*Constant_3*k_4*math.exp(-Ea_4/(R*T)), C_EDC*Constant_3*k_7*math.exp(-Ea_7/(R*T)), C_EDC*Constant_3*k_8*math.exp(-Ea_8/(R*T)), C_EDC*Constant_3*k_9*math.exp(-Ea_9/(R*T)), 0, 0, 0, C_EDC*C_R1*Constant_3*Ea_3*k_3*math.exp(-Ea_3/(R*T))/(R*T**2) + C_EDC*C_R2*Constant_3*Ea_5*k_5*math.exp(-Ea_5/(R*T))/(R*T**2) + C_EDC*C_R4*Constant_3*Ea_6*k_6*math.exp(-Ea_6/(R*T))/(R*T**2) + C_EDC*C_R5*Constant_3*Ea_4*k_4*math.exp(-Ea_4/(R*T))/(R*T**2) + C_EDC*C_R6*Constant_3*Ea_7*k_7*math.exp(-Ea_7/(R*T))/(R*T**2) + C_EDC*C_R7*Constant_3*Ea_8*k_8*math.exp(-Ea_8/(R*T))/(R*T**2) + C_EDC*C_R8*Constant_3*Ea_9*k_9*math.exp(-Ea_9/(R*T))/(R*T**2) + C_EDC*Constant_3*Ea_1*k_1*math.exp(-Ea_1/(R*T))/(R*T**2) + Constant_2, Constant_1]]
-    JacF = [[float(Jac[i][j]*tau) for j in range(len(Jac[0]))] for i in range(len(Jac) - 2)]
-    JacF.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
-    JacF.append(Jac[-1][:])
-    return JacF # These are mostly functions used to calculate the unused diffusion coefficients
+    for i in range(len(Jac) - 2):
+        for j in range(len(Jac[0])):
+            Jac[i][j] = Jac[i][j]*tau
+    return Jac # These are mostly functions used to calculate the unused diffusion coefficients
 
 
 def Bviral(T, Tc, pc, omega):
@@ -779,7 +784,6 @@ def alistfun2(Temp, PascalP):
     return alist
 
 
-
 Eab = [342, 230, 7, 34, 42, 45, 48, 56, 63, 13, 12, 4, 6, 15, 17, 14, 0, 56, 61, 30, 31, 84, 90, 70, 70, 33, 33, 33, 13, 20, 70]  # [kJ/mol]
 Ea = [float(x * 1000.0) for x in Eab]  # [J/mol]
 
@@ -799,7 +803,6 @@ delhm = 71000  # [J/mol]
 Temperature = 500.0  # float(input('Enter starting temperature [°C] --> '))  # [°C]
 Temp_K = CtoK(Temperature)  # [K]
 Twall_c = CtoK(Temperature)  # [K]
-Twallsi = Twall_c
 Pbar = 12.159  # [bar]
 Pstart_atm = 12.0 #float(input("Enter starting pressure [atm] --> "))
 PascalP = Pstart_atm*101325.0  # [Pa]
@@ -815,7 +818,7 @@ cross_area = math.pi*(ri**2)
 Ac = math.pi*(ri**2)
 u_z = volume_flow/cross_area  # [m/s]
 initedcb = (PascalP/(Temp_K*R_gas))
-CCl4_p = float(0.0002)
+CCl4_p = float(0.00002/100)
 EDC_p = 1.0 - CCl4_p
 EDC0 = EDC_p*initedcb
 CCL40 = CCl4_p*initedcb
@@ -850,8 +853,8 @@ Rkcal = 1.98720425864083E-3  # [kcal/K*mol]
 segment_second = 10 #int(input('Enter iterations per second --> '))
 gnodes = 10  # Divide iternum by this to get the interval over which the graphs will be saved. i.e. 200/10 = 20 iterations or 2000J/2kJ
 gnodes2 = 10  # Same but this variable controls how many lines will be on a single graph i.e. 10 different temperature will be graphed for a single species
-chngamnt = 1000.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
-iternum = 30 #int(input('Enter total iterations --> '))
+chngamnt = 100.0 #float(input('Enter Activation Energy change per iteration [J/mol] --> '))
+iternum = 300 #int(input('Enter total iterations --> '))
 segment_num = desired_time*segment_second  # Segments/Second
 time_nodes = int(iternum/gnodes)
 graph_nodes = [int(i*time_nodes) for i in range(0, gnodes, 1)]
@@ -883,6 +886,7 @@ dist_int = Ls
 volume_flowcmf = (volume_flowcm)/segment_second  # [cm^3/s]
 vintflowf = vintflow/segment_second
 tn = np.linspace(0, L, desired_time)
+taui = 1.0/u_z
 
 # rtolval = 1E-3
 # rtolvalj = 1E-3
@@ -1134,7 +1138,7 @@ ysv, Ks, EAs, Ts = symfunc(namesj, rxnnum)
 ysv.append(sp.symbols('T0'))
 ysv.append(sp.symbols('T1'))
 yblank = []
-Twalls = [Twallsi]
+Twalls = [Temp_K]
 iterlist = [i for i in range(0, iternum, 1)]
 firststepval = 1000.0
 Ls2 = firststepval
@@ -1149,18 +1153,14 @@ tauinv = tau**-1
 tau3 = (totalvol/u_z)/segment_second
 tau2 = intvol/u_z
 tau4 = intvols/u_z
-taui = 1.0/u_z
 taui2 = 1.0
 Taun = 1.0/(volume_flow/cross_area)  # [s/m]
-
 iterslist = [int(i) for i in range(0, iternum, 1)]
 # for il in iterslist:
-for il in tqdm(iterslist):
-    change = il*(chngamnt/1000.0)
-    amount_new = 342.0 - change
-    Ea_vals.append(amount_new)
-    Twalli = Twallsi
-    Twalls.append(Twalli)
+for il in tqdm(iterslist, desc="Iteration"):
+    amount_new = 342000.0 - chngamnt*il
+    Ea_vals.append(amount_new/1000.0)
+    Twalls.append(Temp_K)
     EDC = [float(initedc)]
     EDCj = [float(initedc)]
     Eab = [amount_new, 230, 7, 34, 42, 45, 48, 56, 63, 0, 56, 31, 30, 61, 84, 90, 70, 70, 4, 6, 15, 17, 14, 33, 33, 33, 13, 12, 13, 20, 70]  # [kJ/mol]
@@ -1168,7 +1168,7 @@ for il in tqdm(iterslist):
     ks = [5.9E15, 2.2E+12, 1.3E+13, 1.2E+13, 1E+12, 5E+11, 2E+11, 1E+11, 1E+12, 1E+13, 1E+13, 1.7E+13, 1.2E+13, 1.7E+13, 1.7E+13, 1.6E+13, 91000000000, 1.2E+14, 3E+11, 20000000000, 5E+11, 2.1E+14, 5E+14, 2E+13, 2.5E+13, 1E+12, 5E+11, 5E+11, 1E+13, 1E+14, 1.6E+14]
     n = [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
     k_0 = [float(i/((1E6)**(j - 1))) for i, j in zip(ks, n)]
-    # print(k_0)
+    #print(k_0)
     # for x2 in tqdm(dist_c):
     for x2 in dist_c:
         cross_area = math.pi*(ri**2)
@@ -1316,7 +1316,7 @@ for il in tqdm(iterslist):
         con1b = RCPavg/kval2
         con1 = (u_z*rhocpgm1)/kval2  # [1/m] -> [1/cm]
         con2 = (alpha*U_coeff)/kval2  # [m] (Sa)
-        con3 = delhm/(u_z*kval2)  # -> [m]
+        con3 = delhm/kval2  # -> [m]
         RE_vals.append(re)
         U_coeffs.append(U_coeff)
         h_vals.append(gash)
@@ -1472,11 +1472,11 @@ for il in tqdm(iterslist):
         Y02b = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1]]
         Y0 = [EDC[-1], EC[-1], HCl[-1], Coke[-1], CP[-1], Di[-1], Tri[-1], C4H6Cl2[-1], C6H6[-1], C2H2[-1], C11[-1], C112[-1], C1112[-1], R1[-1], R2[-1], R3[-1], R4[-1], R5[-1], R6[-1], R7[-1], R8[-1], CCl4[-1], CHCl3[-1], VCM[-1], T0[-1], T1[-1]]
         Y0j = [EDCj[-1], ECj[-1], HClj[-1], Cokej[-1], CPj[-1], Dij[-1], Trij[-1], C4H6Cl2j[-1], C6H6j[-1], C2H2j[-1], C11j[-1], C112j[-1], C1112j[-1], R1j[-1], R2j[-1], R3j[-1], R4j[-1], R5j[-1], R6j[-1], R7j[-1], R8j[-1], CCl4j[-1], CHCl3j[-1], VCMj[-1], T0j[-1], T1j[-1]]
-        resa = solve_ivp(RHS, [0.0, Ls], Y0, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Twalls[-1]), taui), first_step=1 / segment_second, max_step=1 / (segment_second / 2))  # rtol=1E-3, atol=1E-6  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
-        resb = solve_ivp(RHS, [0.0, Ls], Y0j, method='Radau', args=(5900000000000000.0, 2200000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, 342.0 * 1000.0, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(Twalls[-1]), taui), jac=Jacob, first_step=1 / segment_second, max_step=1 / (segment_second / 2))  # first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resa = solve_ivp(RHS, [t_start, t_end], Y0, method='Radau', args=(5900000000000000.0, 2200000000000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_vals[-1]), float(c2_vals[-1]), float(c3_vals[-1]), float(Twalls[-1]), taui), first_step=1 / segment_second, max_step=1 / (segment_second * 0.5))  # rtol=1E-3, atol=1E-6  , first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
+        resb = solve_ivp(RHS, [t_start, t_end], Y0j, method='Radau', args=(5900000000000000.0, 2200000000000.0, 13000000.0, 12000000.0, 1000000.0, 500000.0, 200000.0, 100000.0, 1000000.0, 10000000.0, 10000000.0, 17000000.0, 12000000.0, 17000000.0, 17000000.0, 16000000.0, 91000.0, 120000000.0, 300000.0, 20000.0, 500000.0, 210000000000000.0, 500000000000000.0, 20000000000000.0, 25000000000000.0, 1000000.0, 500000.0, 500000.0, 10000000.0, 100000000.0, 160000000.0, amount_new, 230000.0, 7000.0, 34000.0, 42000.0, 45000.0, 48000.0, 56000.0, 63000.0, 13000.0, 12000.0, 4000.0, 6000.0, 15000.0, 17000.0, 14000.0, 0.0, 56000.0, 61000.0, 30000.0, 31000.0, 84000.0, 90000.0, 70000.0, 70000.0, 33000.0, 33000.0, 33000.0, 13000.0, 20000.0, 70000.0, 8.31446261815324, float(c1_valsj[-1]), float(c2_valsj[-1]), float(c3_valsj[-1]), float(Twalls[-1]), taui), jac=Jacob, first_step=1 / segment_second, max_step=1 / (segment_second * 0.5))  # first_step=1E-2, max_step=1E-3, jac= lambda Z, C: jacob(Z,C, **args), rtol=1E-9, atol=1E-9        Ls2 = firststepval
         edcint = initedc - resa.y[0][-1]
-        #print(resa.y[0][-1], resb.y[0][-1])
         edcintj = initedc - resb.y[0][-1]
+        #print(resa.y[0][-1], resb.y[0][-1])
         yield1 = resa.y[23][-1]/edcint
         yield1j = resb.y[23][-1]/edcintj
         yield_vcm.append(yield1)
@@ -1785,11 +1785,6 @@ for il in tqdm(iterslist):
     pr1j.clear()
     pr1.append(100.0)
     pr1j.append(100.0)
-    rtolval = 1E-7
-    rtolvalj = 1E-7
-    atolval = 1E-7
-    atolvalj = 1E-7
-    Ls2 = firststepval
 
 eaconvf = []
 eaconvjf = []

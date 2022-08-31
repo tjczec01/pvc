@@ -5,6 +5,6 @@ Collection of all PVC related programs
 
 Most files requires the newest version of solve_ivp (1.4.1) as args are used to speed up the calcultion process.
 
-** pip install thermo==0.1.40 **
+# pip install thermo==0.1.40
 
 Newer versions of the thermo package seem to break the program
